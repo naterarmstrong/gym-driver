@@ -1,5 +1,4 @@
-# FORDS
-First ORder Driving Simulator
+# FORDS (First ORder Driving Simulator)
 
 Link to the original driving simulator https://github.com/WesleyHsieh/gym-driving
 
