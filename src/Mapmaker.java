@@ -8,7 +8,6 @@ import java.awt.event.*;
 public class Mapmaker extends JPanel implements ActionListener {
 
     Map map;
-    JScrollPane scroll;
 
     public Mapmaker() {
         setBackground(Color.GREEN);
@@ -77,6 +76,7 @@ public class Mapmaker extends JPanel implements ActionListener {
         }
 
         private void addButtons() {
+
             //Save
             save_button = new JButton("SAVE");
             save_button.setBounds(50, 400, 100, 50);
@@ -132,15 +132,14 @@ public class Mapmaker extends JPanel implements ActionListener {
         frame.setResizable(false);
         frame.setTitle("Edit Map");
         //Make Map panel and make it scrollable
-        Mapmaker map = new Mapmaker();
+        Map map = new Map();
         JScrollPane scroll = new JScrollPane();
         scroll.setViewportView(map);
-        map.scroll = scroll;
         //Set Dimensions for Map
         scroll.setPreferredSize(new Dimension(fullscreen_width - 210, fullscreen_height - 200));
         map.setPreferredSize(new Dimension(fullscreen_width, fullscreen_height - 200));
         //Make Menu panel
-        JPanel menuPanel = map.makeMenu();
+        JPanel menuPanel = new Mapmaker().makeMenu();
         //Set Dimensions for Menu Panel
         menuPanel.setPreferredSize(new Dimension(200, fullscreen_height - 200));
         menuPanel.setBounds(0, 300, 100, 200);
