@@ -13,8 +13,11 @@ public class Map extends JPanel {
         private static final int PIXELS_PER_TILE = 150;
         private final String[] PATHS = new String[]
                 {"flat", "convex", "concave"};
-        private final String[] TEXTURES = new String[]
-                {"grass", "gravel", "road", "ice"};
+        private final Object[][] TEXTURES = new Object[][]{
+                new Object[]{"grass",  0.5, new Color(65, 145, 65)  },
+                new Object[]{"gravel", 0.9, new Color(145, 116, 65) },
+                new Object[]{"road",   0.5, new Color(86, 81, 72)   },
+                new Object[]{"ice",    0.1, new Color(189, 239, 239)}};
         private int pathInd;
         private int textureInd;
         private int orientationInd;
@@ -28,6 +31,7 @@ public class Map extends JPanel {
             pathInd = p;
             textureInd = t;
             orientationInd = o;
+            setBackground((Color) TEXTURES[textureInd][2]);
         }
 
         /** Get path shape */
@@ -35,12 +39,11 @@ public class Map extends JPanel {
             return PATHS[pathInd];
         }
 
-        /** Get texture */
-        private String getTexture(int x, int y) {
+        /** Get texture index at a specific (x, y) coordinate on the Tile */
+        private int getPtTextureInd(int x, int y) {
             String path = getPath();
-            String texture = TEXTURES[textureInd];
             if ("flat".equals(path)) {
-                return texture;
+                return textureInd;
             }
             boolean inCircle = true;
             switch(getOrientation()) {
@@ -58,9 +61,9 @@ public class Map extends JPanel {
                     break;
             }
             if ("convex".equals(path)) {
-                return (inCircle) ? texture : "grass";
+                return (inCircle) ? textureInd : 0;
             } else {
-                return (inCircle) ? "grass" : texture;
+                return (inCircle) ? 0 : textureInd;
             }
         }
 
@@ -75,13 +78,19 @@ public class Map extends JPanel {
 
         /** Cycle to the next path */
         protected void cyclePath() {
-            pathInd = (pathInd + 1) % PATHS.length;
+            if (!"grass".equals(TEXTURES[textureInd][0])) {
+                pathInd = (pathInd + 1) % PATHS.length;
+            }
         }
 
         /** Change the texture */
-        protected void changeTexture(int newTexture) {
-            if (newTexture < TEXTURES.length) {
-                textureInd = newTexture;
+        protected void changeTexture(int newTextureInd) {
+            if (newTextureInd < TEXTURES.length) {
+                textureInd = newTextureInd;
+                setBackground((Color) TEXTURES[textureInd][2]);
+                if ("grass".equals(TEXTURES[textureInd][0])) {
+                    pathInd = 0;
+                }
             }
         }
 
@@ -95,19 +104,8 @@ public class Map extends JPanel {
 
         /** Get friction coeff */
         protected double getFriction(int x, int y) {
-            String texture = getTexture(x, y);
-            switch(texture) {
-                case "grass":
-                    return 0.5;
-                case "gravel":
-                    return 0.9;
-                case "road":
-                    return 0.5;
-                case "ice":
-                    return 0.1;
-                default:
-                    return 0.5;
-            }
+            int ptTextureInd = getPtTextureInd(x, y);
+            return (double) TEXTURES[ptTextureInd][1];
         }
 
     }
