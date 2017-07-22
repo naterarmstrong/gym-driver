@@ -1,10 +1,13 @@
 import java.util.ArrayList;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import java.awt.Color;
 
 /** Map class */
-public class Map {
+public class Map extends JPanel {
 
     /** Tile subclass */
-    private class Tile {
+    private class Tile extends JButton {
 
         /** Tile attributes */
         private static final int PIXELS_PER_TILE = 150;
@@ -131,6 +134,7 @@ public class Map {
             }
             tiles.add(row);
         }
+        setBackground(new Color(65, 136, 145));
     }
 
     /** Change the Map height */

@@ -20,6 +20,6 @@ public abstract class Car {
     }
 
     /** Modify attributes to reflect one step */
-    protected abstract void step(double acceleration, double tireAngle);
+    protected abstract void step(double acceleration, double steering);
 
 }

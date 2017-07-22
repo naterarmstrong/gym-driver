@@ -7,7 +7,7 @@ public class PointCar extends Car {
     }
 
     /** Modify attributes to reflect one step */
-    protected void step(double acceleration, double tireAngle) {
+    protected void step(double acceleration, double steering) {
 
     }
 
