@@ -13,7 +13,7 @@ class Map extends JPanel {
     private ArrayList<ArrayList<Tile>> tiles;
 
     /** Map constructor */
-    private Map() {
+    Map() {
         this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 

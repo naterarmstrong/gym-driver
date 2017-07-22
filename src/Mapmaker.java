@@ -8,6 +8,7 @@ import java.awt.event.*;
 public class Mapmaker extends JPanel implements ActionListener {
 
     Map map;
+    public static String terrainType;
 
     public Mapmaker() {
         setBackground(Color.GREEN);
@@ -16,6 +17,14 @@ public class Mapmaker extends JPanel implements ActionListener {
         setFocusable(true);
         setLayout(null);
         map = new Map();
+    }
+
+    static String getTerrain() {
+        return terrainType;
+    }
+
+    static void setTerrainType(String newTerrainSelection) {
+        terrainType = newTerrainSelection;
     }
 
     public MenuPanel makeMenu() {
@@ -51,7 +60,7 @@ public class Mapmaker extends JPanel implements ActionListener {
         }
     }
 
-    public class MenuPanel extends JPanel{
+    public class MenuPanel extends Mapmaker {
 
         int width_x = 65, width_y = 30;
         int height_x = 65, height_y = 80;
@@ -80,26 +89,56 @@ public class Mapmaker extends JPanel implements ActionListener {
             //Save
             save_button = new JButton("SAVE");
             save_button.setBounds(50, 400, 100, 50);
+            save_button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                }
+            });
             add(save_button);
 
             //Grass
             grass_button = new JButton("GRASS");
             grass_button.setBounds(0, 200, 100, 50);
+            grass_button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setTerrainType("grass");
+                }
+            });
             add(grass_button);
 
             //Road
             road_button = new JButton("ROAD");
             road_button.setBounds(100, 200, 100, 50);
+            road_button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setTerrainType("road");
+                }
+            });
             add(road_button);
 
             //Gravel
-            save_button = new JButton("GRAVEL");
-            save_button.setBounds(0, 300, 100, 50);
-            add(save_button);
+            gravel_button = new JButton("GRAVEL");
+            gravel_button.setBounds(0, 300, 100, 50);
+            gravel_button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setTerrainType("gravel");
+                }
+            });
+            add(gravel_button);
 
             //Ice
             ice_button = new JButton("ICE");
             ice_button.setBounds(100, 300, 100, 50);
+            ice_button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setTerrainType("ice");
+                }
+            });
             add(ice_button);
         }
 
@@ -144,7 +183,7 @@ public class Mapmaker extends JPanel implements ActionListener {
         menuPanel.setPreferredSize(new Dimension(200, fullscreen_height - 200));
         menuPanel.setBounds(0, 300, 100, 200);
         //Add the Map and Menu panels to a new Main panel
-        JPanel mainPanel = new JPanel();
+        JPanel mainPanel = new Mapmaker();
         mainPanel.add(scroll);
         mainPanel.add(menuPanel);
         mainPanel.setBackground(Color.WHITE);
