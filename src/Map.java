@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /** Map class */
 public class Map {
@@ -8,7 +7,7 @@ public class Map {
     private class Tile {
 
         /** Tile attributes */
-        private static final int PIXELS_PER_TILE = 100;
+        private static final int PIXELS_PER_TILE = 150;
         private final String[] PATHS = new String[]
                 {"flat", "convex", "concave"};
         private final String[] TEXTURES = new String[]
@@ -19,7 +18,7 @@ public class Map {
 
         /** Tile constructors */
         private Tile() {
-            new Tile(0, 0, 0);
+            this(0, 0, 0);
         }
 
         private Tile(int p, int t, int o) {
@@ -28,15 +27,45 @@ public class Map {
             orientationInd = o;
         }
 
-        /** Getters for path, texture, and orientation attributes */
+        /** Get path shape */
         private String getPath() {
             return PATHS[pathInd];
         }
 
-        private String getTexture() {
-            return TEXTURES[textureInd];
+        /** Get texture */
+        private String getTexture(int x, int y) {
+            String path = getPath();
+            String texture = TEXTURES[textureInd];
+            if ("flat".equals(path)) {
+                return texture;
+            }
+            boolean inCircle = true;
+            switch(getOrientation()) {
+                case 0:
+                    inCircle = inCircle(x, y-PIXELS_PER_TILE);
+                    break;
+                case 90:
+                    inCircle = inCircle(x-PIXELS_PER_TILE, y-PIXELS_PER_TILE);
+                    break;
+                case 180:
+                    inCircle = inCircle(x-PIXELS_PER_TILE, y);
+                    break;
+                case 270:
+                    inCircle = inCircle(x, y);
+                    break;
+            }
+            if ("convex".equals(path)) {
+                return (inCircle) ? texture : "grass";
+            } else {
+                return (inCircle) ? "grass" : texture;
+            }
         }
 
+        private boolean inCircle(int x, int y) {
+            return x * x + y * y <= PIXELS_PER_TILE * PIXELS_PER_TILE;
+        }
+
+        /** Get orientation */
         protected int getOrientation() {
             return 90 * orientationInd;
         }
@@ -61,8 +90,9 @@ public class Map {
             }
         }
 
-        /** Get the friction coefficient */
-        protected double getFrictionCoeff(String texture) {
+        /** Get friction coeff */
+        protected double getFriction(int x, int y) {
+            String texture = getTexture(x, y);
             switch(texture) {
                 case "grass":
                     return 0.5;
@@ -77,22 +107,17 @@ public class Map {
             }
         }
 
-        protected double getFrictionCoeff() {
-            String texture = getTexture();
-            // what about convex, concave
-        }
-
     }
 
     /** Map attributes */
-    private static final int DEFAULT_WIDTH = 10;
-    private static final int DEFAULT_HEIGHT = 10;
+    private static final int DEFAULT_WIDTH = 15;
+    private static final int DEFAULT_HEIGHT = 15;
     private int width, height;
     private ArrayList<ArrayList<Tile>> tiles;
 
     /** Map constructor */
     public Map() {
-        new Map(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
     public Map(int w, int h) {
@@ -123,6 +148,7 @@ public class Map {
                 tiles.remove(h);
             }
         }
+        height = newHeight;
     }
 
     /** Change the Map width */
@@ -140,13 +166,22 @@ public class Map {
                 }
             }
         }
+        width = newWidth;
     }
 
     /** Get the Tile at a specific (x, y) pixel coordinate in the Map */
     public Tile getTile(int x, int y) {
         int xTile = x / Tile.PIXELS_PER_TILE;
         int yTile = y / Tile.PIXELS_PER_TILE;
-        return tiles.get(y).get(x);
+        return tiles.get(yTile).get(xTile);
+    }
+
+    /** Get friction coeff at a specific (x, y) pixel coordinate in the Map */
+    public double getFriction(int x, int y) {
+        Tile tile = getTile(x, y);
+        int xTile = x % Tile.PIXELS_PER_TILE;
+        int yTile = y % Tile.PIXELS_PER_TILE;
+        return tile.getFriction(xTile, yTile);
     }
 
 }
