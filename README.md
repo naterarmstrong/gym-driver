@@ -2,6 +2,10 @@
 
 Link to the original driving simulator https://github.com/WesleyHsieh/gym-driving
 
+Link to Google drive of 2 pages of notes I took on things that are wanted for simulator: (Take with a grain of salt)
+https://drive.google.com/drive/folders/0B_uaUEKgQylrX2Y4LVhSTFBMcWs?usp=sharing
+
+
 ### For now, the readme is for you guys (Sequoia / Robert) so you know the goals for the simulator, etc. 
 
 ## Features We Want
