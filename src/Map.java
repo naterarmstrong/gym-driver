@@ -7,7 +7,7 @@ public class Map {
     private class Tile {
 
         /** Tile attributes */
-        private static final int PIXELS_PER_TILE = 130;
+        private static final int PIXELS_PER_TILE = 150;
         private final String[] PATHS = new String[]
                 {"flat", "convex", "concave"};
         private final String[] TEXTURES = new String[]
