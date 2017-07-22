@@ -7,7 +7,8 @@ import java.awt.event.*;
  */
 public class Mapmaker extends JPanel implements ActionListener {
 
-    private Timer timer;
+    Map map;
+    JScrollPane scroll;
 
     public Mapmaker() {
         setBackground(Color.GREEN);
@@ -15,8 +16,7 @@ public class Mapmaker extends JPanel implements ActionListener {
         addKeyListener(new keyAdapter());
         setFocusable(true);
         setLayout(null);
-        timer = new Timer(100, this);
-        timer.start();
+        map = new Map();
     }
 
     public MenuPanel makeMenu() {
@@ -25,21 +25,24 @@ public class Mapmaker extends JPanel implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.BLACK);
-        g.fillOval(600, 50, 10, 10);
     }
 
     class mouseAdapter extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent event) {
-
+            int xPress = event.getX();
+            int yPress = event.getY();
+            System.out.println("x: " + String.valueOf(xPress) + " y: " + String.valueOf(yPress));
         }
+
+        public void mouseEntered(MouseEvent event) {
+        }
+
     }
 
     class keyAdapter extends KeyAdapter {
@@ -51,28 +54,53 @@ public class Mapmaker extends JPanel implements ActionListener {
 
     public class MenuPanel extends JPanel{
 
-        int height_x = 100, height_y = 100;
-        int width_x = 100, width_y = 200;
-        int save_x = 100, save_y = 300;
+        int width_x = 65, width_y = 30;
+        int height_x = 65, height_y = 80;
+        JButton save_button, grass_button, road_button, gravel_button, ice_button;
 
 
         public MenuPanel() {
-            setBackground(Color.GRAY);
+            setOpaque(false);
             setLayout(null);
             setVisible(true);
             addTextFields();
+            addButtons();
         }
 
         private void addTextFields() {
             TextField width_box = new TextField();
-            width_box.setBounds(width_x, width_y, 50, 50);
+            width_box.setBounds(width_x, width_y, 100, 20);
             TextField height_box = new TextField();
-            height_box.setBounds(height_x, height_y, 50, 50);
-            TextField save_box = new TextField();
-            save_box.setBounds(save_x, save_y, 50, 50);
+            height_box.setBounds(height_x, height_y, 100, 20);
             add(width_box);
             add(height_box);
-            add(save_box);
+        }
+
+        private void addButtons() {
+            //Save
+            save_button = new JButton("SAVE");
+            save_button.setBounds(50, 400, 100, 50);
+            add(save_button);
+
+            //Grass
+            grass_button = new JButton("GRASS");
+            grass_button.setBounds(0, 200, 100, 50);
+            add(grass_button);
+
+            //Road
+            road_button = new JButton("ROAD");
+            road_button.setBounds(100, 200, 100, 50);
+            add(road_button);
+
+            //Gravel
+            save_button = new JButton("GRAVEL");
+            save_button.setBounds(0, 300, 100, 50);
+            add(save_button);
+
+            //Ice
+            ice_button = new JButton("ICE");
+            ice_button.setBounds(100, 300, 100, 50);
+            add(ice_button);
         }
 
 
@@ -82,21 +110,22 @@ public class Mapmaker extends JPanel implements ActionListener {
             super.paintComponent(g);
 
             //Width String
-            g.drawString("WIDTH", width_x, width_y - 2);
+            g.drawString("WIDTH:", width_x - 50, width_y + 15);
 
             //Height String
-            g.drawString("HEIGHT", height_x, height_y - 2);
-
-            //Save String
-            g.drawString("SAVE", save_x, save_y - 2);
+            g.drawString("HEIGHT:", height_x - 52, height_y + 15);
         }
 
     }
 
     public static void main(String args[]) {
+        // Calculate Dimensions for full screen
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int fullscreen_width = screenSize.width;
+        int fullscreen_height = screenSize.height;
         // Initiate and setup preferences for the frame
         JFrame frame = new JFrame();
-        frame.setSize(500, 500);
+        frame.setPreferredSize(new Dimension(fullscreen_width, fullscreen_height - 175));
         frame.setLocationByPlatform(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -106,16 +135,20 @@ public class Mapmaker extends JPanel implements ActionListener {
         Mapmaker map = new Mapmaker();
         JScrollPane scroll = new JScrollPane();
         scroll.setViewportView(map);
-        scroll.setPreferredSize(new Dimension(500, 500));
-        map.setPreferredSize(new Dimension(1000, 500));
+        map.scroll = scroll;
+        //Set Dimensions for Map
+        scroll.setPreferredSize(new Dimension(fullscreen_width - 210, fullscreen_height - 200));
+        map.setPreferredSize(new Dimension(fullscreen_width, fullscreen_height - 200));
         //Make Menu panel
         JPanel menuPanel = map.makeMenu();
-        menuPanel.setPreferredSize(new Dimension(200, 500));
+        //Set Dimensions for Menu Panel
+        menuPanel.setPreferredSize(new Dimension(200, fullscreen_height - 200));
         menuPanel.setBounds(0, 300, 100, 200);
         //Add the Map and Menu panels to a new Main panel
         JPanel mainPanel = new JPanel();
         mainPanel.add(scroll);
         mainPanel.add(menuPanel);
+        mainPanel.setBackground(Color.WHITE);
         //Add the Main panel to the frame
         frame.getContentPane().add(mainPanel);
         frame.pack();
