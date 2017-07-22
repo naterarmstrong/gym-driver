@@ -18,7 +18,7 @@ public class Map {
 
         /** Tile constructors */
         private Tile() {
-            new Tile(0, 0, 0);
+            this(0, 0, 0);
         }
 
         private Tile(int p, int t, int o) {
@@ -44,13 +44,13 @@ public class Map {
                 case 0:
                     inCircle = inCircle(x, y-PIXELS_PER_TILE);
                     break;
-                case 1:
+                case 90:
                     inCircle = inCircle(x-PIXELS_PER_TILE, y-PIXELS_PER_TILE);
                     break;
-                case 2:
+                case 180:
                     inCircle = inCircle(x-PIXELS_PER_TILE, y);
                     break;
-                case 3:
+                case 270:
                     inCircle = inCircle(x, y);
                     break;
             }
@@ -117,7 +117,7 @@ public class Map {
 
     /** Map constructor */
     public Map() {
-        new Map(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
     public Map(int w, int h) {
@@ -148,6 +148,7 @@ public class Map {
                 tiles.remove(h);
             }
         }
+        height = newHeight;
     }
 
     /** Change the Map width */
@@ -165,13 +166,14 @@ public class Map {
                 }
             }
         }
+        width = newWidth;
     }
 
     /** Get the Tile at a specific (x, y) pixel coordinate in the Map */
     public Tile getTile(int x, int y) {
         int xTile = x / Tile.PIXELS_PER_TILE;
         int yTile = y / Tile.PIXELS_PER_TILE;
-        return tiles.get(y).get(x);
+        return tiles.get(yTile).get(xTile);
     }
 
     /** Get friction coeff at a specific (x, y) pixel coordinate in the Map */
