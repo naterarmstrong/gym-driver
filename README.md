@@ -45,6 +45,23 @@ https://drive.google.com/drive/folders/0B_uaUEKgQylrX2Y4LVhSTFBMcWs?usp=sharing
 
 ### CPU Cars
   The CPU cars should ideally be able to follow the track. I imagine that we could handle this by creating separate physics and track/terrain files. The track/terrain file could have some statistics about it precomputed, before running any experiments on the track. This could include the creation of the 'path to follow' along the track. The CPU cars could then attempt to follow this. *It is likely that these cars will have to use different physics than the main car for performance reasons.* That said, these cars should most likely be initialized as Point Cars. 
+  
+# Config Parameters
+## Action Space
+### Control Space
+* control_space_type: 'discrete' or 'continuous' for a discrete or continuous control space. default discrete
+* noise_type: 'gaussian' or 'random' based on which type of noise is added to actions. default 0.1
+* noise_mag: magnitude of the noise, default 0.1
+* steer_max, steer_min, steer_num: 2 floats, int. range of steering inputs, and number of discrete divisions. defaults -15.0, 15.0, 5
+* acc_max, acc_min, acc_num: 2 floats, int. range of acceleration, and number of discretizations. default 3.0, 3.0, 3
+### State Space
+* num_cpu_cars: int, number of CPU cars, default 5
+* state_space_type: 'positions' or 'image' for an image or (array?) state space. default 'image'
+* downsampled_size: ONLY IF IMAGE: size of provided image, int tuple
+* mc_starting_angles: 2 floats, int. range of main car starting angles, and number of discretizations.
+### Dynamics
+* main_car_dynamics: 'kinematic' or 'dynamic'. refers to each dynamics model. default kinematic
+
 
 # Most Important Pieces
 ## Speed
