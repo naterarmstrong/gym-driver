@@ -16,6 +16,7 @@ class Tile extends JButton {
     }
     private static final String[] PATHS = new String[]
             {"flat", "convex", "concave"};
+    static String terrainSelection;
     private String texture;
     private int pathInd;
     private int orientationInd;

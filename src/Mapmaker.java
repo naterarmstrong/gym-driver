@@ -1,66 +1,52 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import javax.swing.JPanel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import java.awt.TextField;
+import java.awt.Graphics;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-/**
- * Created by robertsweeney on 7/21/17.
- */
-public class Mapmaker extends JPanel implements ActionListener {
+public class Mapmaker extends JPanel {
 
-    Map map;
-    public static String terrainType;
+    public  String TerrainType = "Green";
+    public Map map;
 
     public Mapmaker() {
-        setBackground(Color.GREEN);
-        addMouseListener(new mouseAdapter ());
-        addKeyListener(new keyAdapter());
-        setFocusable(true);
-        setLayout(null);
-        map = new Map();
     }
 
-    static String getTerrain() {
-        return terrainType;
+    public Mapmaker(Map m) {
+        map = m;
+        addMouseListener(new Mouse());
     }
 
-    static void setTerrainType(String newTerrainSelection) {
-        terrainType = newTerrainSelection;
+    public  void setTerrain(String i) {
+        TerrainType = i;
+    }
+
+    public void changeTerrain() {
+        Tile.terrainSelection = TerrainType;
     }
 
     public MenuPanel makeMenu() {
         return new MenuPanel();
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-    }
-
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-    }
-
-    class mouseAdapter extends MouseAdapter {
+    class Mouse extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent event) {
             int xPress = event.getX();
             int yPress = event.getY();
             System.out.println("x: " + String.valueOf(xPress) + " y: " + String.valueOf(yPress));
         }
-
-        public void mouseEntered(MouseEvent event) {
-        }
-
     }
 
-    class keyAdapter extends KeyAdapter {
-        @Override
-        public void keyPressed(KeyEvent event) {
-
-        }
-    }
-
-    public class MenuPanel extends Mapmaker {
+    public class MenuPanel extends JPanel {
 
         int width_x = 65, width_y = 30;
         int height_x = 65, height_y = 80;
@@ -92,7 +78,7 @@ public class Mapmaker extends JPanel implements ActionListener {
             save_button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-
+                    System.out.println("SAVE");
                 }
             });
             add(save_button);
@@ -103,7 +89,7 @@ public class Mapmaker extends JPanel implements ActionListener {
             grass_button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setTerrainType("grass");
+                    setTerrain("grass");
                 }
             });
             add(grass_button);
@@ -114,7 +100,7 @@ public class Mapmaker extends JPanel implements ActionListener {
             road_button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setTerrainType("road");
+                    setTerrain("road");
                 }
             });
             add(road_button);
@@ -125,7 +111,7 @@ public class Mapmaker extends JPanel implements ActionListener {
             gravel_button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setTerrainType("gravel");
+                    setTerrain("gravel");
                 }
             });
             add(gravel_button);
@@ -136,7 +122,7 @@ public class Mapmaker extends JPanel implements ActionListener {
             ice_button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    setTerrainType("ice");
+                    setTerrain("ice");
                 }
             });
             add(ice_button);
@@ -154,7 +140,6 @@ public class Mapmaker extends JPanel implements ActionListener {
             //Height String
             g.drawString("HEIGHT:", height_x - 52, height_y + 15);
         }
-
     }
 
     public static void main(String args[]) {
@@ -176,14 +161,13 @@ public class Mapmaker extends JPanel implements ActionListener {
         scroll.setViewportView(map);
         //Set Dimensions for Map
         scroll.setPreferredSize(new Dimension(fullscreen_width - 210, fullscreen_height - 200));
-        map.setPreferredSize(new Dimension(fullscreen_width, fullscreen_height - 200));
         //Make Menu panel
         JPanel menuPanel = new Mapmaker().makeMenu();
         //Set Dimensions for Menu Panel
         menuPanel.setPreferredSize(new Dimension(200, fullscreen_height - 200));
         menuPanel.setBounds(0, 300, 100, 200);
         //Add the Map and Menu panels to a new Main panel
-        JPanel mainPanel = new Mapmaker();
+        JPanel mainPanel = new Mapmaker(map);
         mainPanel.add(scroll);
         mainPanel.add(menuPanel);
         mainPanel.setBackground(Color.WHITE);
