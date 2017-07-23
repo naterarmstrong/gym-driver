@@ -30,6 +30,7 @@ class Map extends JPanel {
             tiles.add(row);
         }
         setBackground(BACKGROUND_COLOR);
+        setLayout(null);
         render();
     }
 
