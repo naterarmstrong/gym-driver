@@ -1,9 +1,12 @@
 import java.util.HashMap;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.Color;
 
 /** Tile subclass */
-class Tile extends JButton {
+class Tile extends JButton implements ActionListener {
 
     /** Tile attributes */
     static final int PIXELS_PER_TILE = 150;
@@ -31,6 +34,9 @@ class Tile extends JButton {
         pathInd = p;
         orientationInd = o;
         setBackground((Color) TEXTURES.get(texture)[1]);
+        setActionCommand("change texture");
+        setMnemonic(KeyEvent.VK_D);
+        addActionListener(this);
     }
 
     /** Get path shape */
@@ -105,6 +111,14 @@ class Tile extends JButton {
     double getFriction(int x, int y) {
         String ptTexture = getPtTextureInd(x, y);
         return (double) TEXTURES.get(ptTexture)[0];
+    }
+
+    /** Change texture on click */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if ("change texture".equals(e.getActionCommand())) {
+            changeTexture(terrainSelection);
+        }
     }
 
 }

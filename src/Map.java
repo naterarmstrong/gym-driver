@@ -43,6 +43,8 @@ class Map extends JPanel {
             for (int j = 0; j < width; j += 1) {
                 Tile tile = row.get(j);
                 tile.setBounds(j * ppt, i * ppt, ppt, ppt);
+                tile.setOpaque(true);
+                tile.setBorderPainted(false);
                 add(tile);
             }
         }

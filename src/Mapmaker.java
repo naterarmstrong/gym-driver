@@ -14,7 +14,7 @@ import java.awt.event.ActionEvent;
 
 public class Mapmaker extends JPanel {
 
-    public  String TerrainType = "Green";
+    public  String TerrainType = "grass";
     public Map map;
 
     public Mapmaker() {
@@ -27,6 +27,7 @@ public class Mapmaker extends JPanel {
 
     public  void setTerrain(String i) {
         TerrainType = i;
+        changeTerrain();
     }
 
     public void changeTerrain() {
