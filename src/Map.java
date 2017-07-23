@@ -1,14 +1,16 @@
 import java.util.ArrayList;
+
 import javax.swing.JPanel;
-import java.awt.Dimension;
+
 import java.awt.Color;
+import java.awt.Dimension;
 
 /** Map class */
 class Map extends JPanel {
 
     /** Map attributes */
-    private static final int DEFAULT_WIDTH = 5;
-    private static final int DEFAULT_HEIGHT = 5;
+    private static final int DEFAULT_WIDTH = 6;
+    private static final int DEFAULT_HEIGHT = 4;
     private static final Color BACKGROUND_COLOR = new Color(65, 136, 145);
     private int width, height;
     private ArrayList<ArrayList<Tile>> tiles;
@@ -32,6 +34,16 @@ class Map extends JPanel {
         setBackground(BACKGROUND_COLOR);
         setLayout(null);
         render();
+    }
+
+    /** Get the width of the Map */
+    int getTilesWidth() {
+        return width;
+    }
+
+    /** Get the height of the Map */
+    int getTilesHeight() {
+        return height;
     }
 
     /** Render the Map */
