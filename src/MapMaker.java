@@ -1,3 +1,8 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -10,7 +15,6 @@ import java.awt.Label;
 import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /** MapMaker class */
 class MapMaker extends JPanel {
@@ -23,6 +27,8 @@ class MapMaker extends JPanel {
         private final int TEXT_INPUT_Y = 30,    BUTTONS_Y = 200;
         private final int LABEL_WIDTH = 80,     INPUT_HEIGHT = 25;
         private final int BUTTON_WIDTH = 100,   BUTTON_HEIGHT = 50;
+        private final String SAVE_DIR = "saved maps";
+        private TextField NAME_FIELD, WIDTH_FIELD, HEIGHT_FIELD;
 
         /** MenuPanel constructor */
         private MenuPanel() {
@@ -35,46 +41,79 @@ class MapMaker extends JPanel {
 
         /** Populate the MenuPanel with TextAreas and TextFields */
         private void addTextFields() {
-            addTextField("Name:", "New Map", TEXT_INPUT_Y);
-            String width = (new Integer(map.getTilesWidth())).toString();
-            addTextField("Width:", width, TEXT_INPUT_Y + INPUT_HEIGHT);
+            int yName     = TEXT_INPUT_Y;
+            int yWidth    = yName + INPUT_HEIGHT;
+            int yHeight   = yWidth + INPUT_HEIGHT;
+            NAME_FIELD    = addTextField("Name:", "New Map", yName);
+            String width  = (new Integer(map.getTilesWidth())).toString();
+            WIDTH_FIELD   = addTextField("Width:", width, yWidth);
             String height = (new Integer(map.getTilesHeight())).toString();
-            addTextField("Height:", height, TEXT_INPUT_Y + 2 * INPUT_HEIGHT);
+            HEIGHT_FIELD  = addTextField("Height:", height, yHeight);
         }
 
-        private void addTextField(String labelText, String fieldText, int y) {
-            Label label = new Label(labelText);
+        private TextField addTextField(String labelTx, String fieldTx, int y) {
+            Label label = new Label(labelTx);
             label.setBackground(Color.WHITE);
             label.setBounds(0, y, LABEL_WIDTH, INPUT_HEIGHT);
-            TextField input = new TextField(fieldText);
+            TextField field = new TextField(fieldTx);
             int fieldWidth = MENU_WIDTH - LABEL_WIDTH;
-            input.setBounds(LABEL_WIDTH, y, fieldWidth, INPUT_HEIGHT);
+            field.setBounds(LABEL_WIDTH, y, fieldWidth, INPUT_HEIGHT);
             add(label);
-            add(input);
+            add(field);
+            return field;
         }
 
         /** Populate the MenuPanel with JButtons */
         private void addButtons() {
             int xL = MIDDLE - BUTTON_WIDTH, xR = MIDDLE;
-            int top = BUTTONS_Y, low = BUTTONS_Y + BUTTON_HEIGHT;
+            int top = BUTTONS_Y,            low = BUTTONS_Y + BUTTON_HEIGHT;
             addTerrainButton("grass",  xL, top, BUTTON_WIDTH, BUTTON_HEIGHT);
             addTerrainButton("road",   xR, top, BUTTON_WIDTH, BUTTON_HEIGHT);
             addTerrainButton("gravel", xL, low, BUTTON_WIDTH, BUTTON_HEIGHT);
             addTerrainButton("ice",    xR, low, BUTTON_WIDTH, BUTTON_HEIGHT);
-            JButton saveButton = addButton("save map",
-                    0, WINDOW_HEIGHT - INPUT_HEIGHT - 60,
-                    MENU_WIDTH, INPUT_HEIGHT);
-            saveButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("save map");
-                }
-            });
+            int ySave = WINDOW_HEIGHT - INPUT_HEIGHT - 60;
+            int yLoad = ySave - INPUT_HEIGHT;
+            addSaveButton(0, ySave, MENU_WIDTH, INPUT_HEIGHT);
+            addLoadButton(0, yLoad, MENU_WIDTH, INPUT_HEIGHT);
         }
 
         private void addTerrainButton(String t, int x, int y, int w, int h) {
             JButton button = addButton(t, x, y, w, h);
             button.addActionListener((ActionEvent e) -> setTerrain(t));
+        }
+
+        private void addSaveButton(int x, int y, int w, int h) {
+            JButton button = addButton("save map", x, y, w, h);
+            button.addActionListener((ActionEvent a) -> {
+                ObjectOutputStream out;
+                try {
+                    String f = String.format("%s/%s.data", SAVE_DIR,
+                                             NAME_FIELD.getText());
+                    out = new ObjectOutputStream(new FileOutputStream(f));
+                    out.writeObject(map);
+                    out.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+
+        private void addLoadButton(int x, int y, int w, int h) {
+            JButton button = addButton("load map", x, y, w, h);
+            button.addActionListener((ActionEvent a) -> {
+                ObjectInputStream in;
+                try {
+                    String f = String.format("%s/%s.data", SAVE_DIR,
+                            NAME_FIELD.getText());
+                    in = new ObjectInputStream(new FileInputStream(f));
+                    System.out.println(map.toString());
+                    map = (Map) in.readObject();
+                    System.out.println(map.toString());
+                    in.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
 
         private JButton addButton(String t, int x, int y, int w, int h) {
@@ -134,4 +173,5 @@ class MapMaker extends JPanel {
 
 }
 // TODO: get height & width text boxes working
-// TODO: get save working & clean up saving code
+// TODO: get save & load working
+// TODO: alter WIDTH and HEIGHT inputs to reflect size of loaded map
