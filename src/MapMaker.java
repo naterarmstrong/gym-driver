@@ -15,6 +15,8 @@ import java.awt.Label;
 import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /** MapMaker class */
 class MapMaker extends JPanel {
@@ -49,8 +51,54 @@ class MapMaker extends JPanel {
             NAME_FIELD    = addTextField("Name:", "New Map", yName);
             String width  = (new Integer(map.getTilesWidth())).toString();
             WIDTH_FIELD   = addTextField("Width:", width, yWidth);
+            WIDTH_FIELD.addKeyListener(new KeyListener() {
+
+                @Override
+                public void keyTyped(KeyEvent k) {
+                }
+
+                @Override
+                public void keyPressed(KeyEvent k) {
+                    if ('\n' == k.getKeyChar()) {
+                        try {
+                            int w = Integer.parseInt(WIDTH_FIELD.getText());
+                            map.setWidth(w);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent k) {
+                }
+
+            });
             String height = (new Integer(map.getTilesHeight())).toString();
             HEIGHT_FIELD  = addTextField("Height:", height, yHeight);
+            HEIGHT_FIELD.addKeyListener(new KeyListener() {
+
+                @Override
+                public void keyTyped(KeyEvent k) {
+                }
+
+                @Override
+                public void keyPressed(KeyEvent k) {
+                    if ('\n' == k.getKeyChar()) {
+                        try {
+                            int h = Integer.parseInt(HEIGHT_FIELD.getText());
+                            map.setHeight(h);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent k) {
+                }
+
+            });
         }
 
         private TextField addTextField(String labelTx, String fieldTx, int y) {
@@ -179,5 +227,5 @@ class MapMaker extends JPanel {
 
 }
 // TODO: get height & width text boxes working
-// TODO: get save & load working
+// TODO: get load working
 // TODO: alter WIDTH and HEIGHT inputs to reflect size of loaded map
