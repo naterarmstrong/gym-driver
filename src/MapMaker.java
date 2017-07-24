@@ -210,3 +210,4 @@ class MapMaker extends JPanel {
 // TODO: alter WIDTH and HEIGHT inputs to reflect size of loaded map
 // TODO: implement toggling the path type and orientation of Tiles
 // TODO: make the MenuPanel buttons have sharp edges, not round
+// TODO: test to make sure resizing width & height simultaneously is ok

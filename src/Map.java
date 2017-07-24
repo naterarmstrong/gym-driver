@@ -74,7 +74,7 @@ class Map extends JPanel {
             }
         } else {
             for (int h = height; h > newHeight; h -= 1) {
-                tiles.remove(h);
+                tiles.remove(h - 1);
             }
         }
         height = newHeight;
@@ -92,7 +92,7 @@ class Map extends JPanel {
         } else {
             for (ArrayList<Tile> row : tiles) {
                 for (int w = width; w > newWidth; w -= 1) {
-                    row.remove(w);
+                    row.remove(w - 1);
                 }
             }
         }
