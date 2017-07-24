@@ -15,8 +15,6 @@ import java.awt.Label;
 import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 /** MapMaker class */
 class MapMaker extends JPanel {
@@ -51,54 +49,8 @@ class MapMaker extends JPanel {
             NAME_FIELD    = addTextField("Name:", "New Map", yName);
             String width  = (new Integer(map.getTilesWidth())).toString();
             WIDTH_FIELD   = addTextField("Width:", width, yWidth);
-            WIDTH_FIELD.addKeyListener(new KeyListener() {
-
-                @Override
-                public void keyTyped(KeyEvent k) {
-                }
-
-                @Override
-                public void keyPressed(KeyEvent k) {
-                    if ('\n' == k.getKeyChar()) {
-                        try {
-                            int w = Integer.parseInt(WIDTH_FIELD.getText());
-                            map.setWidth(w);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                @Override
-                public void keyReleased(KeyEvent k) {
-                }
-
-            });
             String height = (new Integer(map.getTilesHeight())).toString();
             HEIGHT_FIELD  = addTextField("Height:", height, yHeight);
-            HEIGHT_FIELD.addKeyListener(new KeyListener() {
-
-                @Override
-                public void keyTyped(KeyEvent k) {
-                }
-
-                @Override
-                public void keyPressed(KeyEvent k) {
-                    if ('\n' == k.getKeyChar()) {
-                        try {
-                            int h = Integer.parseInt(HEIGHT_FIELD.getText());
-                            map.setHeight(h);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                @Override
-                public void keyReleased(KeyEvent k) {
-                }
-
-            });
         }
 
         private TextField addTextField(String labelTx, String fieldTx, int y) {
@@ -123,8 +75,10 @@ class MapMaker extends JPanel {
             addTerrainButton("ice",    xR, low, BUTTON_WIDTH, BUTTON_HEIGHT);
             int ySave = WINDOW_HEIGHT - INPUT_HEIGHT - 60;
             int yLoad = ySave - INPUT_HEIGHT;
+            int yUpdate = TEXT_INPUT_Y + 3 * INPUT_HEIGHT;
             addSaveButton(0, ySave, MENU_WIDTH, INPUT_HEIGHT);
             addLoadButton(0, yLoad, MENU_WIDTH, INPUT_HEIGHT);
+            addUpdateButton(MIDDLE, yUpdate, BUTTON_WIDTH, BUTTON_HEIGHT);
         }
 
         private void addTerrainButton(String t, int x, int y, int w, int h) {
@@ -138,7 +92,7 @@ class MapMaker extends JPanel {
                 ObjectOutputStream out;
                 try {
                     String f = String.format("%s/%s.data", SAVE_DIR,
-                                             NAME_FIELD.getText());
+                            NAME_FIELD.getText());
                     out = new ObjectOutputStream(new FileOutputStream(f));
                     out.writeObject(map);
                     out.close();
@@ -165,6 +119,20 @@ class MapMaker extends JPanel {
             });
         }
 
+        private void addUpdateButton(int x, int y, int w, int h) {
+            JButton button = addButton("Update", x, y, w, h);
+            button.addActionListener((ActionEvent a) -> {
+                try {
+                    int newWidth = Integer.valueOf(WIDTH_FIELD.getText());
+                    int newHeight = Integer.valueOf(HEIGHT_FIELD.getText());
+                    changeMapSize(newWidth, newHeight);
+                } catch (NumberFormatException e) {
+                    // Ignore NumberFormatException
+                }
+            });
+
+        }
+
         private JButton addButton(String t, int x, int y, int w, int h) {
             JButton button = new JButton(t);
             button.setBounds(x, y, w, h);
@@ -176,6 +144,7 @@ class MapMaker extends JPanel {
 
     /** MapMaker attributes */
     private Map map;
+    private JScrollPane scrollPane;
     private static final int WINDOW_WIDTH, WINDOW_HEIGHT;
     static {
         final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -189,7 +158,7 @@ class MapMaker extends JPanel {
         setBackground(Color.WHITE);
         /* Initialize scrollable map pane */
         map = new Map();
-        JScrollPane scrollPane = new JScrollPane();
+        scrollPane = new JScrollPane();
         int paneWidth = WINDOW_WIDTH - MENU_WIDTH - 15;
         int paneHeight = WINDOW_HEIGHT - 60;
         scrollPane.setPreferredSize(new Dimension(paneWidth, paneHeight));
@@ -201,9 +170,16 @@ class MapMaker extends JPanel {
         add(menuPanel);
     }
 
-    /** Set the Map to the one specified */
+    /** Set the MapMaker's Map to the one specified */
     private void setMap(Map m) {
         map = m;
+    }
+
+    /** Change the dimensions of the Map */
+    private void changeMapSize(int width, int height) {
+        map.setWidth(width);
+        map.setHeight(height);
+        scrollPane.updateUI();
     }
 
     /** Set the terrain pen to the specified terrain type */
@@ -229,3 +205,4 @@ class MapMaker extends JPanel {
 // TODO: get height & width text boxes working
 // TODO: get load working
 // TODO: alter WIDTH and HEIGHT inputs to reflect size of loaded map
+// TODO: implement toggling the path type and orientation of Tiles
