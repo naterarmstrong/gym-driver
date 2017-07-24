@@ -23,6 +23,7 @@ class MapMaker extends JPanel {
     private class MenuPanel extends JPanel {
 
         /** MenuPanel attributes */
+        private final MapMaker mapmaker;
         private final int MIDDLE = MENU_WIDTH / 2;
         private final int TEXT_INPUT_Y = 30,    BUTTONS_Y = 200;
         private final int LABEL_WIDTH = 80,     INPUT_HEIGHT = 25;
@@ -31,7 +32,8 @@ class MapMaker extends JPanel {
         private TextField NAME_FIELD, WIDTH_FIELD, HEIGHT_FIELD;
 
         /** MenuPanel constructor */
-        private MenuPanel() {
+        private MenuPanel(MapMaker m) {
+            mapmaker = m;
             setLayout(null);
             setOpaque(false);
             setVisible(true);
@@ -106,9 +108,8 @@ class MapMaker extends JPanel {
                     String f = String.format("%s/%s.data", SAVE_DIR,
                             NAME_FIELD.getText());
                     in = new ObjectInputStream(new FileInputStream(f));
-                    System.out.println(map.toString());
                     map = (Map) in.readObject();
-                    System.out.println(map.toString());
+                    mapmaker.setMap(map);
                     in.close();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -147,9 +148,14 @@ class MapMaker extends JPanel {
         scrollPane.setViewportView(map);
         add(scrollPane);
         /* Initialize menu panel */
-        JPanel menuPanel = new MenuPanel();
+        JPanel menuPanel = new MenuPanel(this);
         menuPanel.setPreferredSize(new Dimension(MENU_WIDTH, WINDOW_HEIGHT));
         add(menuPanel);
+    }
+
+    /** Set the Map to the one specified */
+    private void setMap(Map m) {
+        map = m;
     }
 
     /** Set the terrain pen to the specified terrain type */
