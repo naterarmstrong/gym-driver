@@ -1,13 +1,13 @@
 /** PointCar subclass */
-public class PointCar extends Car {
+class PointCar extends Car {
 
     /** PointCar constructor */
-    public PointCar(Map m, int x, int y) {
+    private PointCar(Map m, int x, int y) {
         super(m, x, y);
     }
 
     /** Modify attributes to reflect one step */
-    protected void step(double acceleration, double steering) {
+    void step(double acceleration, double steering) {
 
     }
 
