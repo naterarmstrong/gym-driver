@@ -107,9 +107,10 @@ class MapMaker extends JPanel {
 
         /** Populate the MenuPanel with save & load options */
         private void addSaveLoadOptions() {
-            int ySave = SAVE_LOAD_Y;
-            int yLoad = ySave - INPUT_HEIGHT;
-            int yName = yLoad - INPUT_HEIGHT;
+            int ySave     = SAVE_LOAD_Y;
+            int yLoad     = ySave - INPUT_HEIGHT;
+            int yName     = yLoad - INPUT_HEIGHT;
+            int nameWidth = MENU_WIDTH - LABEL_WIDTH;
             addButton("save map", 0, ySave, MENU_WIDTH, INPUT_HEIGHT,
                     (ActionEvent a) -> {
                         ObjectOutputStream out;
@@ -128,8 +129,8 @@ class MapMaker extends JPanel {
                     (ActionEvent a) -> {
                         ObjectInputStream in;
                         try {
-                            String name = String.format("%s/%s.data", SAVE_DIR,
-                                    NAME_FIELD.getText());
+                            String name = String.format("%s/%s.data",
+                                    SAVE_DIR, NAME_FIELD.getText());
                             FileInputStream f = new FileInputStream(name);
                             in = new ObjectInputStream(f);
                             map = (Map) in.readObject();
@@ -139,7 +140,7 @@ class MapMaker extends JPanel {
                             e.printStackTrace();
                         }
                     });
-            addTextField("Name:", "New Map", yName, MENU_WIDTH - LABEL_WIDTH);
+            NAME_FIELD = addTextField("Name:", "New Map", yName, nameWidth);
         }
 
     }
