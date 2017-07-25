@@ -1,14 +1,14 @@
 import java.util.HashMap;
 
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /** Tile subclass */
-class Tile extends JButton implements ActionListener {
+class Tile extends JButton {
 
     /** Tile attributes */
     static final int PIXELS_PER_TILE = 150;
@@ -21,6 +21,7 @@ class Tile extends JButton implements ActionListener {
     }
     private static final String[] PATHS = new String[]
             {"flat", "convex", "concave"};
+    private static boolean pressed;
     static String terrainSelection;
     private String texture;
     private int pathInd;
@@ -37,8 +38,39 @@ class Tile extends JButton implements ActionListener {
         orientationInd = o;
         setBackground((Color) TEXTURES.get(texture)[1]);
         setActionCommand("change texture");
-        setMnemonic(KeyEvent.VK_D);
-        addActionListener(this);
+        addMouseListener(new MouseListener() {
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                if (pressed) {
+                    changeTexture(terrainSelection);
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    pressed = true;
+                    changeTexture(terrainSelection);
+                } else if (SwingUtilities.isRightMouseButton(e)) {
+                    System.out.println("okie dokie");
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                pressed = false;
+            }
+
+        });
     }
 
     /** Get path shape */
@@ -113,14 +145,6 @@ class Tile extends JButton implements ActionListener {
     double getFriction(int x, int y) {
         String ptTexture = getPtTextureInd(x, y);
         return (double) TEXTURES.get(ptTexture)[0];
-    }
-
-    /** Change texture on click */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if ("change texture".equals(e.getActionCommand())) {
-            changeTexture(terrainSelection);
-        }
     }
 
 }
