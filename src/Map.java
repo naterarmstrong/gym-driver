@@ -64,7 +64,10 @@ class Map extends JPanel {
 
     /** Change the Map height */
     void setHeight(int newHeight) {
-        if (newHeight >= height) {
+        if (newHeight == height || newHeight < DEFAULT_HEIGHT) {
+            return;
+        }
+        if (newHeight > height) {
             for (int h = height; h < newHeight; h += 1) {
                 ArrayList<Tile> row = new ArrayList<>();
                 for (int w = 0; w < width; w += 1) {
@@ -83,7 +86,10 @@ class Map extends JPanel {
 
     /** Change the Map width */
     void setWidth(int newWidth) {
-        if (newWidth >= width) {
+        if (newWidth == width || newWidth < DEFAULT_WIDTH) {
+            return;
+        }
+        if (newWidth > width) {
             for (ArrayList<Tile> row : tiles) {
                 for (int w = width; w < newWidth; w += 1) {
                     row.add(new Tile());
