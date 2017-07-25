@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
 class MapMaker extends JPanel {
 
     /** MenuPanel subclass */
-    private class MenuPanel extends JPanel {
+    public class MenuPanel extends JPanel {
 
         /** MenuPanel attributes */
         private final MapMaker mapmaker;
@@ -75,9 +75,9 @@ class MapMaker extends JPanel {
             int yWidth       = RESIZE_Y;
             int yHeight      = yWidth + INPUT_HEIGHT;
             int fieldWidth   = MENU_WIDTH - LABEL_WIDTH - UPDATE_WIDTH;
-            String w         = (new Integer(map.getTilesWidth())).toString();
+            String w         = (new Integer(map.mapWidth())).toString();
             WIDTH_FIELD      = addTextField("Width:", w, yWidth, fieldWidth);
-            String h         = (new Integer(map.getTilesHeight())).toString();
+            String h         = (new Integer(map.mapHeight())).toString();
             HEIGHT_FIELD     = addTextField("Height:", h, yHeight, fieldWidth);
             int xUpdate      = MENU_WIDTH - UPDATE_WIDTH;
             int updateHeight = 2 * INPUT_HEIGHT;
@@ -117,7 +117,7 @@ class MapMaker extends JPanel {
                     (ActionEvent a) -> {
                         ObjectOutputStream out;
                         try {
-                            String name = String.format("%s/%s.data",
+                            String name = String.format("%s/%s.ser",
                                     SAVE_DIR, NAME_FIELD.getText());
                             FileOutputStream f = new FileOutputStream(name);
                             out = new ObjectOutputStream(f);
@@ -131,7 +131,7 @@ class MapMaker extends JPanel {
                     (ActionEvent a) -> {
                         ObjectInputStream in;
                         try {
-                            String name = String.format("%s/%s.data",
+                            String name = String.format("%s/%s.ser",
                                     SAVE_DIR, NAME_FIELD.getText());
                             FileInputStream f = new FileInputStream(name);
                             in = new ObjectInputStream(f);
@@ -145,11 +145,18 @@ class MapMaker extends JPanel {
             NAME_FIELD = addTextField("Name:", "New Map", yName, nameWidth);
         }
 
+        /** Update width & height TextFields with the current Map dimensions */
+        private void updateFields(int w, int h) {
+            WIDTH_FIELD.setText(String.valueOf(w));
+            HEIGHT_FIELD.setText(String.valueOf(h));
+        }
+
     }
 
     /** MapMaker attributes */
     private Map map;
     private JScrollPane scrollPane;
+    private MenuPanel menuPanel;
     private static final int WINDOW_WIDTH, WINDOW_HEIGHT;
     static {
         final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -170,7 +177,7 @@ class MapMaker extends JPanel {
         scrollPane.setViewportView(map);
         add(scrollPane);
         /* Initialize menu panel */
-        JPanel menuPanel = new MenuPanel(this);
+        menuPanel = new MenuPanel(this);
         menuPanel.setPreferredSize(new Dimension(MENU_WIDTH, WINDOW_HEIGHT));
         add(menuPanel);
     }
@@ -178,6 +185,8 @@ class MapMaker extends JPanel {
     /** Set the MapMaker's Map to the one specified */
     private void setMap(Map m) {
         map = m;
+        scrollPane.setViewportView(map);
+        menuPanel.updateFields(map.mapWidth(), map.mapHeight());
     }
 
     /** Change the dimensions of the Map */

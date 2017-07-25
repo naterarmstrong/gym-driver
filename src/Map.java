@@ -1,12 +1,14 @@
 import java.util.ArrayList;
 
+import java.io.Serializable;
+
 import javax.swing.JPanel;
 
 import java.awt.Color;
 import java.awt.Dimension;
 
 /** Map class */
-class Map extends JPanel {
+class Map extends JPanel implements Serializable {
 
     /** Map attributes */
     private static final int DEFAULT_WIDTH = 6;
@@ -37,12 +39,12 @@ class Map extends JPanel {
     }
 
     /** Get the width of the Map */
-    int getTilesWidth() {
+    public int mapWidth() {
         return width;
     }
 
     /** Get the height of the Map */
-    int getTilesHeight() {
+    public int mapHeight() {
         return height;
     }
 
