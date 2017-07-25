@@ -61,7 +61,7 @@ class Tile extends JButton {
                     pressed = true;
                     changeTexture(terrainSelection);
                 } else if (SwingUtilities.isRightMouseButton(e)) {
-                    System.out.println("okie dokie");
+                    cyclePath();
                 }
             }
 

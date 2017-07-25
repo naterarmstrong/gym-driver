@@ -84,8 +84,10 @@ class MapMaker extends JPanel {
             addButton("Update", xUpdate, yWidth, UPDATE_WIDTH, updateHeight,
                     (ActionEvent a) -> {
                         try {
-                            int newWidth  = Integer.valueOf(WIDTH_FIELD.getText());
-                            int newHeight = Integer.valueOf(HEIGHT_FIELD.getText());
+                            String wField = WIDTH_FIELD.getText();
+                            int newWidth  = Integer.valueOf(wField);
+                            String hField = HEIGHT_FIELD.getText();
+                            int newHeight = Integer.valueOf(hField);
                             changeMapSize(newWidth, newHeight);
                         } catch (NumberFormatException e) {
                             e.printStackTrace();
@@ -216,6 +218,5 @@ class MapMaker extends JPanel {
     }
 
 }
-// TODO: get load working
-// TODO: alter WIDTH and HEIGHT inputs to reflect size of loaded map
-// TODO: implement toggling the path type and orientation of Tiles
+// TODO: implement toggling the path type of Tiles
+// TODO: account for Tile path type and orientation, when being drawn
