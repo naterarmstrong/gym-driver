@@ -205,7 +205,6 @@ class MapMaker extends JPanel {
     }
 
 }
-// TODO: get height & width text boxes working - resize down too!
 // TODO: get load working
 // TODO: alter WIDTH and HEIGHT inputs to reflect size of loaded map
 // TODO: implement toggling the path type and orientation of Tiles
