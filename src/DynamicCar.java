@@ -2,8 +2,8 @@
 class DynamicCar extends Car {
 
     /** DynamicCar constructor */
-    private DynamicCar(Map m, int x, int y) {
-        super(m, x, y);
+    private DynamicCar(Map m, int x, int y, double mss) {
+        super(m, x, y, mss);
     }
 
     /** Modify attributes to reflect one step */
