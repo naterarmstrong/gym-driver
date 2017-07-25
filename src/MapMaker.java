@@ -22,7 +22,7 @@ import java.awt.event.ActionListener;
 class MapMaker extends JPanel {
 
     /** MenuPanel subclass */
-    public class MenuPanel extends JPanel {
+    private class MenuPanel extends JPanel {
 
         /** MenuPanel attributes */
         private final MapMaker mapmaker;
