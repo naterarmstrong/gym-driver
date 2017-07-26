@@ -171,15 +171,17 @@ class MapMaker extends JPanel {
     private MapMaker() {
         setBackground(Color.WHITE);
         /* Initialize scrollable map pane */
-        map = new Map();
-        scrollPane = new JScrollPane();
-        int paneWidth = WINDOW_WIDTH - MENU_WIDTH - 15;
+        scrollPane     = new JScrollPane();
+        int paneWidth  = WINDOW_WIDTH - MENU_WIDTH - 15;
         int paneHeight = WINDOW_HEIGHT - 60;
         scrollPane.setPreferredSize(new Dimension(paneWidth, paneHeight));
+        int mapWidth   = paneWidth / Tile.PIXELS_PER_TILE + 1;
+        int mapHeight  = paneHeight / Tile.PIXELS_PER_TILE + 1;
+        map            = new Map(mapWidth, mapHeight);
         scrollPane.setViewportView(map);
         add(scrollPane);
         /* Initialize menu panel */
-        menuPanel = new MenuPanel(this);
+        menuPanel      = new MenuPanel(this);
         menuPanel.setPreferredSize(new Dimension(MENU_WIDTH, WINDOW_HEIGHT));
         add(menuPanel);
     }

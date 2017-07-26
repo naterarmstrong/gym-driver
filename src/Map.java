@@ -17,12 +17,12 @@ class Map extends JPanel implements Serializable {
     private int width, height;
     private ArrayList<ArrayList<Tile>> tiles;
 
-    /** Map constructor */
+    /** Map constructors */
     Map() {
         this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
-    private Map(int w, int h) {
+    Map(int w, int h) {
         width = w;
         height = h;
         tiles = new ArrayList<>();
@@ -39,12 +39,12 @@ class Map extends JPanel implements Serializable {
     }
 
     /** Get the width of the Map */
-    public int mapWidth() {
+    int mapWidth() {
         return width;
     }
 
     /** Get the height of the Map */
-    public int mapHeight() {
+    int mapHeight() {
         return height;
     }
 
