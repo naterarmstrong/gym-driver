@@ -49,14 +49,14 @@ class Map extends JPanel implements Serializable {
     }
 
     /** Render the Map */
-    private void render() {
-        int ppt = Tile.PIXELS_PER_TILE;
-        setPreferredSize(new Dimension(width * ppt, height * ppt));
+    void render() {
+        int PPT = Tile.PIXELS_PER_TILE;
+        setPreferredSize(new Dimension(width * PPT, height * PPT));
         for (int i = 0; i < height; i += 1) {
             ArrayList<Tile> row = tiles.get(i);
             for (int j = 0; j < width; j += 1) {
                 Tile tile = row.get(j);
-                tile.setBounds(j * ppt, i * ppt, ppt, ppt);
+                tile.setBounds(j * PPT, i * PPT, PPT, PPT);
                 tile.setOpaque(true);
                 tile.setBorderPainted(false);
                 add(tile);

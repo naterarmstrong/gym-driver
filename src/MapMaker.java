@@ -3,12 +3,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -28,12 +23,17 @@ class MapMaker extends JPanel {
         private final MapMaker mapmaker;
         private TextField NAME_FIELD, WIDTH_FIELD, HEIGHT_FIELD;
         private final String SAVE_DIR    = "saved maps";
+        private final int ZOOM_STEP      = 25;
         private final int MIDDLE         = MENU_WIDTH / 2;
-        private final int LABEL_WIDTH    = 50,  INPUT_HEIGHT = 25;
-        private final int TERRAIN_WIDTH  = 100, TERRAIN_HEIGHT = 50;
+        private final int LABEL_WIDTH    = 50;
+        private final int INPUT_HEIGHT   = 25;
+        private final int TERRAIN_WIDTH  = 100;
+        private final int TERRAIN_HEIGHT = 50;
+        private final int ZOOM_SIZE      = 20;
         private final int UPDATE_WIDTH   = 60;
         private final int RESIZE_Y       = 30;
         private final int TERRAIN_CHNG_Y = 200;
+        private final int ZOOM_Y         = 350;
         private final int SAVE_LOAD_Y    = WINDOW_HEIGHT - INPUT_HEIGHT - 60;
 
         /** MenuPanel constructor */
@@ -44,6 +44,7 @@ class MapMaker extends JPanel {
             setVisible(true);
             addResizeOptions();
             addTerrainOptions();
+            addZoomOptions();
             addSaveLoadOptions();
         }
 
@@ -97,8 +98,10 @@ class MapMaker extends JPanel {
 
         /** Populate the MenuPanel with toggle-terrain options */
         private void addTerrainOptions() {
-            int xR = MIDDLE,             top = TERRAIN_CHNG_Y;
-            int xL = xR - TERRAIN_WIDTH, low = top + TERRAIN_HEIGHT;
+            int xR  = MIDDLE;
+            int xL  = xR - TERRAIN_WIDTH;
+            int top = TERRAIN_CHNG_Y;
+            int low = top + TERRAIN_HEIGHT;
             addTerrainButton("grass",  xL, top, TERRAIN_WIDTH, TERRAIN_HEIGHT);
             addTerrainButton("road",   xR, top, TERRAIN_WIDTH, TERRAIN_HEIGHT);
             addTerrainButton("gravel", xL, low, TERRAIN_WIDTH, TERRAIN_HEIGHT);
@@ -107,6 +110,36 @@ class MapMaker extends JPanel {
 
         private void addTerrainButton(String t, int x, int y, int w, int h) {
             addButton(t, x, y, w, h, (ActionEvent e) -> setTerrain(t));
+        }
+
+        /** Populate the MenuPanel with zoom-in and zoom-out options */
+        private void addZoomOptions() {
+            int xR = MIDDLE;
+            int xL = MIDDLE - ZOOM_SIZE;
+            addButton("+", xL, ZOOM_Y, ZOOM_SIZE, ZOOM_SIZE,
+                    (ActionEvent a) -> {
+                        int PPT       = Tile.PIXELS_PER_TILE;
+                        int maxWidth  = getPaneWidth();
+                        int maxHeight = getPaneHeight();
+                        int stdZoom   = PPT + ZOOM_STEP;
+                        if (stdZoom < maxWidth && stdZoom < maxHeight) {
+                            Tile.setPPT(stdZoom);
+                        }
+                        map.render();
+                    });
+            addButton("-", xR, ZOOM_Y, ZOOM_SIZE, ZOOM_SIZE,
+                    (ActionEvent a) -> {
+                        int PPT       = Tile.PIXELS_PER_TILE;
+                        int minWidth  = getPaneWidth() / map.mapWidth();
+                        int minHeight = getPaneHeight() / map.mapHeight();
+                        int stdZoom   = PPT - ZOOM_STEP;
+                        if (minWidth < stdZoom || minHeight < stdZoom) {
+                            Tile.setPPT(stdZoom);
+                        } else {
+                            Tile.setPPT(Math.min(minWidth, minHeight));
+                        }
+                        map.render();
+                    });
         }
 
         /** Populate the MenuPanel with save & load options */
@@ -172,8 +205,8 @@ class MapMaker extends JPanel {
         setBackground(Color.WHITE);
         /* Initialize scrollable map pane */
         scrollPane     = new JScrollPane();
-        int paneWidth  = WINDOW_WIDTH - MENU_WIDTH - 15;
-        int paneHeight = WINDOW_HEIGHT - 60;
+        int paneWidth  = getPaneWidth();
+        int paneHeight = getPaneHeight();
         scrollPane.setPreferredSize(new Dimension(paneWidth, paneHeight));
         int mapWidth   = paneWidth / Tile.PIXELS_PER_TILE + 1;
         int mapHeight  = paneHeight / Tile.PIXELS_PER_TILE + 1;
@@ -184,6 +217,14 @@ class MapMaker extends JPanel {
         menuPanel      = new MenuPanel(this);
         menuPanel.setPreferredSize(new Dimension(MENU_WIDTH, WINDOW_HEIGHT));
         add(menuPanel);
+    }
+
+    private int getPaneWidth() {
+        return WINDOW_WIDTH - MENU_WIDTH - 15;
+    }
+
+    private int getPaneHeight() {
+        return WINDOW_HEIGHT - 60;
     }
 
     /** Set the MapMaker's Map to the one specified */
@@ -220,5 +261,9 @@ class MapMaker extends JPanel {
     }
 
 }
-// TODO: implement toggling the path type of Tiles
+// TODO: implement toggling the orientation of Tiles
 // TODO: account for Tile path type and orientation, when being drawn
+// TODO: zoom in and out functionality
+// TODO: after zoom out is implemented, have a `load` panel like in Robert's branch, but it shows you the zoomed out version of your map
+// TODO: message Kevin the WWPD problem you and Robert made
+// TODO: print your letter

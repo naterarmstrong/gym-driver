@@ -11,7 +11,7 @@ import java.awt.event.MouseListener;
 class Tile extends JButton {
 
     /** Tile attributes */
-    static final int PIXELS_PER_TILE = 150;
+    static int PIXELS_PER_TILE = 150;
     private static final HashMap<String, Object[]> TEXTURES = new HashMap<>();
     static {
         TEXTURES.put("grass",  new Object[]{0.5, new Color(65,  145, 65 )});
@@ -71,6 +71,11 @@ class Tile extends JButton {
             }
 
         });
+    }
+
+    /** Update PIXELS_PER_TILE */
+    static void setPPT(int pixelsPerTile) {
+        PIXELS_PER_TILE = pixelsPerTile;
     }
 
     /** Get path shape */
