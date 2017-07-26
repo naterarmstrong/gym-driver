@@ -4,6 +4,9 @@ import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -36,12 +39,13 @@ class Tile extends JButton {
         texture = t;
         pathInd = p;
         orientationInd = o;
-        setBackground((Color) TEXTURES.get(texture)[1]);
+        setBackground(getColor(texture));
         setActionCommand("change texture");
         addMouseListener(new MouseListener() {
 
             @Override
             public void mouseEntered(MouseEvent e) {
+                requestFocus();
                 if (pressed) {
                     changeTexture(terrainSelection);
                 }
@@ -71,11 +75,44 @@ class Tile extends JButton {
             }
 
         });
+        addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (e.getKeyChar() == 'r') {
+                    cycleOrientation();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+
+        });
     }
 
     /** Update PIXELS_PER_TILE */
     static void setPPT(int pixelsPerTile) {
         PIXELS_PER_TILE = pixelsPerTile;
+    }
+
+    /** Get the friction coefficient for the specified texture */
+    double getFriction(int x, int y) {
+        String ptTexture = getPtTextureInd(x, y);
+        return getFriction(ptTexture);
+    }
+
+    private static double getFriction(String texture) {
+        return (double) TEXTURES.get(texture)[0];
+    }
+
+    /** Get the Color for the specified texture */
+    private static Color getColor(String texture) {
+        return (Color) TEXTURES.get(texture)[1];
     }
 
     /** Get path shape */
@@ -124,6 +161,7 @@ class Tile extends JButton {
     private void cyclePath() {
         if (!"grass".equals(texture)) {
             pathInd = (pathInd + 1) % PATHS.length;
+            paint(getGraphics());
         }
     }
 
@@ -131,7 +169,7 @@ class Tile extends JButton {
     private void changeTexture(String newTexture) {
         if (TEXTURES.containsKey(newTexture)) {
             texture = newTexture;
-            setBackground((Color) TEXTURES.get(texture)[1]);
+            setBackground(getColor(texture));
             if ("grass".equals(texture)) {
                 pathInd = 0;
             }
@@ -143,13 +181,22 @@ class Tile extends JButton {
         String path = getPath();
         if ("concave".equals(path) || "convex".equals(path)) {
             orientationInd = (orientationInd + 1) % 4;
+            paint(getGraphics());
         }
     }
 
-    /** Get friction coeff */
-    double getFriction(int x, int y) {
-        String ptTexture = getPtTextureInd(x, y);
-        return (double) TEXTURES.get(ptTexture)[0];
+    /** Draw the Tile */
+    @Override
+    public void paint(Graphics g) {
+        super.paintComponent(g);
+        for (int i = 0; i < PIXELS_PER_TILE; i += 1) {
+            for (int j = 0; j < PIXELS_PER_TILE; j += 1) {
+                String texture = getPtTextureInd(i, j);
+                Color color = getColor(texture);
+                g.setColor(color);
+                g.fillRect(i, j, 1, 1);
+            }
+        }
     }
 
 }

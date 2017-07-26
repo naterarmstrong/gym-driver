@@ -267,9 +267,6 @@ class MapMaker extends JPanel {
     }
 
 }
-// TODO: implement toggling the orientation of Tiles
-// TODO: account for Tile path type and orientation, when being drawn
-// TODO: zoom in and out functionality
 // TODO: after zoom out is implemented, have a `load` panel like in Robert's branch, but it shows you the zoomed out version of your map
 // TODO: message Kevin the WWPD problem you and Robert made
 // TODO: print your letter
