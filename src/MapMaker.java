@@ -30,6 +30,7 @@ class MapMaker extends JPanel {
         private final String SAVE_DIR    = "saved maps";
         private final int ZOOM_STEP      = 25;
         private final int MIDDLE         = MENU_WIDTH / 2;
+        private final int MARGIN         = 2;
         private final int LABEL_WIDTH    = 50;
         private final int INPUT_HEIGHT   = 25;
         private final int TERRAIN_WIDTH  = 100;
@@ -69,7 +70,7 @@ class MapMaker extends JPanel {
         private JButton addButton(String t, int x, int y, int w, int h,
                                   ActionListener a) {
             JButton button = new JButton(t);
-            button.setBounds(x, y, w, h);
+            button.setBounds(x + MARGIN, y + MARGIN, w - MARGIN, h - MARGIN);
             button.addActionListener(a);
             button.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             add(button);
