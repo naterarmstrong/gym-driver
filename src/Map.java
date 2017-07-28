@@ -64,6 +64,17 @@ class Map extends JPanel implements Serializable {
         }
     }
 
+    /** Add listeners to every Tile in the Map */
+    void addListeners() {
+        for (int i = 0; i < height; i += 1) {
+            ArrayList<Tile> row = tiles.get(i);
+            for (int j = 0; j < width; j += 1) {
+                Tile tile = row.get(j);
+                tile.addListeners();
+            }
+        }
+    }
+
     /** Change the Map height */
     void setHeight(int newHeight) {
         if (newHeight >= height) {

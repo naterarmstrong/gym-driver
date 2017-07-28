@@ -40,7 +40,11 @@ class Tile extends JButton {
         pathInd = p;
         orientationInd = o;
         setBackground(getColor(texture));
-        setActionCommand("change texture");
+        addListeners();
+    }
+
+    /** Populate the Tile with listeners to allow user interfacing */
+    void addListeners() {
         addMouseListener(new MouseListener() {
 
             @Override

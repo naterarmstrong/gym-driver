@@ -176,8 +176,8 @@ class MapMaker extends JPanel {
                                     SAVE_DIR, NAME_FIELD.getText());
                             FileInputStream f = new FileInputStream(name);
                             in = new ObjectInputStream(f);
-                            map = (Map) in.readObject();
-                            mapmaker.setMap(map);
+                            mapmaker.setMap((Map) in.readObject());
+                            mapmaker.map.addListeners();
                             in.close();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -268,5 +268,17 @@ class MapMaker extends JPanel {
 
 }
 // TODO: after zoom out is implemented, have a `load` panel like in Robert's branch, but it shows you the zoomed out version of your map
+// TODO: remove zoom if it's too laggy
 // TODO: message Kevin the WWPD problem you and Robert made
-// TODO: print your letter
+
+// TODO:
+// You put the car down, specifying a cardinal direction on the menu. It appears, but the angle is plus or minus some error, generally going in that direction.
+// You put the CPU cars down too, with no randomness added to their angle.
+// Also make an AI for the CPU cars, so that they go straight if straight road, or turn if curved road.
+// You click to put down a car, click again to delete it.
+// Click "Play" to start.
+// He gives us acceleration and steer angle. We have to give back (from the step function) this tuple:
+    // An observation, which is a pixel array of what's on screen
+    // A float returned from calling some function `getReward`, specified in the UserCar class
+    // A boolean specifying whether it's time to finish. (ie, you went too far off the road or hit some user-specified time horizon)
+    // An empty dictionary
