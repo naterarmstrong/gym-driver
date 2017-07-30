@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
@@ -30,6 +31,7 @@ class MakerPanel extends Panel {
 
     /** Populate the MakerPanel with Map-resize options */
     private void addResizeOptions() {
+        Map map          = getMap();
         int yResizeW     = RESIZE_Y;
         int yResizeH     = yResizeW + INPUT_H;
         int fieldWidth   = PANEL_WIDTH - LABEL_W - UPDATE_W;
@@ -75,6 +77,7 @@ class MakerPanel extends Panel {
         int xL = MIDDLE - ZOOM_WH;
         addButton("+", xL, ZOOM_Y, ZOOM_WH, ZOOM_WH,
                 (ActionEvent a) -> {
+                    Map map       = getMap();
                     int PPT       = Tile.PIXELS_PER_TILE;
                     int stdZoom   = PPT + ZOOM_STEP;
                     if (stdZoom < PANE_WIDTH && stdZoom < PANE_HEIGHT) {
@@ -84,6 +87,7 @@ class MakerPanel extends Panel {
                 });
         addButton("-", xR, ZOOM_Y, ZOOM_WH, ZOOM_WH,
                 (ActionEvent a) -> {
+                    Map map       = getMap();
                     int PPT       = Tile.PIXELS_PER_TILE;
                     int minWidth  = PANE_WIDTH / map.mapWidth();
                     int minHeight = PANE_HEIGHT / map.mapHeight();
@@ -99,8 +103,9 @@ class MakerPanel extends Panel {
 
     /** Populate the MakerPanel with save options */
     private void addSaveOption() {
-        int ySave = BOTTOM - INPUT_H;
-        int yName = ySave - INPUT_H;
+        Map map       = getMap();
+        int ySave     = BOTTOM - INPUT_H;
+        int yName     = ySave - INPUT_H;
         int nameWidth = PANEL_WIDTH - LABEL_W;
         addButton("save map", 0, ySave, PANEL_WIDTH, INPUT_H,
                 (ActionEvent a) -> {
@@ -128,9 +133,15 @@ class MakerPanel extends Panel {
 
     /** Change the dimensions of the Map */
     private void changeMapSize(int width, int height) {
+        Map map                = getMap();
+        JScrollPane scrollPane = getPane();
         map.setWidth(width);
         map.setHeight(height);
         scrollPane.updateUI();
+    }
+
+    /** Update fields in the MakerPanel after changing the Map */
+    void updateFields() {
     }
 
 }

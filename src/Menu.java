@@ -8,8 +8,6 @@ import java.awt.Toolkit;
 abstract class Menu extends JPanel {
 
     /** Menu attributes */
-    static final String SAVE_DIR  = "saved maps";
-    static final String SAVE_EXT  = ".ser";
     static final int WINDOW_WIDTH, WINDOW_HEIGHT;
     static {
         final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -22,11 +20,5 @@ abstract class Menu extends JPanel {
     static final int PANE_HEIGHT  = PANEL_HEIGHT;
     Map map;
     JScrollPane scrollPane;
-
-    /** Set the Menu's Map to the one specified */
-    void setMap(Map m) {
-        map = m;
-        scrollPane.setViewportView(map);
-    }
 
 }

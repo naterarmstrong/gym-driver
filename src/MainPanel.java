@@ -1,7 +1,4 @@
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -83,23 +80,22 @@ class MainPanel extends Panel {
     MainPanel(MainMenu m) {
         super(m);
         saves = new MapList();
-        if (saves.getSize() != 0) {
-            map = saves.peek();
-            setMap(map);
-        }
         addNameLabel();
         addEditButton();
         addRunButton();
         addPrevNextButtons();
         addSelectButton();
         addNewButton();
+        if (saves.getSize() != 0) {
+            setMap(saves.peek());
+        }
     }
 
     /** Populate the MainPanel with a label corresponding to its Map's name */
     private void addNameLabel() {
         String text;
         if (saves.getSize() != 0) {
-            text = NAME_LABEL + map.getTag();
+            text = NAME_LABEL + getMap().getTag();
         } else {
             text = "No Map Selected";
         }
@@ -112,6 +108,7 @@ class MainPanel extends Panel {
     private void addEditButton() {
         addButton("Edit Map", 0, EDIT_Y, PANEL_WIDTH, INPUT_H,
                 (ActionEvent a) -> {
+                    Map map = getMap();
                     if (saves.getSize() != 0) {
                         map.addListeners();
                         MakerMenu makerMenu = new MakerMenu(map);
@@ -127,6 +124,7 @@ class MainPanel extends Panel {
     private void addRunButton() {
         addButton("Run Map", 0, RUN_Y, PANEL_WIDTH, INPUT_H,
                 (ActionEvent a) -> {
+                    Map map = getMap();
                     if (saves.getSize() != 0) {
                         RunnerMenu mapRunner = new RunnerMenu(map);
                         JFrame f = (JFrame) SwingUtilities.getWindowAncestor(menu);
@@ -141,6 +139,7 @@ class MainPanel extends Panel {
     private void addPrevNextButtons() {
         addButton("<", 0, CYCLE_Y, CYCLE_W, INPUT_H,
                 (ActionEvent a) -> {
+                    Map map = getMap();
                     try {
                         if (saves.getSize() != 0) {
                             remove(map);
@@ -154,6 +153,7 @@ class MainPanel extends Panel {
                 });
         addButton(">", MIDDLE, CYCLE_Y, CYCLE_W, INPUT_H,
                 (ActionEvent a) -> {
+                    Map map = getMap();
                     try {
                         if (saves.getSize() != 0) {
                             remove(map);
@@ -171,6 +171,7 @@ class MainPanel extends Panel {
     private void addSelectButton() {
         addButton("Select Map", 0, SELECT_Y, PANEL_WIDTH, INPUT_H,
                 (ActionEvent a) -> {
+                    JScrollPane scrollPane = getPane();
                     JFileChooser fileChooser = new JFileChooser(SAVE_DIR);
                     int fileType = fileChooser.showOpenDialog(null);
                     if (fileType == JFileChooser.APPROVE_OPTION) {
@@ -178,9 +179,8 @@ class MainPanel extends Panel {
                         try {
                             FileInputStream f = new FileInputStream(file);
                             ObjectInputStream in = new ObjectInputStream(f);
-                            map = (Map) in.readObject();
-                            scrollPane.setViewportView(map);
-                            updateFields();
+                            Map map = (Map) in.readObject();
+                            setMap(map);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -201,12 +201,8 @@ class MainPanel extends Panel {
     }
 
     /** Update fields in the MainPanel after changing the Map */
-    private void updateFields() {
-        NAME_FIELD.setText(NAME_LABEL + map.getTag());
+    void updateFields() {
+        NAME_FIELD.setText(NAME_LABEL + getMap().getTag());
     }
 
 }
-
-// TODO: make Panel not subclass Menu
-// TODO: Panels shouldn't have references `map` and `scrollPane`, rather just define a getter method in the Panel that accesses those values via the menu
-// TODO: make a setMap function that sets the Map, updates the ViewPortView, and does what updateFields does right now

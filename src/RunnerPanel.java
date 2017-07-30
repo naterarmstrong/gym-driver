@@ -7,6 +7,10 @@ class RunnerPanel extends Panel {
         addBackOption();
     }
 
+    /** Update fields in the RunnerPanel after changing the Map */
+    void updateFields() {
+    }
+
 }
 
 // TODO: frame.setTile("") accordingly. "Main Menu", "Map Maker", "Map Runner" etc
