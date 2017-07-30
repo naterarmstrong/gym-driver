@@ -1,5 +1,5 @@
 /** RunnerPanel class */
-public class RunnerPanel extends Panel {
+class RunnerPanel extends Panel {
 
     /** RunnerPanel constructor */
     RunnerPanel(RunnerMenu m) {

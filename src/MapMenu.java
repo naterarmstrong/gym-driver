@@ -24,10 +24,11 @@ abstract class MapMenu extends Menu {
         scrollPane.setViewportView(map);
         add(scrollPane);
         /* Initialize panel */
-        addPanel();
+        Panel panel = makePanel();
+        add(panel);
     }
 
-    /** Add a Panel to the MapMenu */
-    abstract void addPanel();
+    /** Make a new Panel for the MapMenu */
+    abstract Panel makePanel();
 
 }

@@ -1,35 +1,22 @@
 import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-import java.awt.Color;
-import java.awt.Label;
 import java.awt.TextField;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /** MakerPanel class */
 class MakerPanel extends Panel {
-    
+
     /** MakerPanel attributes */
+    private static final int RESIZE_Y  = 30;
+    private static final int TERRAIN_Y = 200;
+    private static final int ZOOM_Y    = 350;
+    private static final int UPDATE_W  = 60;
+    private static final int TERRAIN_W = 100;
+    private static final int TERRAIN_H = 50;
+    private static final int ZOOM_WH   = 20;
+    private static final int ZOOM_STEP = 25;
     private TextField NAME_FIELD, WIDTH_FIELD, HEIGHT_FIELD;
-    private final int ZOOM_STEP      = 25;
-    private final int MIDDLE         = MENU_WIDTH / 2;
-    private final int MARGIN         = 2;
-    private final int LABEL_WIDTH    = 50;
-    private final int INPUT_HEIGHT   = 25;
-    private final int TERRAIN_WIDTH  = 100;
-    private final int TERRAIN_HEIGHT = 50;
-    private final int ZOOM_SIZE      = 20;
-    private final int UPDATE_WIDTH   = 60;
-    private final int RESIZE_Y       = 30;
-    private final int TERRAIN_CHNG_Y = 200;
-    private final int ZOOM_Y         = 350;
-    private final int SAVE_LOAD_Y    = WINDOW_HEIGHT - INPUT_HEIGHT - 60;
 
     /** MakerPanel constructor */
     MakerPanel(MakerMenu m) {
@@ -37,44 +24,22 @@ class MakerPanel extends Panel {
         addResizeOptions();
         addTerrainOptions();
         addZoomOptions();
-        addSaveBackOptions();
-    }
-
-    /** Utility method for populating the MakerPanel with TextFields */
-    private TextField addTextField(String lTx, String fTx, int y, int w) {
-        Label label = new Label(lTx);
-        label.setBackground(Color.WHITE);
-        label.setBounds(0, y, LABEL_WIDTH, INPUT_HEIGHT);
-        TextField field = new TextField(fTx);
-        field.setBounds(LABEL_WIDTH, y, w, INPUT_HEIGHT);
-        add(label);
-        add(field);
-        return field;
-    }
-
-    /** Utility method for populating the MakerPanel with JButtons */
-    private JButton addButton(String t, int x, int y, int w, int h,
-                              ActionListener a) {
-        JButton button = new JButton(t);
-        button.setBounds(x + MARGIN, y + MARGIN, w - MARGIN, h - MARGIN);
-        button.addActionListener(a);
-        button.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        add(button);
-        return button;
+        addSaveOption();
+        addBackOption();
     }
 
     /** Populate the MakerPanel with Map-resize options */
     private void addResizeOptions() {
-        int yWidth       = RESIZE_Y;
-        int yHeight      = yWidth + INPUT_HEIGHT;
-        int fieldWidth   = MENU_WIDTH - LABEL_WIDTH - UPDATE_WIDTH;
+        int yResizeW     = RESIZE_Y;
+        int yResizeH     = yResizeW + INPUT_H;
+        int fieldWidth   = PANEL_WIDTH - LABEL_W - UPDATE_W;
         String w         = (new Integer(map.mapWidth())).toString();
-        WIDTH_FIELD      = addTextField("Width:", w, yWidth, fieldWidth);
+        WIDTH_FIELD      = addTextField("Width:", w, yResizeW, fieldWidth);
         String h         = (new Integer(map.mapHeight())).toString();
-        HEIGHT_FIELD     = addTextField("Height:", h, yHeight, fieldWidth);
-        int xUpdate      = MENU_WIDTH - UPDATE_WIDTH;
-        int updateHeight = 2 * INPUT_HEIGHT;
-        addButton("Update", xUpdate, yWidth, UPDATE_WIDTH, updateHeight,
+        HEIGHT_FIELD     = addTextField("Height:", h, yResizeH, fieldWidth);
+        int xUpdate      = PANEL_WIDTH - UPDATE_W;
+        int updateHeight = 2 * INPUT_H;
+        addButton("Update", xUpdate, yResizeW, UPDATE_W, updateHeight,
                 (ActionEvent a) -> {
                     try {
                         String wField = WIDTH_FIELD.getText();
@@ -91,13 +56,13 @@ class MakerPanel extends Panel {
     /** Populate the MakerPanel with toggle-terrain options */
     private void addTerrainOptions() {
         int xR  = MIDDLE;
-        int xL  = xR - TERRAIN_WIDTH;
-        int top = TERRAIN_CHNG_Y;
-        int low = top + TERRAIN_HEIGHT;
-        addTerrainButton("grass",  xL, top, TERRAIN_WIDTH, TERRAIN_HEIGHT);
-        addTerrainButton("road",   xR, top, TERRAIN_WIDTH, TERRAIN_HEIGHT);
-        addTerrainButton("gravel", xL, low, TERRAIN_WIDTH, TERRAIN_HEIGHT);
-        addTerrainButton("ice",    xR, low, TERRAIN_WIDTH, TERRAIN_HEIGHT);
+        int xL  = xR - TERRAIN_W;
+        int top = TERRAIN_Y;
+        int low = top + TERRAIN_H;
+        addTerrainButton("grass",  xL, top, TERRAIN_W, TERRAIN_H);
+        addTerrainButton("road",   xR, top, TERRAIN_W, TERRAIN_H);
+        addTerrainButton("gravel", xL, low, TERRAIN_W, TERRAIN_H);
+        addTerrainButton("ice",    xR, low, TERRAIN_W, TERRAIN_H);
     }
 
     private void addTerrainButton(String t, int x, int y, int w, int h) {
@@ -107,8 +72,8 @@ class MakerPanel extends Panel {
     /** Populate the MakerPanel with zoom-in and zoom-out options */
     private void addZoomOptions() {
         int xR = MIDDLE;
-        int xL = MIDDLE - ZOOM_SIZE;
-        addButton("+", xL, ZOOM_Y, ZOOM_SIZE, ZOOM_SIZE,
+        int xL = MIDDLE - ZOOM_WH;
+        addButton("+", xL, ZOOM_Y, ZOOM_WH, ZOOM_WH,
                 (ActionEvent a) -> {
                     int PPT       = Tile.PIXELS_PER_TILE;
                     int stdZoom   = PPT + ZOOM_STEP;
@@ -117,7 +82,7 @@ class MakerPanel extends Panel {
                     }
                     map.render();
                 });
-        addButton("-", xR, ZOOM_Y, ZOOM_SIZE, ZOOM_SIZE,
+        addButton("-", xR, ZOOM_Y, ZOOM_WH, ZOOM_WH,
                 (ActionEvent a) -> {
                     int PPT       = Tile.PIXELS_PER_TILE;
                     int minWidth  = PANE_WIDTH / map.mapWidth();
@@ -132,13 +97,12 @@ class MakerPanel extends Panel {
                 });
     }
 
-    /** Populate the MakerPanel with save & load options */
-    private void addSaveBackOptions() {
-        int ySave     = SAVE_LOAD_Y;
-        int yLoad     = ySave - INPUT_HEIGHT;
-        int yName     = yLoad - INPUT_HEIGHT;
-        int nameWidth = MENU_WIDTH - LABEL_WIDTH;
-        addButton("save map", 0, ySave, MENU_WIDTH, INPUT_HEIGHT,
+    /** Populate the MakerPanel with save options */
+    private void addSaveOption() {
+        int ySave = BACK_Y - INPUT_H;
+        int yName = ySave - INPUT_H;
+        int nameWidth = PANEL_WIDTH - LABEL_W;
+        addButton("save map", 0, ySave, PANEL_WIDTH, INPUT_H,
                 (ActionEvent a) -> {
                     ObjectOutputStream out;
                     try {
@@ -154,25 +118,7 @@ class MakerPanel extends Panel {
                         e.printStackTrace();
                     }
                 });
-        addButton("main menu", 0, yLoad, MENU_WIDTH, INPUT_HEIGHT,
-                (ActionEvent a) -> {
-                    JFrame frame = (JFrame)
-                            SwingUtilities.getWindowAncestor(menu);
-                    frame.remove(menu);
-                    try {
-                        frame.getContentPane().add(new MainMenu());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    frame.pack();
-                });
         NAME_FIELD = addTextField("Name:", map.getTag(), yName, nameWidth);
-    }
-
-    /** Update width & height TextFields with the current Map dimensions */
-    void updateFields(int w, int h) {
-        WIDTH_FIELD.setText(String.valueOf(w));
-        HEIGHT_FIELD.setText(String.valueOf(h));
     }
 
     /** Set the terrain pen to the specified terrain type */

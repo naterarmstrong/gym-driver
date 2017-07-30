@@ -1,5 +1,3 @@
-import java.awt.Dimension;
-
 /** MakerMenu class */
 class MakerMenu extends MapMenu {
 
@@ -12,11 +10,9 @@ class MakerMenu extends MapMenu {
         super(m);
     }
 
-    /** Add a Panel to the MakerMenu */
-    void addPanel() {
-        panel = new MakerPanel(this);
-        panel.setPreferredSize(new Dimension(MENU_WIDTH, WINDOW_HEIGHT));
-        add(panel);
+    /** Make a new Panel for the MakerMenu */
+    Panel makePanel() {
+        return new MakerPanel(this);
     }
 
 }

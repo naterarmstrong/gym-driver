@@ -1,5 +1,3 @@
-import java.awt.Dimension;
-
 /** RunnerMenu class */
 class RunnerMenu extends MapMenu {
 
@@ -8,11 +6,9 @@ class RunnerMenu extends MapMenu {
         super(m);
     }
 
-    /** Add a Panel to the RunnerMenu */
-    void addPanel() {
-        panel = new RunnerPanel(this);
-        panel.setPreferredSize(new Dimension(MENU_WIDTH, WINDOW_HEIGHT));
-        add(panel);
+    /** Make a new Panel for the RunnerMenu */
+    Panel makePanel() {
+        return new RunnerPanel(this);
     }
 
 }
