@@ -7,18 +7,16 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 
 /** MainMenu class */
-class MainMenu extends JPanel {
+class MainMenu extends Menu {
 
     /** MapList subclass */
     private class MapList {
@@ -74,15 +72,7 @@ class MainMenu extends JPanel {
     }
 
     /** MainMenu attributes */
-    static final String SAVE_DIR = "saved maps";
-    static final int WINDOW_WIDTH, WINDOW_HEIGHT;
-    static {
-        final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        WINDOW_WIDTH  = screen.width - 200;
-        WINDOW_HEIGHT = screen.height - 200;
-    }
     private JScrollPane mapPane;
-    private Map map;
     private JLabel mapLabel;
     private MapList saves;
 
@@ -166,7 +156,7 @@ class MainMenu extends JPanel {
         newButton.setVisible(true);
         newButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         newButton.addActionListener((ActionEvent e) -> {
-            MapMaker mapMaker = new MapMaker();
+            MapMenu mapMaker = new MapMenu();
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
             frame.remove(this);
             frame.getContentPane().add(mapMaker);
@@ -183,7 +173,7 @@ class MainMenu extends JPanel {
         loadButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         loadButton.addActionListener((ActionEvent e) -> {
             map.addListeners();
-            MapMaker mapMaker = new MapMaker(map);
+            MapMenu mapMaker = new MapMenu(map);
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
             frame.remove(this);
             frame.getContentPane().add(mapMaker);
