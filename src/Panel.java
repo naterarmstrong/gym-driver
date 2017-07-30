@@ -24,7 +24,7 @@ abstract class Panel extends Menu {
     /** Panel constructor */
     Panel(MapMenu m) {
         menu = m;
-        map = menu.map;
+        map  = menu.map;
         setLayout(null);
         setOpaque(false);
         setVisible(true);

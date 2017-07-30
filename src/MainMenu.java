@@ -22,14 +22,13 @@ class MainMenu extends Menu {
     private class MapList {
 
         /** MapList attributes */
-        private static final String EXTENSION = ".ser";
         private final Map[] saves;
         private int index;
 
         /** MapList constructor */
         private MapList() {
             File[] files = new File(SAVE_DIR).listFiles(
-                    (dir, name) -> name.endsWith(EXTENSION)
+                    (dir, name) -> name.endsWith(SAVE_EXT)
             );
             saves = new Map[files.length];
             ObjectInputStream in = null;
@@ -229,12 +228,10 @@ class MainMenu extends Menu {
 
 }
 
-// TODO: after zoom out is implemented, have a `load` panel like in Robert's branch, but it shows you the zoomed out version of your map
-// TODO: remove zoom if it's too laggy
 // TODO: frame.setTile("") accordingly. "Main Menu", "Map Maker", "Map Runner" etc
 // TODO: fix laggy scrolling
 
-// TODO:
+// TODO: MapRunner
 // You put the car down, specifying a cardinal direction on the menu. It appears, but the angle is plus or minus some error, generally going in that direction.
 // You put the CPU cars down too, with no randomness added to their angle.
 // Also make an AI for the CPU cars, so that they go straight if straight road, or turn if curved road.

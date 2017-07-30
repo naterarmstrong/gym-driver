@@ -108,8 +108,8 @@ class MakerPanel extends Panel {
                     try {
                         String tag = NAME_FIELD.getText();
                         map.setTag(tag);
-                        String dir = String.format("%s/%s.ser",
-                                SAVE_DIR, tag);
+                        String dir = String.format("%s/%s%s",
+                                SAVE_DIR, tag, SAVE_EXT);
                         FileOutputStream f = new FileOutputStream(dir);
                         out = new ObjectOutputStream(f);
                         out.writeObject(map);

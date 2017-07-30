@@ -6,9 +6,6 @@ import java.awt.Dimension;
 /** MapMenu class */
 abstract class MapMenu extends Menu {
 
-    /** MapMenu attributes */
-    Panel panel;
-
     /** MapMenu constructors */
     MapMenu() {
         this(new Map(PANE_WIDTH / Tile.PIXELS_PER_TILE + 1,

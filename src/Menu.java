@@ -9,6 +9,7 @@ abstract class Menu extends JPanel {
 
     /** Menu attributes */
     static final String SAVE_DIR  = "saved maps";
+    static final String SAVE_EXT  = ".ser";
     static final int WINDOW_WIDTH, WINDOW_HEIGHT;
     static {
         final Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
