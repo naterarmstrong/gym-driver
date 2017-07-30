@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 class MakerPanel extends Panel {
 
     /** MakerPanel attributes */
-    private static final int RESIZE_Y  = 30;
+    private static final int RESIZE_Y  = TOP;
     private static final int TERRAIN_Y = 200;
     private static final int ZOOM_Y    = 350;
     private static final int UPDATE_W  = 60;

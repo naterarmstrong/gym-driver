@@ -14,12 +14,13 @@ import java.awt.event.ActionEvent;
 abstract class Panel extends Menu {
 
     /** Panel attributes */
+    static final int TOP     = 30;
     static final int MIDDLE  = PANEL_WIDTH / 2;
     static final int MARGIN  = 2;
     static final int LABEL_W = 50;
     static final int INPUT_H = 25;
     static final int BOTTOM  = WINDOW_HEIGHT - INPUT_H - 60;
-    private Menu menu;
+    Menu menu;
 
     /** Panel constructor */
     Panel(MapMenu m) {

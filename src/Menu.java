@@ -23,4 +23,10 @@ abstract class Menu extends JPanel {
     Map map;
     JScrollPane scrollPane;
 
+    /** Set the Menu's Map to the one specified */
+    void setMap(Map m) {
+        map = m;
+        scrollPane.setViewportView(map);
+    }
+
 }

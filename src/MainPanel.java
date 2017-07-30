@@ -1,4 +1,9 @@
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -67,6 +72,8 @@ class MainPanel extends Panel {
     }
 
     /** MainPanel attributes */
+    private static final int NAME_Y    = TOP;
+    private static final int EDIT_Y    = TOP + INPUT_H;
     private static final int RESIZE_Y  = 30;
     private static final int TERRAIN_Y = 200;
     private static final int ZOOM_Y    = 350;
@@ -83,25 +90,31 @@ class MainPanel extends Panel {
         super(m);
         saves = new MapList();
         if (saves.getSize() != 0) {
+            map = saves.peek();
+            setMap(map);
+            addNameLabel();
+            addEditButton();
         }
     }
 
-
     /**  */
-    private void createScrollPane() {
-        scrollPane = new JScrollPane();
-        scrollPane.setBounds(0, 2 * WINDOW_HEIGHT / 3 - 150, WINDOW_WIDTH / 3, WINDOW_HEIGHT / 2);
-        map = saves.peek();
-        scrollPane.setViewportView(map);
-        add(scrollPane);
+    private void addNameLabel() {
+        NAME_FIELD = new JLabel("Name: " + map.getTag());
+        NAME_FIELD.setBounds(0, TOP, PANEL_WIDTH, INPUT_H);
+        add(NAME_FIELD);
     }
 
     /**  */
-    private void createNameLabel() {
-        NAME_FIELD = new JLabel("Name: " + map.getTag());
-        NAME_FIELD.setBounds(WINDOW_WIDTH / 8, 2 * WINDOW_HEIGHT / 3 - 200, 200, 50);
-        NAME_FIELD.setVisible(true);
-        add(NAME_FIELD);
+    private void addEditButton() {
+        addButton("Edit Map", 0, EDIT_Y, PANEL_WIDTH, INPUT_H,
+                (ActionEvent a) -> {
+                    map.addListeners();
+                    MakerMenu mapMaker = new MakerMenu(map);
+                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(menu);
+                    frame.remove(menu);
+                    frame.getContentPane().add(mapMaker);
+                    frame.pack();
+                });
     }
 
     /**  */
@@ -156,23 +169,6 @@ class MainPanel extends Panel {
             frame.pack();
         });
         add(newButton);
-    }
-
-    /**  */
-    private void createEditMapButton() {
-        JButton loadButton = new JButton("Edit Map");
-        loadButton.setBounds(WINDOW_WIDTH / 3, 2 * WINDOW_HEIGHT / 3 - 50, 200, 50);
-        loadButton.setVisible(true);
-        loadButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        loadButton.addActionListener((ActionEvent e) -> {
-            map.addListeners();
-            MakerMenu mapMaker = new MakerMenu(map);
-            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
-            frame.remove(this);
-            frame.getContentPane().add(mapMaker);
-            frame.pack();
-        });
-        add(loadButton);
     }
 
     /**  */
