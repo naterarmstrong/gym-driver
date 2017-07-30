@@ -1,9 +1,14 @@
-import javax.swing.*;
-
-import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
+
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+
+import java.awt.event.ActionEvent;
 
 /** MainPanel class */
 class MainPanel extends Panel {

@@ -13,7 +13,7 @@ class RunnerPanel extends Panel {
 
 }
 
-// TODO: frame.setTile("") accordingly. "Main Menu", "Map Maker", "Map Runner" etc
+// TODO: frame.setTitle("") accordingly. "Main Menu", "Map Maker", "Map Runner" etc
 // TODO: fix laggy scrolling
 // TODO: clean up the main method
 
