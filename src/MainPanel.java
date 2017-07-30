@@ -3,10 +3,7 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 
 import java.awt.event.ActionEvent;
 
@@ -71,12 +68,12 @@ class MainPanel extends Panel {
     }
 
     /** MainPanel attributes */
-    private static final int NAME_Y    = TOP;
-    private static final int EDIT_Y    = NAME_Y + INPUT_H;
-    private static final int RUN_Y     = EDIT_Y + INPUT_H;
-    private static final int CYCLE_Y   = RUN_Y + INPUT_H;
-    private static final int SELECT_Y  = CYCLE_Y + INPUT_H;
-    private static final int CYCLE_W   = MIDDLE;
+    private static final int NAME_Y        = TOP;
+    private static final int EDIT_Y        = NAME_Y + INPUT_H;
+    private static final int RUN_Y         = EDIT_Y + INPUT_H;
+    private static final int CYCLE_Y       = RUN_Y + INPUT_H;
+    private static final int SELECT_Y      = CYCLE_Y + INPUT_H;
+    private static final int CYCLE_W       = MIDDLE;
     private static final String NAME_LABEL = "Name: ";
     private JLabel NAME_FIELD;
     private MapList saves;
@@ -116,11 +113,7 @@ class MainPanel extends Panel {
                     Map map = getMap();
                     if (saves.getSize() != 0) {
                         map.addListeners();
-                        MakerMenu makerMenu = new MakerMenu(map);
-                        JFrame f = (JFrame) SwingUtilities.getWindowAncestor(menu);
-                        f.remove(menu);
-                        f.getContentPane().add(makerMenu);
-                        f.pack();
+                        changeScreen(new MakerMenu(map));
                     }
                 });
     }
@@ -131,11 +124,7 @@ class MainPanel extends Panel {
                 (ActionEvent a) -> {
                     Map map = getMap();
                     if (saves.getSize() != 0) {
-                        RunnerMenu mapRunner = new RunnerMenu(map);
-                        JFrame f = (JFrame) SwingUtilities.getWindowAncestor(menu);
-                        f.remove(menu);
-                        f.getContentPane().add(mapRunner);
-                        f.pack();
+                        changeScreen(new RunnerMenu(map));
                     }
                 });
     }
@@ -176,7 +165,6 @@ class MainPanel extends Panel {
     private void addSelectButton() {
         addButton("Select Map", 0, SELECT_Y, PANEL_WIDTH, INPUT_H,
                 (ActionEvent a) -> {
-                    JScrollPane scrollPane = getPane();
                     JFileChooser fileChooser = new JFileChooser(SAVE_DIR);
                     int fileType = fileChooser.showOpenDialog(null);
                     if (fileType == JFileChooser.APPROVE_OPTION) {
@@ -196,13 +184,7 @@ class MainPanel extends Panel {
     /** Populate the MainPanel with the option to create a new Map */
     private void addNewButton() {
         addButton("New Map", 0, BOTTOM, PANEL_WIDTH, INPUT_H,
-                (ActionEvent a) -> {
-                    MakerMenu makerMenu = new MakerMenu();
-                    JFrame f = (JFrame) SwingUtilities.getWindowAncestor(menu);
-                    f.remove(menu);
-                    f.getContentPane().add(makerMenu);
-                    f.pack();
-                });
+                (ActionEvent a) -> changeScreen(new MakerMenu()));
     }
 
     /** Update fields in the MainPanel after changing the Map */

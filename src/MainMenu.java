@@ -16,6 +16,11 @@ class MainMenu extends MapMenu {
         return new MainPanel(this);
     }
 
+    /** Get the MainMenu's title */
+    String getTitle() {
+        return "Main Menu";
+    }
+
     /** Run the FORDS app */
     public static void main(String[] args) {
         JFrame frame = new JFrame();

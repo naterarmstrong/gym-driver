@@ -21,4 +21,7 @@ abstract class Menu extends JPanel {
     Map map;
     JScrollPane scrollPane;
 
+    /** Get the Menu's title */
+    abstract String getTitle();
+
 }

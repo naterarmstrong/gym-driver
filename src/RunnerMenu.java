@@ -11,4 +11,9 @@ class RunnerMenu extends MapMenu {
         return new RunnerPanel(this);
     }
 
+    /** Get the RunnerMenu's title */
+    String getTitle() {
+        return "Map Runner";
+    }
+
 }

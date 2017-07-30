@@ -16,8 +16,8 @@ import java.awt.event.ActionEvent;
 abstract class Panel extends JPanel {
 
     /** Panel attributes */
-    static final String SAVE_DIR  = "saved maps";
-    static final String SAVE_EXT  = ".ser";
+    static final String SAVE_DIR   = "saved maps";
+    static final String SAVE_EXT   = ".ser";
     static final int WINDOW_WIDTH  = Menu.WINDOW_WIDTH;
     static final int WINDOW_HEIGHT = Menu.WINDOW_HEIGHT;
     static final int PANEL_WIDTH   = Menu.PANEL_WIDTH;
@@ -67,17 +67,7 @@ abstract class Panel extends JPanel {
     /** Populate the MakerPanel with back options */
     void addBackOption() {
         addButton("main menu", 0, BOTTOM, PANEL_WIDTH, INPUT_H,
-                (ActionEvent a) -> {
-                    JFrame frame = (JFrame)
-                            SwingUtilities.getWindowAncestor(menu);
-                    frame.remove(menu);
-                    try {
-                        frame.getContentPane().add(new MainMenu());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    frame.pack();
-                });
+                (ActionEvent a) -> changeScreen(new MainMenu()));
     }
 
     /** Get the Menu's Map */
@@ -95,6 +85,15 @@ abstract class Panel extends JPanel {
         menu.map = m;
         menu.scrollPane.setViewportView(m);
         updateFields();
+    }
+
+    /** Change to a different screen */
+    void changeScreen(Menu newMenu) {
+        JFrame f = (JFrame) SwingUtilities.getWindowAncestor(menu);
+        f.remove(menu);
+        f.setTitle(newMenu.getTitle());
+        f.getContentPane().add(newMenu);
+        f.pack();
     }
 
     /** Update fields in the Panel after changing the Map */

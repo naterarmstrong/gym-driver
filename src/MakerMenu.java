@@ -15,4 +15,9 @@ class MakerMenu extends MapMenu {
         return new MakerPanel(this);
     }
 
+    /** Get the MakerMenu's title */
+    String getTitle() {
+        return "Map Maker";
+    }
+
 }
