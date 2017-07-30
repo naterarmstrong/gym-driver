@@ -99,7 +99,7 @@ class MakerPanel extends Panel {
 
     /** Populate the MakerPanel with save options */
     private void addSaveOption() {
-        int ySave = BACK_Y - INPUT_H;
+        int ySave = BOTTOM - INPUT_H;
         int yName = ySave - INPUT_H;
         int nameWidth = PANEL_WIDTH - LABEL_W;
         addButton("save map", 0, ySave, PANEL_WIDTH, INPUT_H,

@@ -18,7 +18,7 @@ abstract class Panel extends Menu {
     static final int MARGIN  = 2;
     static final int LABEL_W = 50;
     static final int INPUT_H = 25;
-    static final int BACK_Y  = WINDOW_HEIGHT - INPUT_H - 60;
+    static final int BOTTOM  = WINDOW_HEIGHT - INPUT_H - 60;
     private Menu menu;
 
     /** Panel constructor */
@@ -57,7 +57,7 @@ abstract class Panel extends Menu {
 
     /** Populate the MakerPanel with back options */
     void addBackOption() {
-        addButton("main menu", 0, BACK_Y, PANEL_WIDTH, INPUT_H,
+        addButton("main menu", 0, BOTTOM, PANEL_WIDTH, INPUT_H,
                 (ActionEvent a) -> {
                     JFrame frame = (JFrame)
                             SwingUtilities.getWindowAncestor(menu);

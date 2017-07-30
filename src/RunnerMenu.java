@@ -7,7 +7,7 @@ class RunnerMenu extends MapMenu {
     }
 
     /** Make a new Panel for the RunnerMenu */
-    Panel makePanel() {
+    RunnerPanel makePanel() {
         return new RunnerPanel(this);
     }
 

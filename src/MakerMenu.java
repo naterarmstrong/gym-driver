@@ -11,7 +11,7 @@ class MakerMenu extends MapMenu {
     }
 
     /** Make a new Panel for the MakerMenu */
-    Panel makePanel() {
+    MakerPanel makePanel() {
         return new MakerPanel(this);
     }
 
