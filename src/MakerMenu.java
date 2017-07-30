@@ -1,7 +1,22 @@
-package PACKAGE_NAME;
+import java.awt.Dimension;
 
-/**
- * Created by sequoia on 7/29/17.
- */
-public class MakerMenu {
+/** MakerMenu class */
+class MakerMenu extends MapMenu {
+
+    /** MakerMenu constructors */
+    MakerMenu() {
+        super();
+    }
+
+    MakerMenu(Map m) {
+        super(m);
+    }
+
+    /** Add a Panel to the MakerMenu */
+    void addPanel() {
+        panel = new MakerPanel(this);
+        panel.setPreferredSize(new Dimension(MENU_WIDTH, WINDOW_HEIGHT));
+        add(panel);
+    }
+
 }

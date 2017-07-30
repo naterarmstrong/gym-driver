@@ -16,7 +16,6 @@ import java.awt.event.ActionListener;
 class MakerPanel extends Panel {
     
     /** MakerPanel attributes */
-    private final MapMenu mapmaker;
     private TextField NAME_FIELD, WIDTH_FIELD, HEIGHT_FIELD;
     private final int ZOOM_STEP      = 25;
     private final int MIDDLE         = MENU_WIDTH / 2;
@@ -33,12 +32,8 @@ class MakerPanel extends Panel {
     private final int SAVE_LOAD_Y    = WINDOW_HEIGHT - INPUT_HEIGHT - 60;
 
     /** MakerPanel constructor */
-    MakerPanel(MapMenu m) {
-        mapmaker = m;
-        map = mapmaker.map;
-        setLayout(null);
-        setOpaque(false);
-        setVisible(true);
+    MakerPanel(MakerMenu m) {
+        super(m);
         addResizeOptions();
         addTerrainOptions();
         addZoomOptions();
@@ -86,7 +81,7 @@ class MakerPanel extends Panel {
                         int newWidth  = Integer.valueOf(wField);
                         String hField = HEIGHT_FIELD.getText();
                         int newHeight = Integer.valueOf(hField);
-                        mapmaker.changeMapSize(newWidth, newHeight);
+                        menu.changeMapSize(newWidth, newHeight);
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
@@ -162,8 +157,8 @@ class MakerPanel extends Panel {
         addButton("main menu", 0, yLoad, MENU_WIDTH, INPUT_HEIGHT,
                 (ActionEvent a) -> {
                     JFrame frame = (JFrame)
-                            SwingUtilities.getWindowAncestor(mapmaker);
-                    frame.remove(mapmaker);
+                            SwingUtilities.getWindowAncestor(menu);
+                    frame.remove(menu);
                     try {
                         frame.getContentPane().add(new MainMenu());
                     } catch (Exception e) {

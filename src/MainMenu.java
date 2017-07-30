@@ -156,7 +156,7 @@ class MainMenu extends Menu {
         newButton.setVisible(true);
         newButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         newButton.addActionListener((ActionEvent e) -> {
-            MapMenu mapMaker = new MapMenu();
+            MakerMenu mapMaker = new MakerMenu();
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
             frame.remove(this);
             frame.getContentPane().add(mapMaker);
@@ -173,7 +173,7 @@ class MainMenu extends Menu {
         loadButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         loadButton.addActionListener((ActionEvent e) -> {
             map.addListeners();
-            MapMenu mapMaker = new MapMenu(map);
+            MakerMenu mapMaker = new MakerMenu(map);
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
             frame.remove(this);
             frame.getContentPane().add(mapMaker);
@@ -228,3 +228,19 @@ class MainMenu extends Menu {
     }
 
 }
+
+// TODO: after zoom out is implemented, have a `load` panel like in Robert's branch, but it shows you the zoomed out version of your map
+// TODO: remove zoom if it's too laggy
+// TODO: frame.setTile("") accordingly. "Main Menu", "Map Maker", "Map Runner" etc
+// TODO: fix laggy scrolling
+
+// TODO:
+// You put the car down, specifying a cardinal direction on the menu. It appears, but the angle is plus or minus some error, generally going in that direction.
+// You put the CPU cars down too, with no randomness added to their angle.
+// Also make an AI for the CPU cars, so that they go straight if straight road, or turn if curved road.
+// You click to put down a car, click again to delete it.
+// Click "Play" to start.
+// He gives us acceleration and steer angle. We have to give back (from the step function) this tuple:
+// An observation, which is a pixel array of what's on screen
+// A float returned from calling some function `getReward`, specified in the UserCar class
+// A boolean specifying whether it's time to finish.

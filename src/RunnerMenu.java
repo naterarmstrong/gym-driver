@@ -1,7 +1,18 @@
-package PACKAGE_NAME;
+import java.awt.Dimension;
 
-/**
- * Created by sequoia on 7/29/17.
- */
-public class RunnerMenu {
+/** RunnerMenu class */
+class RunnerMenu extends MapMenu {
+
+    /** RunnerMenu constructor */
+    RunnerMenu(Map m) {
+        super(m);
+    }
+
+    /** Add a Panel to the RunnerMenu */
+    void addPanel() {
+        panel = new RunnerPanel(this);
+        panel.setPreferredSize(new Dimension(MENU_WIDTH, WINDOW_HEIGHT));
+        add(panel);
+    }
+
 }
