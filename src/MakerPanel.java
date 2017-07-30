@@ -46,7 +46,7 @@ class MakerPanel extends Panel {
                         int newWidth  = Integer.valueOf(wField);
                         String hField = HEIGHT_FIELD.getText();
                         int newHeight = Integer.valueOf(hField);
-                        menu.changeMapSize(newWidth, newHeight);
+                        changeMapSize(newWidth, newHeight);
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
@@ -124,6 +124,13 @@ class MakerPanel extends Panel {
     /** Set the terrain pen to the specified terrain type */
     private void setTerrain(String terrainSelection) {
         Tile.terrainSelection = terrainSelection;
+    }
+
+    /** Change the dimensions of the Map */
+    private void changeMapSize(int width, int height) {
+        map.setWidth(width);
+        map.setHeight(height);
+        scrollPane.updateUI();
     }
 
 }

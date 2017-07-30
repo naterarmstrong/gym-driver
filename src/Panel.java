@@ -19,12 +19,13 @@ abstract class Panel extends Menu {
     static final int LABEL_W = 50;
     static final int INPUT_H = 25;
     static final int BACK_Y  = WINDOW_HEIGHT - INPUT_H - 60;
-    Menu menu;
+    private Menu menu;
 
     /** Panel constructor */
     Panel(MapMenu m) {
-        menu = m;
-        map  = menu.map;
+        menu       = m;
+        map        = menu.map;
+        scrollPane = menu.scrollPane;
         setLayout(null);
         setOpaque(false);
         setVisible(true);

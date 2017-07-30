@@ -23,11 +23,4 @@ abstract class Menu extends JPanel {
     Map map;
     JScrollPane scrollPane;
 
-    /** Change the dimensions of the Map */
-    void changeMapSize(int width, int height) {
-        map.setWidth(width);
-        map.setHeight(height);
-        scrollPane.updateUI();
-    }
-
 }
