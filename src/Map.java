@@ -11,9 +11,11 @@ import java.awt.Dimension;
 class Map extends JPanel implements Serializable {
 
     /** Map attributes */
-    private static final int DEFAULT_WIDTH = 6;
+    private static final int DEFAULT_WIDTH  = 6;
     private static final int DEFAULT_HEIGHT = 4;
+    private static final String DEFAULT_TAG = "New Map";
     private static final Color BACKGROUND_COLOR = new Color(65, 136, 145);
+    private String tag;
     private int width, height;
     private ArrayList<ArrayList<Tile>> tiles;
 
@@ -33,6 +35,7 @@ class Map extends JPanel implements Serializable {
             }
             tiles.add(row);
         }
+        tag = DEFAULT_TAG;
         setBackground(BACKGROUND_COLOR);
         setLayout(null);
         render();
@@ -46,6 +49,11 @@ class Map extends JPanel implements Serializable {
     /** Get the height of the Map */
     int mapHeight() {
         return height;
+    }
+
+    /** Get the tag of the Map */
+    String getTag() {
+        return tag;
     }
 
     /** Render the Map */
@@ -116,6 +124,11 @@ class Map extends JPanel implements Serializable {
         }
         width = newWidth;
         render();
+    }
+
+    /** Change the Map tag */
+    void setTag(String newTag) {
+        tag = newTag;
     }
 
     /** Get the Tile at a specific (x, y) pixel coordinate in the Map */
