@@ -12,7 +12,7 @@ class MakerPanel extends Panel {
     private static final int TERRAIN_Y = 200;
     private static final int ZOOM_Y    = 350;
     private static final int UPDATE_W  = 60;
-    private static final int TERRAIN_W = 100;
+    private static final int TERRAIN_W = MIDDLE;
     private static final int TERRAIN_H = 50;
     private static final int ZOOM_WH   = 20;
     private static final int ZOOM_STEP = 25;

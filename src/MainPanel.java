@@ -57,15 +57,15 @@ class MainPanel extends Panel {
             return saves[index];
         }
 
-        /** Get the next Map in the MapList */
-        private Map next() {
-            index = (index + 1) % getSize();
-            return saves[index];
-        }
-
         /** Get the previous Map in the MapList */
         private Map prev() {
             index = (index == 0) ? getSize() - 1 : index - 1;
+            return saves[index];
+        }
+
+        /** Get the next Map in the MapList */
+        private Map next() {
+            index = (index + 1) % getSize();
             return saves[index];
         }
 
@@ -73,15 +73,19 @@ class MainPanel extends Panel {
 
     /** MainPanel attributes */
     private static final int NAME_Y    = TOP;
-    private static final int EDIT_Y    = TOP + INPUT_H;
+    private static final int EDIT_Y    = NAME_Y + INPUT_H;
+    private static final int RUN_Y     = EDIT_Y + INPUT_H;
+    private static final int CYCLE_Y   = RUN_Y + INPUT_H;
     private static final int RESIZE_Y  = 30;
     private static final int TERRAIN_Y = 200;
     private static final int ZOOM_Y    = 350;
+    private static final int CYCLE_W   = MIDDLE;
     private static final int UPDATE_W  = 60;
     private static final int TERRAIN_W = 100;
     private static final int TERRAIN_H = 50;
     private static final int ZOOM_WH   = 20;
     private static final int ZOOM_STEP = 25;
+    private static final String NAME_LABEL = "Name: ";
     private JLabel NAME_FIELD;
     private MapList saves;
 
@@ -94,65 +98,93 @@ class MainPanel extends Panel {
             setMap(map);
             addNameLabel();
             addEditButton();
+            addRunButton();
+            addPrevNextButtons();
+            addSelectButton();
         }
     }
 
-    /**  */
+    /** Populate the MainPanel with a label corresponding to its Map's name */
     private void addNameLabel() {
-        NAME_FIELD = new JLabel("Name: " + map.getTag());
+        NAME_FIELD = new JLabel(NAME_LABEL + map.getTag());
         NAME_FIELD.setBounds(0, TOP, PANEL_WIDTH, INPUT_H);
         add(NAME_FIELD);
     }
 
-    /**  */
+    /** Populate the MainPanel with edit options */
     private void addEditButton() {
         addButton("Edit Map", 0, EDIT_Y, PANEL_WIDTH, INPUT_H,
                 (ActionEvent a) -> {
                     map.addListeners();
-                    MakerMenu mapMaker = new MakerMenu(map);
-                    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(menu);
-                    frame.remove(menu);
-                    frame.getContentPane().add(mapMaker);
-                    frame.pack();
+                    MakerMenu makerMenu = new MakerMenu(map);
+                    JFrame f = (JFrame) SwingUtilities.getWindowAncestor(menu);
+                    f.remove(menu);
+                    f.getContentPane().add(makerMenu);
+                    f.pack();
                 });
     }
 
-    /**  */
-    private void createPrevButton() {
-        JButton prevButton = new JButton("<");
-        prevButton.setBounds(WINDOW_WIDTH / 3, 2 * WINDOW_HEIGHT / 3 - 100, 200, 50);
-        prevButton.setVisible(true);
-        prevButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        prevButton.addActionListener((ActionEvent e) -> {
-            try {
-                remove(map);
-                map = saves.prev();
-                scrollPane.setViewportView(map);
-                NAME_FIELD.setText("Name: " + map.getTag());
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        });
-        add(prevButton);
+    /** Populate the MainPanel with run options */
+    private void addRunButton() {
+        addButton("Run Map", 0, RUN_Y, PANEL_WIDTH, INPUT_H,
+                (ActionEvent a) -> {
+                    RunnerMenu mapRunner = new RunnerMenu(map);
+                    JFrame f = (JFrame) SwingUtilities.getWindowAncestor(menu);
+                    f.remove(menu);
+                    f.getContentPane().add(mapRunner);
+                    f.pack();
+                });
     }
 
-    /**  */
-    private void createNextButton() {
-        JButton nextButton = new JButton(">");
-        nextButton.setBounds(WINDOW_WIDTH / 3, 2 * WINDOW_HEIGHT / 3 - 150, 200, 50);
-        nextButton.setVisible(true);
-        nextButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        nextButton.addActionListener((ActionEvent e) -> {
-            try {
-                remove(map);
-                map = saves.next();
-                scrollPane.setViewportView(map);
-                NAME_FIELD.setText("Name: " + map.getTag());
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
-        });
-        add(nextButton);
+    /** Populate the MainPanel with prev & next options to cycle Maps */
+    private void addPrevNextButtons() {
+        addButton("<", 0, CYCLE_Y, CYCLE_W, INPUT_H,
+                (ActionEvent a) -> {
+                    try {
+                        remove(map);
+                        map = saves.prev();
+                        setMap(map);
+                        updateFields();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+        addButton(">", MIDDLE, CYCLE_Y, CYCLE_W, INPUT_H,
+                (ActionEvent a) -> {
+                    try {
+                        remove(map);
+                        map = saves.next();
+                        setMap(map);
+                        updateFields();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    /** Populate the MainPanel with the option to select Map from directory */
+    private void addSelectButton() {
+//        JButton listButton = new JButton("Select Map");
+//        listButton.setBounds(WINDOW_WIDTH / 3, 2 * WINDOW_HEIGHT / 3 + 50, 200, 50);
+//        listButton.setVisible(true);
+//        listButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+//        listButton.addActionListener((ActionEvent a) -> {
+//            JFileChooser fileChooser = new JFileChooser(SAVE_DIR);
+//            int returnValue = fileChooser.showOpenDialog(null);
+//            if (returnValue == JFileChooser.APPROVE_OPTION) {
+//                File selectedFile = fileChooser.getSelectedFile();
+//                try {
+//                    FileInputStream f = new FileInputStream(selectedFile);
+//                    ObjectInputStream in = new ObjectInputStream(f);
+//                    map = (Map) in.readObject();
+//                    scrollPane.setViewportView(map);
+//                    NAME_FIELD.setText("Name: " + map.getTag());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//        add(listButton);
     }
 
     /**  */
@@ -162,43 +194,21 @@ class MainPanel extends Panel {
         newButton.setVisible(true);
         newButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         newButton.addActionListener((ActionEvent e) -> {
-            MakerMenu mapMaker = new MakerMenu();
+            MakerMenu makerMenu = new MakerMenu();
             JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
             frame.remove(this);
-            frame.getContentPane().add(mapMaker);
+            frame.getContentPane().add(makerMenu);
             frame.pack();
         });
         add(newButton);
     }
 
     /**  */
-    private void createRunMapButton() {
-        // TODO (see createEditMapButton)
-    }
-
-    /**  */
-    private void createSelectButton() {
-        JButton listButton = new JButton("Select Map");
-        listButton.setBounds(WINDOW_WIDTH / 3, 2 * WINDOW_HEIGHT / 3 + 50, 200, 50);
-        listButton.setVisible(true);
-        listButton.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        listButton.addActionListener((ActionEvent a) -> {
-            JFileChooser fileChooser = new JFileChooser(SAVE_DIR);
-            int returnValue = fileChooser.showOpenDialog(null);
-            if (returnValue == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                try {
-                    FileInputStream f = new FileInputStream(selectedFile);
-                    ObjectInputStream in = new ObjectInputStream(f);
-                    map = (Map) in.readObject();
-                    scrollPane.setViewportView(map);
-                    NAME_FIELD.setText("Name: " + map.getTag());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        add(listButton);
+    private void updateFields() {
+        NAME_FIELD.setText(NAME_LABEL + map.getTag());
     }
 
 }
+
+// TODO: make Panel not subclass Menu
+// TODO: Panels shouldn't have references `map` and `scrollPane`, rather just define a getter method in the Panel that accesses those values via the menu
