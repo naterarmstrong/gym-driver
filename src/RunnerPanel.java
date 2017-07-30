@@ -13,9 +13,7 @@ class RunnerPanel extends Panel {
 
 }
 
-// TODO: frame.setTitle("") accordingly. "Main Menu", "Map Maker", "Map Runner" etc
 // TODO: fix laggy scrolling
-// TODO: clean up the main method
 
 // TODO: MapRunner
 // You put the car down, specifying a cardinal direction on the menu. It appears, but the angle is plus or minus some error, generally going in that direction.

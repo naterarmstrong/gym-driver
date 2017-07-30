@@ -91,6 +91,11 @@ abstract class Panel extends JPanel {
     void changeScreen(Menu newMenu) {
         JFrame f = (JFrame) SwingUtilities.getWindowAncestor(menu);
         f.remove(menu);
+        newScreen(f, newMenu);
+    }
+
+    /** Set up a new screen */
+    static void newScreen(JFrame f, Menu newMenu) {
         f.setTitle(newMenu.getTitle());
         f.getContentPane().add(newMenu);
         f.pack();

@@ -23,17 +23,15 @@ class MainMenu extends MapMenu {
 
     /** Run the FORDS app */
     public static void main(String[] args) {
+        // Initialize the window
         JFrame frame = new JFrame();
         frame.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         frame.setLocationByPlatform(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setResizable(false);
-        frame.setTitle("Main Menu");
-
-        MainMenu mainPanel = new MainMenu();
-        frame.getContentPane().add(mainPanel);
-        frame.pack();
+        // Initialize the MainMenu
+        Panel.newScreen(frame, new MainMenu());
     }
 
 }
