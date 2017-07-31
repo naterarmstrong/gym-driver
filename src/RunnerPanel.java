@@ -18,40 +18,9 @@ class RunnerPanel extends Panel {
     /** RunnerPanel constructor */
     RunnerPanel(RunnerMenu m) {
         super(m);
-        addUserCarOptions();
-        addCPUCarOption();
         addPausePlayButtons();
         addBackOption();
         setTimer();
-    }
-
-    /** Populate the RunnerPanel with UserCar options */
-    private void addUserCarOptions() {
-    	int UP_Y = USER_CAR_Y;
-    	int LR_Y = UP_Y + BUTTON_SIZE;
-    	int DN_Y = LR_Y + BUTTON_SIZE;
-    	addButton("\u21E7", BUTTON_SIZE, UP_Y, BUTTON_SIZE, BUTTON_SIZE,
-    		(ActionEvent a) -> {DEFAULT_ANGLE = 90;}
-    	);
-    	addButton("\u21E6", 0, LR_Y, BUTTON_SIZE, BUTTON_SIZE,
-    		(ActionEvent a) -> {DEFAULT_ANGLE = 180;}
-    	);
-    	addButton("Agent", BUTTON_SIZE, LR_Y, BUTTON_SIZE, BUTTON_SIZE,
-    		(ActionEvent a) -> {} // TODO
-    	);
-    	addButton("\u21E8", 2 * BUTTON_SIZE, LR_Y, BUTTON_SIZE, BUTTON_SIZE,
-    		(ActionEvent a) -> {DEFAULT_ANGLE = 0;}
-    	);
-    	addButton("\u21E9", BUTTON_SIZE, DN_Y, BUTTON_SIZE, BUTTON_SIZE,
-    		(ActionEvent a) -> {DEFAULT_ANGLE = 270;}
-    	);
-    }
-
-    /** Populate the RunnerPanel with CPUCar options */
-    private void addCPUCarOption() {
-    	addButton("CPU", BUTTON_SIZE, CPU_CARS_Y, BUTTON_SIZE, BUTTON_SIZE,
-    		(ActionEvent a) -> {} // TODO
-    	);
     }
 
     /** Populate the RunnerPanel with pause & play buttons */
@@ -67,13 +36,6 @@ class RunnerPanel extends Panel {
     		(ActionEvent a) -> {timer.start();}
     	);
     }
-
-    @Override
-	public void paintComponent(Graphics g) {
-    	super.paintComponent(g);
-    	g.setColor(Color.magenta);
-    	g.fillOval(0, 0, 50, 50);
-	}
 
     /** Initialize the Timer */
     private void setTimer() {
