@@ -12,7 +12,7 @@ class MakerPanel extends Panel {
     /** MakerPanel attributes */
     private static final int RESIZE_Y   = TOP;
     private static final int TERRAIN_Y  = 200;
-    private static final int NUM_CPUS_Y = 250;
+    private static final int NUM_CPUS_Y = 300;
     private static final int ZOOM_Y     = 350;
     private static final int UPDATE_W   = 60;
     private static final int TERRAIN_W  = MIDDLE;
@@ -77,7 +77,7 @@ class MakerPanel extends Panel {
     /** Populate the MakerPanel with options to adjust the number of CPUs */
     private void addNumCPUSOptions() {
         String numCPUs = String.valueOf(getMap().getNumCPUs());
-        CPUS_FIELD     = addTextField("Num. CPUs:", numCPUs, NUM_CPUS_Y, PANEL_WIDTH - LABEL_W);
+        CPUS_FIELD     = addTextField("CPUs:", numCPUs, NUM_CPUS_Y, PANEL_WIDTH - LABEL_W);
     }
 
     /** Populate the MakerPanel with zoom-in and zoom-out options */
