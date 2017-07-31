@@ -11,12 +11,14 @@ import java.awt.Dimension;
 class Map extends JPanel implements Serializable {
 
     /** Map attributes */
-    private static final int DEFAULT_WIDTH  = 6;
-    private static final int DEFAULT_HEIGHT = 4;
-    private static final String DEFAULT_TAG = "New Map";
+    private static final String DEFAULT_TAG     = "New Map";
+    private static final int DEFAULT_WIDTH      = 6;
+    private static final int DEFAULT_HEIGHT     = 4;
+    private static final int DEFAULT_NUM_CPUS   = 4;
     private static final Color BACKGROUND_COLOR = new Color(65, 136, 145);
     private String tag;
     private int width, height;
+    private int numCPUs;
     private ArrayList<ArrayList<Tile>> tiles;
 
     /** Map constructors */
@@ -25,6 +27,7 @@ class Map extends JPanel implements Serializable {
     }
 
     Map(int w, int h) {
+        tag = DEFAULT_TAG;
         width = w;
         height = h;
         tiles = new ArrayList<>();
@@ -35,10 +38,15 @@ class Map extends JPanel implements Serializable {
             }
             tiles.add(row);
         }
-        tag = DEFAULT_TAG;
+        numCPUs = DEFAULT_NUM_CPUS;
         setBackground(BACKGROUND_COLOR);
         setLayout(null);
         render();
+    }
+
+    /** Get the tag of the Map */
+    String getTag() {
+        return tag;
     }
 
     /** Get the width of the Map */
@@ -51,9 +59,9 @@ class Map extends JPanel implements Serializable {
         return height;
     }
 
-    /** Get the tag of the Map */
-    String getTag() {
-        return tag;
+    /** Get the number of CPUs to be generated on the Map */
+    int getNumCPUs() {
+        return numCPUs;
     }
 
     /** Render the Map */

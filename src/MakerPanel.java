@@ -10,14 +10,15 @@ import java.awt.event.ActionEvent;
 class MakerPanel extends Panel {
 
     /** MakerPanel attributes */
-    private static final int RESIZE_Y  = TOP;
-    private static final int TERRAIN_Y = 200;
-    private static final int ZOOM_Y    = 350;
-    private static final int UPDATE_W  = 60;
-    private static final int TERRAIN_W = MIDDLE;
-    private static final int TERRAIN_H = 50;
-    private static final int ZOOM_WH   = 20;
-    private static final int ZOOM_STEP = 25;
+    private static final int RESIZE_Y   = TOP;
+    private static final int TERRAIN_Y  = 200;
+    private static final int NUM_CPUS_Y = 250;
+    private static final int ZOOM_Y     = 350;
+    private static final int UPDATE_W   = 60;
+    private static final int TERRAIN_W  = MIDDLE;
+    private static final int TERRAIN_H  = 50;
+    private static final int ZOOM_WH    = 20;
+    private static final int ZOOM_STEP  = 25;
     private TextField NAME_FIELD, WIDTH_FIELD, HEIGHT_FIELD;
 
     /** MakerPanel constructor */
@@ -25,6 +26,7 @@ class MakerPanel extends Panel {
         super(m);
         addResizeOptions();
         addTerrainOptions();
+        addNumCPUSOptions();
         addZoomOptions();
         addSaveOption();
         addBackOption();
@@ -70,6 +72,12 @@ class MakerPanel extends Panel {
 
     private void addTerrainButton(String t, int x, int y, int w, int h) {
         addButton(t, x, y, w, h, (ActionEvent e) -> setTerrain(t));
+    }
+
+    /** Populate the MakerPanel with options to adjust the number of CPUs */
+    private void addNumCPUSOptions() {
+        String numCPUs = String.valueOf(getMap().getNumCPUs());
+        addTextField("Num. CPUs:", numCPUs, NUM_CPUS_Y, PANEL_WIDTH - LABEL_W);
     }
 
     /** Populate the MakerPanel with zoom-in and zoom-out options */

@@ -82,6 +82,8 @@ class RunnerPanel extends Panel {
 
 }
 
+// TODO: address the panel bug that occurs when you have no maps saved and you click "New Map"
+
 // TODO: MapRunner
 // You put the car down, specifying a cardinal direction on the menu. It appears, but the angle is plus or minus some error, generally going in that direction.
 // You put the CPU cars down too, with no randomness added to their angle.
