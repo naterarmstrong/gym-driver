@@ -19,6 +19,7 @@ class Map extends JPanel implements Serializable {
     private int width, height;
     private ArrayList<ArrayList<Tile>> tiles;
 
+
     /** Map constructors */
     Map() {
         this(DEFAULT_WIDTH, DEFAULT_HEIGHT);

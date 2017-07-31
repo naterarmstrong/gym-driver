@@ -1,5 +1,6 @@
 import javax.swing.Timer;
 
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 /** RunnerPanel class */
@@ -66,6 +67,13 @@ class RunnerPanel extends Panel {
     		(ActionEvent a) -> {timer.start();}
     	);
     }
+
+    @Override
+	public void paintComponent(Graphics g) {
+    	super.paintComponent(g);
+    	g.setColor(Color.magenta);
+    	g.fillOval(0, 0, 50, 50);
+	}
 
     /** Initialize the Timer */
     private void setTimer() {
