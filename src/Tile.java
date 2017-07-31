@@ -1,10 +1,9 @@
+import java.awt.*;
 import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.SwingUtilities;
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -29,6 +28,7 @@ class Tile extends JButton {
     private String texture;
     private int pathInd;
     private int orientationInd;
+    private String arrow = "";
 
     /** Tile constructors */
     Tile() {
@@ -83,9 +83,25 @@ class Tile extends JButton {
 
             @Override
             public void keyTyped(KeyEvent e) {
-                if (e.getKeyChar() == 'r') {
-                    cycleOrientation();
+                char keyCode = e.getKeyChar();
+                switch (keyCode) {
+                    case 'r':
+                        cycleOrientation();
+                        break;
+                    case 'w':
+                        arrow = "\u21E7";
+                        break;
+                    case 's':
+                        arrow = "\u21E9";
+                        break;
+                    case 'a':
+                        arrow = "\u21E6";
+                        break;
+                    case 'd':
+                        arrow = "\u21E8";
+                        break;
                 }
+                repaint();
             }
 
             @Override
@@ -97,6 +113,11 @@ class Tile extends JButton {
             }
 
         });
+    }
+
+    /** Removes the arrow Icon from the Tile*/
+    void removeArrow() {
+        arrow = "";
     }
 
     /** Update PIXELS_PER_TILE */
@@ -185,7 +206,6 @@ class Tile extends JButton {
         String path = getPath();
         if ("concave".equals(path) || "convex".equals(path)) {
             orientationInd = (orientationInd + 1) % 4;
-            paint(getGraphics());
         }
     }
 
@@ -193,6 +213,7 @@ class Tile extends JButton {
     @Override
     public void paint(Graphics g) {
         super.paintComponent(g);
+        g.drawString(arrow, PIXELS_PER_TILE / 2, PIXELS_PER_TILE / 2);
         for (int i = 0; i < PIXELS_PER_TILE; i += 1) {
             for (int j = 0; j < PIXELS_PER_TILE; j += 1) {
                 String texture = getPtTextureInd(i, j);
@@ -200,6 +221,9 @@ class Tile extends JButton {
                 g.setColor(color);
                 g.fillRect(i, j, 1, 1);
             }
+        } if (!arrow.equals("")) {
+            g.setColor(Color.YELLOW);
+            g.drawString(arrow, PIXELS_PER_TILE / 2, PIXELS_PER_TILE / 2);
         }
     }
 
