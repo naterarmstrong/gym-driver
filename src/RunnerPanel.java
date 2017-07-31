@@ -1,14 +1,18 @@
+import javax.swing.Timer;
+
 import java.awt.event.ActionEvent;
 
 /** RunnerPanel class */
 class RunnerPanel extends Panel {
 
     /** RunnerPanel attributes */
-    private final int USER_CAR_Y   = TOP;
-    private final int CPU_CARS_Y   = 200;
-    private final int PLAY_PAUSE_Y = 350;
-    private final int BUTTON_SIZE  = PANEL_WIDTH / 3;
-    private double DEFAULT_ANGLE   = 0;
+    private static final int USER_CAR_Y    = TOP;
+    private static final int CPU_CARS_Y    = 200;
+    private static final int PLAY_PAUSE_Y  = 350;
+    private static final int BUTTON_SIZE   = PANEL_WIDTH / 3;
+    private static final int STEP_DURATION = 500; // Milliseconds
+    private double DEFAULT_ANGLE           = 0;
+    private Timer timer;
 
     /** RunnerPanel constructor */
     RunnerPanel(RunnerMenu m) {
@@ -17,6 +21,7 @@ class RunnerPanel extends Panel {
         addCPUCarOption();
         addPausePlayButtons();
         addBackOption();
+        setTimer();
     }
 
     /** Populate the RunnerPanel with UserCar options */
@@ -55,10 +60,19 @@ class RunnerPanel extends Panel {
     	String pause = "<html>&#10073;&#10073;<html>";
     	String play  = "\u25B6";
     	addButton(pause, xL, PLAY_PAUSE_Y, BUTTON_SIZE, BUTTON_SIZE,
-    		(ActionEvent a) -> {}
+    		(ActionEvent a) -> {timer.stop();}
     	);
     	addButton(play, xR, PLAY_PAUSE_Y, BUTTON_SIZE, BUTTON_SIZE,
-    		(ActionEvent a) -> {}
+    		(ActionEvent a) -> {timer.start();}
+    	);
+    }
+
+    /** Initialize the Timer */
+    private void setTimer() {
+    	timer = new Timer(STEP_DURATION, (ActionEvent a) -> {
+    			repaint();
+    			// TODO: call each Car's `step` method
+    		}
     	);
     }
 
