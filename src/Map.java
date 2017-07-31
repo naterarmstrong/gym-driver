@@ -91,6 +91,11 @@ class Map extends JPanel implements Serializable {
         }
     }
 
+    /** Change the Map tag */
+    void setTag(String newTag) {
+        tag = newTag;
+    }
+
     /** Change the Map height */
     void setHeight(int newHeight) {
         if (newHeight >= height) {
@@ -134,9 +139,9 @@ class Map extends JPanel implements Serializable {
         render();
     }
 
-    /** Change the Map tag */
-    void setTag(String newTag) {
-        tag = newTag;
+    /** Change the number of CPUs to be generated in the Map */
+    void setCPUS(int newNumCPUs) {
+        numCPUs = newNumCPUs;
     }
 
     /** Get the Tile at a specific (x, y) pixel coordinate in the Map */

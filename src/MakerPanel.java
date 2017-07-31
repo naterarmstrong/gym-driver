@@ -19,7 +19,7 @@ class MakerPanel extends Panel {
     private static final int TERRAIN_H  = 50;
     private static final int ZOOM_WH    = 20;
     private static final int ZOOM_STEP  = 25;
-    private TextField NAME_FIELD, WIDTH_FIELD, HEIGHT_FIELD;
+    private TextField NAME_FIELD, WIDTH_FIELD, HEIGHT_FIELD, CPUS_FIELD;
 
     /** MakerPanel constructor */
     MakerPanel(MakerMenu m) {
@@ -77,7 +77,7 @@ class MakerPanel extends Panel {
     /** Populate the MakerPanel with options to adjust the number of CPUs */
     private void addNumCPUSOptions() {
         String numCPUs = String.valueOf(getMap().getNumCPUs());
-        addTextField("Num. CPUs:", numCPUs, NUM_CPUS_Y, PANEL_WIDTH - LABEL_W);
+        CPUS_FIELD     = addTextField("Num. CPUs:", numCPUs, NUM_CPUS_Y, PANEL_WIDTH - LABEL_W);
     }
 
     /** Populate the MakerPanel with zoom-in and zoom-out options */
@@ -122,6 +122,8 @@ class MakerPanel extends Panel {
                     try {
                         String tag = NAME_FIELD.getText();
                         map.setTag(tag);
+                        int CPUs   = CPUS_FIELD.getText();
+                        map.setCPUS(CPUs);
                         String dir = String.format("%s/%s%s",
                                 SAVE_DIR, tag, SAVE_EXT);
                         FileOutputStream f = new FileOutputStream(dir);
