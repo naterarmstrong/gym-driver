@@ -20,6 +20,7 @@ class Map extends JPanel implements Serializable {
     private int width, height;
     private int numCPUs;
     private ArrayList<ArrayList<Tile>> tiles;
+    private Tile arrowTile;
 
 
     /** Map constructors */
@@ -35,9 +36,12 @@ class Map extends JPanel implements Serializable {
         for (int i = 0; i < height; i += 1) {
             ArrayList<Tile> row = new ArrayList<>();
             for (int j = 0; j < width; j += 1) {
-                row.add(new Tile());
+                row.add(new Tile(this));
             }
             tiles.add(row);
+        }
+        if (tiles.size() != 0) {
+            tiles.get(0).get(0).setArrow();
         }
         numCPUs = DEFAULT_NUM_CPUS;
         setBackground(BACKGROUND_COLOR);
@@ -103,7 +107,7 @@ class Map extends JPanel implements Serializable {
             for (int h = height; h < newHeight; h += 1) {
                 ArrayList<Tile> row = new ArrayList<>();
                 for (int w = 0; w < width; w += 1) {
-                    row.add(new Tile());
+                    row.add(new Tile(this));
                 }
                 tiles.add(row);
             }
@@ -125,7 +129,7 @@ class Map extends JPanel implements Serializable {
         if (newWidth >= width) {
             for (ArrayList<Tile> row : tiles) {
                 for (int w = width; w < newWidth; w += 1) {
-                    row.add(new Tile());
+                    row.add(new Tile(this));
                 }
             }
         } else {
@@ -143,6 +147,13 @@ class Map extends JPanel implements Serializable {
     /** Change the number of CPUs to be generated in the Map */
     void setCPUS(int newNumCPUs) {
         numCPUs = newNumCPUs;
+    }
+
+    void changeArrow(Tile t) {
+        if (arrowTile != t && arrowTile != null) {
+            arrowTile.removeArrow();
+        }
+        arrowTile = t;
     }
 
     /** Get the Tile at a specific (x, y) pixel coordinate in the Map */
