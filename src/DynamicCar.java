@@ -8,7 +8,7 @@ class DynamicCar extends Car {
 
     /** Modify attributes to reflect one step */
     void step(double acceleration, double steering) {
-
+    	// Note, current `action` is a list of steering, THEN acceleration
     }
 
 }

@@ -90,6 +90,14 @@ class RunnerPanel extends Panel {
 
 }
 
+// TODO: address the panel bug that occurs when you have no maps saved and you click "New Map"
+
+// TODO: test the NUM_CPUs field in the MakerPanel
+
+// TODO: what happens if you enter a word into the height / width field in MakerPanel?
+
+// TODO: what happens if you enter a word into the NUM_CPUs field in the MakerPanel? this was implemented differently
+
 // TODO: MapRunner
 // You put the car down, specifying a cardinal direction on the menu. It appears, but the angle is plus or minus some error, generally going in that direction.
 // You put the CPU cars down too, with no randomness added to their angle.
