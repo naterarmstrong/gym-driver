@@ -7,7 +7,7 @@ class RunnerPanel extends Panel {
 
     /** RunnerPanel attributes */
     private static final int USER_CAR_Y    = TOP;
-    private static final int CPU_CARS_Y    = 200;
+    private static final int CPU_CARS_Y    = 250;
     private static final int PLAY_PAUSE_Y  = 350;
     private static final int BUTTON_SIZE   = PANEL_WIDTH / 3;
     private static final int STEP_DURATION = 500; // Milliseconds
@@ -29,10 +29,10 @@ class RunnerPanel extends Panel {
     	int UP_Y = USER_CAR_Y;
     	int LR_Y = UP_Y + BUTTON_SIZE;
     	int DN_Y = LR_Y + BUTTON_SIZE;
-    	addButton("\u21E6", BUTTON_SIZE, UP_Y, BUTTON_SIZE, BUTTON_SIZE,
+    	addButton("\u21E7", BUTTON_SIZE, UP_Y, BUTTON_SIZE, BUTTON_SIZE,
     		(ActionEvent a) -> {DEFAULT_ANGLE = 90;}
     	);
-    	addButton("\u21E7", 0, LR_Y, BUTTON_SIZE, BUTTON_SIZE,
+    	addButton("\u21E6", 0, LR_Y, BUTTON_SIZE, BUTTON_SIZE,
     		(ActionEvent a) -> {DEFAULT_ANGLE = 180;}
     	);
     	addButton("Agent", BUTTON_SIZE, LR_Y, BUTTON_SIZE, BUTTON_SIZE,
