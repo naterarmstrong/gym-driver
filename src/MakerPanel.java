@@ -122,7 +122,7 @@ class MakerPanel extends Panel {
                     try {
                         String tag = NAME_FIELD.getText();
                         map.setTag(tag);
-                        int CPUs   = CPUS_FIELD.getText();
+                        int CPUs   = Integer.valueOf(CPUS_FIELD.getText());
                         map.setCPUS(CPUs);
                         String dir = String.format("%s/%s%s",
                                 SAVE_DIR, tag, SAVE_EXT);
