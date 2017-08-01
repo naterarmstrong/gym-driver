@@ -1,3 +1,10 @@
+from read_config import read_config
+
+configs = read_config()
+MAX_VEL = configs["MAX_VEL"]
+LEN_REAR = configs["LEN_REAR"]
+LEN_FRONT = configs["LEN_FRONT"]
+
 # Car class
 class Car:
 

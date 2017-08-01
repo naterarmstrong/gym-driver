@@ -1,5 +1,7 @@
+from Tkinter import Frame
+
 # Menu class
-class Menu:
+class Menu(Frame):
 
     None
 
