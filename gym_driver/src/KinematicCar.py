@@ -15,17 +15,20 @@ class KinematicCar(Car):
         # Solve differential equations
         t = arange(0.0, 1.0, 0.1)
         ode_state = (self.x, self.y, self.vel, angle)
-        deltas = odeint(self.integrate, ode_state, t, action_acc, action_angle)
+        aux_state = (action_acc, action_angle)
+        deltas = odeint(self.integrate, ode_state, t, args=aux_state)
         x, y, vel, angle = deltas[-1]
         self.x, self.y, self.vel, self.angle = x, y, vel, rad2deg(angle) % 360
 
     # Calculate numerical values for variables in the differential equation
     @staticmethod
     def integrate(state, t, action_acc, action_angle):
+        # Extract the state
         x, y, vel, angle = state
+        # Calculate deltas
         beta = arctan((LEN_REAR / (LEN_REAR + LEN_FRONT)) * tan(action_angle))
-        dx = vel * cos(angle + beta)
-        dy = vel * sin(angle + beta)
+        d_x = vel * cos(angle + beta)
+        d_y = vel * sin(angle + beta)
         delta_vel = action_acc
-        delta_angle = (vel / LEN_REAR) * sin(beta)
-        return dx, dy, delta_vel, delta_angle
+        d_angle = (vel / LEN_REAR) * sin(beta)
+        return d_x, d_y, delta_vel, d_angle

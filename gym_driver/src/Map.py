@@ -9,6 +9,7 @@ DEFAULT_NUM_CPUS = configs["DEFAULT_NUM_CPUS"]
 DEFAULT_TAG = configs["DEFAULT_TAG"]
 DEFAULT_START_ANGLE = configs["DEFAULT_START_ANGLE"]
 BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
+PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
 
 # Map class
 class Map:
@@ -65,6 +66,18 @@ class Map:
     # Getter method: start_angle
     def get_start_angle(self):
         return self.start_angle
+
+    # Getter method: Tile [provided (x, y) coordinate]
+    def get_tile(self, x, y):
+        x_tile = x // PIXELS_PER_TILE
+        y_tile = y // PIXELS_PER_TILE
+        return self.tiles[x_tile][y_tile]
+
+    # Getter method: friction [provided (x, y) coordinate]
+    def get_point_friction(self, x, y):
+        x_pixel = x % PIXELS_PER_TILE
+        y_pixel = y % PIXELS_PER_TILE
+        return self.get_tile(x, y).get_point_friction(x_pixel, y_pixel)
 
     # Setter method: width
     def set_width(self, width):
