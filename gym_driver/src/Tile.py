@@ -17,7 +17,7 @@ class Tile(Button):
 
     # Tile constructors
     def __init__(self, map, texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
-        super(self)
+        Button.__init__(self) # TODO: args to Button.__init__ ? perhaps don't subclass Button?
         self.set_map(map)
         self.set_texture(texture)
         self.set_path_ind(path_ind)
@@ -39,7 +39,7 @@ class Tile(Button):
 
     def on_leftclick(self, event):
         Tile.pressed = True
-        self.change_texture(Tile.terrain_selection)
+        self.set_texture(Tile.terrain_selection)
 
     def on_rightclick(self, event):
         self.cycle_path()
@@ -56,7 +56,7 @@ class Tile(Button):
             self.map.set_start_angle(270)
         elif char == "d":
             self.map.set_start_angle(0)
-        self.repaint()
+        # TODO: self.repaint()
 
     # Getter method: texture
     def get_texture(self):
@@ -68,7 +68,6 @@ class Tile(Button):
         if path == "flat":
             return self.get_texture()
         else:
-            in_circle = True
             orientation = self.get_orientation()
             if orientation == 0:
                 in_circle = self.in_circle(x, y - PIXELS_PER_TILE)
@@ -107,7 +106,7 @@ class Tile(Button):
     # Getter method: friction [provided (x, y) coordinate]
     def get_point_friction(self, x, y):
         texture = self.get_point_texture(x, y)
-        return Tile.get_texture_friction(self.get_texture())
+        return Tile.get_texture_friction(texture)
 
     # Setter method: map
     def set_map(self, map):
@@ -115,8 +114,8 @@ class Tile(Button):
 
     # Setter method: texture
     def set_texture(self, texture):
-        if TEXTURES.has_key(texture):
-            self.set_texture(texture)
+        if texture in TEXTURES:
+            self.texture = texture
             # TODO: setBackground(getColor(texture))
             if self.get_texture() == DEFAULT_TERRAIN:
                 self.set_path_ind(0)
