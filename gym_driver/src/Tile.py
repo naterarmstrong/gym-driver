@@ -18,10 +18,10 @@ class Tile(Button):
     # Tile constructors
     def __init__(self, map, texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
         super(self)
-        self.map = map
-        self.texture = texture
-        self.path_ind = path_ind
-        self.orientation = orientation
+        self.set_map(map)
+        self.set_texture(texture)
+        self.set_path_ind(path_ind)
+        self.set_orientation(orientation)
         # TODO: setBackground(getColor(texture));
         self.add_listeners()
 
@@ -79,7 +79,7 @@ class Tile(Button):
             elif orientation == 270:
                 in_circle = self.in_circle(x, y)
             else:
-                raise Exception("Unsupported texture")
+                raise Exception("Unsupported orientation")
             if path == "convex":
                 return self.get_texture() if in_circle else DEFAULT_TERRAIN
             elif path == "concave":
@@ -109,25 +109,37 @@ class Tile(Button):
         texture = self.get_point_texture(x, y)
         return Tile.get_texture_friction(self.get_texture())
 
+    # Setter method: map
+    def set_map(self, map):
+        self.map = map
+
     # Setter method: texture
     def set_texture(self, texture):
         if TEXTURES.has_key(texture):
-            self.texture = texture
+            self.set_texture(texture)
             # TODO: setBackground(getColor(texture))
-            if self.texture == DEFAULT_TERRAIN:
-                self.path_ind = 0
+            if self.get_texture() == DEFAULT_TERRAIN:
+                self.set_path_ind(0)
+
+    # Setter method: path_ind
+    def set_path_ind(self, path_ind):
+        self.path_ind = path_ind
+
+    # Setter method: orientation
+    def set_orientation(self, orientation):
+        self.orientation = orientation
 
     # Cycle to the next path type
     def cycle_path(self):
         if self.get_texture() != DEFAULT_TERRAIN:
-            self.path_ind = (self.path_ind + 1) % len(PATHS)
+            self.set_path_ind((self.path_ind + 1) % len(PATHS))
             # TODO: paint(getGraphics());
 
     # Cycle to the next orientation
     def cycle_orientation(self):
         path = self.get_path()
         if path == "convex" or path == "concave":
-            self.orientation = (self.orientation + 90) % 360
+            self.set_orientation((self.orientation + 90) % 360)
 
     # TODO
     #     /** Draw the Tile */

@@ -1,185 +1,127 @@
+from Tile import Tile
+
+from read_config import read_config
+
+configs = read_config()
+DEFAULT_WIDTH = configs["DEFAULT_WIDTH"]
+DEFAULT_HEIGHT = configs["DEFAULT_HEIGHT"]
+DEFAULT_NUM_CPUS = configs["DEFAULT_NUM_CPUS"]
+DEFAULT_TAG = configs["DEFAULT_TAG"]
+DEFAULT_START_ANGLE = configs["DEFAULT_START_ANGLE"]
+BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
+
 # Map class
 class Map:
 
-    None
+    # Map constructor
+    def __init__(self, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT):
+        self.width = width
+        self.height = height
+        self.tiles = []
+        for i in range(self.height):
+            row = []
+            for j in range(self.width):
+                row.append(Tile(self))
+            self.tiles.append(row)
+        self.set_num_CPUs(DEFAULT_NUM_CPUS)
+        self.set_tag(DEFAULT_TAG)
+        if self.tiles and self.tiles[0]:
+            self.set_start_tile(self.tiles[0][0])
+        else:
+            self.set_start_tile(None)
+        self.set_start_angle(DEFAULT_START_ANGLE)
+        # TODO: setBackground(BACKGROUND_COLOR)
+        # TODO: setLayout(null)
+        # TODO: render()
 
-# /** Map class */
-# class Map extends JPanel implements Serializable {
-#
-#     /** Map attributes */
-#     private static final int DEFAULT_WIDTH      = 6;
-#     private static final int DEFAULT_HEIGHT     = 4;
-#     private static final int DEFAULT_NUM_CPUS   = 4;
-#     private static final String DEFAULT_TAG     = "New Map";
-#     private static final Color BACKGROUND_COLOR = new Color(65, 136, 145);
-#     private int width, height;
-#     private int numCPUs;
-#     private String tag;
-#     private ArrayList<ArrayList<Tile>> tiles;
-#     private Tile startTile;
-#     private double startAngle;
-#
-#     /** Map constructors */
-#     Map() {
-#         this(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-#     }
-#
-#     Map(int w, int h) {
-#         width = w;
-#         height = h;
-#         tiles = new ArrayList<>();
-#         for (int i = 0; i < height; i += 1) {
-#             ArrayList<Tile> row = new ArrayList<>();
-#             for (int j = 0; j < width; j += 1) {
-#                 row.add(new Tile(this));
-#             }
-#             tiles.add(row);
-#         }
-#         tag = DEFAULT_TAG;
-#         if (tiles.size() != 0) {
-#             setStartTile(tiles.get(0).get(0));
-#         } else {
-#             setStartTile(null);
-#         }
-#         numCPUs = DEFAULT_NUM_CPUS;
-#         setBackground(BACKGROUND_COLOR);
-#         setLayout(null);
-#         render();
-#     }
-#
-#     /** Get the width of the Map */
-#     int mapWidth() {
-#         return width;
-#     }
-#
-#     /** Get the height of the Map */
-#     int mapHeight() {
-#         return height;
-#     }
-#
-#     /** Get the number of CPUs to be generated on the Map */
-#     int getNumCPUs() {
-#         return numCPUs;
-#     }
-#
-#     /** Get the tag of the Map */
-#     String getTag() {
-#         return tag;
-#     }
-#
-#     /** Get the Tile where the UserCar will start */
-#     Tile setStartTile() {
-#         return startTile;
-#     }
-#
-#     /** Get the angle at which the UserCar will start */
-#     double setStartAngle() {
-#         return startAngle;
-#     }
-#
-#     /** Change the Map height */
-#     void setHeight(int newHeight) {
-#         if (newHeight >= height) {
-#             for (int h = height; h < newHeight; h += 1) {
-#                 ArrayList<Tile> row = new ArrayList<>();
-#                 for (int w = 0; w < width; w += 1) {
-#                     row.add(new Tile(this));
-#                 }
-#                 tiles.add(row);
-#             }
-#         } else {
-#             for (int h = height; h > newHeight; h -= 1) {
-#                 ArrayList<Tile> row = tiles.get(h - 1);
-#                 for (Tile t: row) {
-#                     remove(t);
-#                 }
-#                 tiles.remove(h - 1);
-#             }
-#         }
-#         height = newHeight;
-#         render();
-#     }
-#
-#     /** Change the Map width */
-#     void setWidth(int newWidth) {
-#         if (newWidth >= width) {
-#             for (ArrayList<Tile> row : tiles) {
-#                 for (int w = width; w < newWidth; w += 1) {
-#                     row.add(new Tile(this));
-#                 }
-#             }
-#         } else {
-#             for (ArrayList<Tile> row : tiles) {
-#                 for (int w = width; w > newWidth; w -= 1) {
-#                     remove(row.get(w-1));
-#                     row.remove(w - 1);
-#                 }
-#             }
-#         }
-#         width = newWidth;
-#         render();
-#     }
-#
-#     /** Change the number of CPUs to the generated on the Map */
-#     void setNumCPUs(int newNumCPUs) {
-#         numCPUs = newNumCPUs;
-#     }
-#
-#     /** Change the Map tag */
-#     void setTag(String newTag) {
-#         tag = newTag;
-#     }
-#
-#     /** Set the Tile where the UserCar will start */
-#     void setStartTile(Tile newStartTile) {
-#         startTile = newStartTile;
-#     }
-#
-#     /** Set the angle at which the UserCar will start */
-#     void setStartAngle(double newStartAngle) {
-#         startAngle = newStartAngle;
-#     }
-#
-#     /** Get the Tile at a specific (x, y) pixel coordinate in the Map */
-#     private Tile getTile(int x, int y) {
-#         int xTile = x / Tile.PIXELS_PER_TILE;
-#         int yTile = y / Tile.PIXELS_PER_TILE;
-#         return tiles.get(yTile).get(xTile);
-#     }
-#
-#     /** Get friction coeff at a specific (x, y) pixel coordinate in the Map */
-#     private double getFriction(int x, int y) {
-#         Tile tile = getTile(x, y);
-#         int xTile = x % Tile.PIXELS_PER_TILE;
-#         int yTile = y % Tile.PIXELS_PER_TILE;
-#         return tile.getFriction(xTile, yTile);
-#     }
-#
-#     /** Add listeners to every Tile in the Map */
-#     void addListeners() {
-#         for (int i = 0; i < height; i += 1) {
-#             ArrayList<Tile> row = tiles.get(i);
-#             for (int j = 0; j < width; j += 1) {
-#                 Tile tile = row.get(j);
-#                 tile.addListeners();
-#             }
-#         }
-#     }
-#
-#     /** Render the Map */
-#     void render() {
-#         int PPT = Tile.PIXELS_PER_TILE;
-#         setPreferredSize(new Dimension(width * PPT, height * PPT));
-#         for (int i = 0; i < height; i += 1) {
-#             ArrayList<Tile> row = tiles.get(i);
-#             for (int j = 0; j < width; j += 1) {
-#                 Tile tile = row.get(j);
-#                 tile.setBounds(j * PPT, i * PPT, PPT, PPT);
-#                 tile.setOpaque(true);
-#                 tile.setBorderPainted(false);
-#                 add(tile);
-#             }
-#         }
-#     }
-#
-# }
+    # Add listeners to every Tile on the Map
+    def add_listeners(self):
+        for i in range(self.get_height()):
+            row = self.tiles[i]
+            for j in range(self.get_width()):
+                tile = row[j]
+                tile.add_listeners()
+
+    # Getter method: width
+    def get_width(self):
+        return self.width
+
+    # Getter method: height
+    def get_height(self):
+        return self.height
+
+    # Getter method: num_CPUs
+    def get_num_CPUs(self):
+        return self.num_CPUs
+
+    # Getter method: tag
+    def get_tag(self):
+        return self.tag
+
+    # Getter method: start_tile
+    def get_start_tile(self):
+        return self.start_tile
+
+    # Getter method: start_angle
+    def get_start_angle(self):
+        return self.start_angle
+
+    # Setter method: width
+    def set_width(self, width):
+        if width >= self.width:
+            for row in self.tiles:
+                for _ in range(width - self.width):
+                    row.append(Tile(self))
+        else:
+            for row in self.tiles:
+                for _ in range(self.width - width):
+                    row.pop()
+        self.width = width
+        # TODO: render()
+
+    # Setter method: height
+    def set_height(self, height):
+        if height >= self.height:
+            for _ in range(height - self.height):
+                row = [Tile(self) for _ in range(self.width)]
+                self.tiles.append(row)
+        else:
+            for _ in range(self.height - height):
+                self.tiles.pop()
+        self.height = height
+        # TODO: render()
+
+    # Setter method: num_CPUs
+    def set_num_CPUs(self, num_CPUs):
+        self.num_CPUs = num_CPUs
+
+    # Setter method: tag
+    def set_tag(self, tag):
+        self.tag = tag
+
+    # Setter method: start_tile
+    def set_start_tile(self, start_tile):
+        self.start_tile = start_tile
+
+    # Setter method: start_angle
+    def set_start_angle(self, start_angle):
+        self.start_angle = start_angle
+
+    # TODO
+    #     /** Render the Map */
+    #     void render() {
+    #         int PPT = Tile.PIXELS_PER_TILE;
+    #         setPreferredSize(new Dimension(width * PPT, height * PPT));
+    #         for (int i = 0; i < height; i += 1) {
+    #             ArrayList<Tile> row = tiles.get(i);
+    #             for (int j = 0; j < width; j += 1) {
+    #                 Tile tile = row.get(j);
+    #                 tile.setBounds(j * PPT, i * PPT, PPT, PPT);
+    #                 tile.setOpaque(true);
+    #                 tile.setBorderPainted(false);
+    #                 add(tile);
+    #             }
+    #         }
+    #     }
+    #
+    # }
