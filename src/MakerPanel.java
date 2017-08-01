@@ -10,21 +10,23 @@ import java.awt.event.ActionEvent;
 class MakerPanel extends Panel {
 
     /** MakerPanel attributes */
-    private static final int RESIZE_Y  = TOP;
-    private static final int TERRAIN_Y = 200;
-    private static final int ZOOM_Y    = 350;
-    private static final int UPDATE_W  = 60;
-    private static final int TERRAIN_W = MIDDLE;
-    private static final int TERRAIN_H = 50;
-    private static final int ZOOM_WH   = 20;
-    private static final int ZOOM_STEP = 25;
-    private TextField NAME_FIELD, WIDTH_FIELD, HEIGHT_FIELD;
+    private static final int RESIZE_Y   = TOP;
+    private static final int TERRAIN_Y  = 200;
+    private static final int NUM_CPUS_Y = 300;
+    private static final int ZOOM_Y     = 350;
+    private static final int UPDATE_W   = 60;
+    private static final int TERRAIN_W  = MIDDLE;
+    private static final int TERRAIN_H  = 50;
+    private static final int ZOOM_WH    = 20;
+    private static final int ZOOM_STEP  = 25;
+    private TextField WIDTH_FIELD, HEIGHT_FIELD, NUM_CPUS_FIELD, NAME_FIELD;
 
     /** MakerPanel constructor */
     MakerPanel(MakerMenu m) {
         super(m);
         addResizeOptions();
         addTerrainOptions();
+        addNumCPUsOptions();
         addZoomOptions();
         addSaveOption();
         addBackOption();
@@ -72,6 +74,13 @@ class MakerPanel extends Panel {
         addButton(t, x, y, w, h, (ActionEvent e) -> setTerrain(t));
     }
 
+    /** Populate the MakerPanel with options to adjust the number of CPUs */
+    private void addNumCPUsOptions() {
+        String numCPUs = String.valueOf(getMap().getNumCPUs());
+        int CPUs_W     = PANEL_WIDTH - LABEL_W;
+        NUM_CPUS_FIELD = addTextField("CPUs:", numCPUs, NUM_CPUS_Y, CPUs_W);
+    }
+
     /** Populate the MakerPanel with zoom-in and zoom-out options */
     private void addZoomOptions() {
         int xR = MIDDLE;
@@ -114,6 +123,8 @@ class MakerPanel extends Panel {
                     try {
                         String tag = NAME_FIELD.getText();
                         map.setTag(tag);
+                        int CPUs = Integer.valueOf(NUM_CPUS_FIELD.getText());
+                        map.setNumCPUs(CPUs);
                         String dir = String.format("%s/%s%s",
                                 SAVE_DIR, tag, SAVE_EXT);
                         FileOutputStream f = new FileOutputStream(dir);

@@ -26,16 +26,18 @@ class Tile extends JButton {
             {"flat", "convex", "concave"};
     private static boolean pressed;
     static String terrainSelection;
+    private Map map;
     private String texture;
     private int pathInd;
     private int orientationInd;
 
     /** Tile constructors */
-    Tile() {
-        this("grass", 0, 0);
+    Tile(Map m) {
+        this(m,"grass", 0, 0);
     }
 
-    private Tile(String t, int p, int o) {
+    private Tile(Map m, String t, int p, int o) {
+        map     = m;
         texture = t;
         pathInd = p;
         orientationInd = o;
@@ -83,9 +85,25 @@ class Tile extends JButton {
 
             @Override
             public void keyTyped(KeyEvent e) {
-                if (e.getKeyChar() == 'r') {
-                    cycleOrientation();
+                char key = e.getKeyChar();
+                switch (key) {
+                    case 'r':
+                        cycleOrientation();
+                        break;
+                    case 'w':
+                        map.setStartAngle(90);
+                        break;
+                    case 'a':
+                        map.setStartAngle(180);
+                        break;
+                    case 's':
+                        map.setStartAngle(270);
+                        break;
+                    case 'd':
+                        map.setStartAngle(0);
+                        break;
                 }
+                repaint();
             }
 
             @Override
@@ -185,7 +203,6 @@ class Tile extends JButton {
         String path = getPath();
         if ("concave".equals(path) || "convex".equals(path)) {
             orientationInd = (orientationInd + 1) % 4;
-            paint(getGraphics());
         }
     }
 
@@ -199,6 +216,25 @@ class Tile extends JButton {
                 Color color = getColor(texture);
                 g.setColor(color);
                 g.fillRect(i, j, 1, 1);
+            }
+        }
+        if (this == map.getStartTile()) {
+            int x = PIXELS_PER_TILE / 2;
+            int y = PIXELS_PER_TILE / 2;
+            g.setColor(Color.ORANGE);
+            switch (map.getStartAngle()) {
+                case 0:
+                    g.drawString("\u25BA", x, y);
+                    break;
+                case 90:
+                    g.drawString("\u25B2", x, y);
+                    break;
+                case 180:
+                    g.drawString("\u25C4", x, y);
+                    break;
+                case 270:
+                    g.drawString("\u25BC", x, y);
+                    break;
             }
         }
     }

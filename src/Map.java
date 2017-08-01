@@ -11,13 +11,17 @@ import java.awt.Dimension;
 class Map extends JPanel implements Serializable {
 
     /** Map attributes */
-    private static final int DEFAULT_WIDTH  = 6;
-    private static final int DEFAULT_HEIGHT = 4;
-    private static final String DEFAULT_TAG = "New Map";
+    private static final int DEFAULT_WIDTH      = 6;
+    private static final int DEFAULT_HEIGHT     = 4;
+    private static final int DEFAULT_NUM_CPUS   = 4;
+    private static final String DEFAULT_TAG     = "New Map";
     private static final Color BACKGROUND_COLOR = new Color(65, 136, 145);
-    private String tag;
     private int width, height;
+    private int numCPUs;
+    private String tag;
     private ArrayList<ArrayList<Tile>> tiles;
+    private Tile startTile;
+    private double startAngle;
 
     /** Map constructors */
     Map() {
@@ -31,11 +35,17 @@ class Map extends JPanel implements Serializable {
         for (int i = 0; i < height; i += 1) {
             ArrayList<Tile> row = new ArrayList<>();
             for (int j = 0; j < width; j += 1) {
-                row.add(new Tile());
+                row.add(new Tile(this));
             }
             tiles.add(row);
         }
         tag = DEFAULT_TAG;
+        if (tiles.size() != 0) {
+            setStartTile(tiles.get(0).get(0));
+        } else {
+            setStartTile(null);
+        }
+        numCPUs = DEFAULT_NUM_CPUS;
         setBackground(BACKGROUND_COLOR);
         setLayout(null);
         render();
@@ -51,36 +61,24 @@ class Map extends JPanel implements Serializable {
         return height;
     }
 
+    /** Get the number of CPUs to be generated on the Map */
+    int getNumCPUs() {
+        return numCPUs;
+    }
+
     /** Get the tag of the Map */
     String getTag() {
         return tag;
     }
 
-    /** Render the Map */
-    void render() {
-        int PPT = Tile.PIXELS_PER_TILE;
-        setPreferredSize(new Dimension(width * PPT, height * PPT));
-        for (int i = 0; i < height; i += 1) {
-            ArrayList<Tile> row = tiles.get(i);
-            for (int j = 0; j < width; j += 1) {
-                Tile tile = row.get(j);
-                tile.setBounds(j * PPT, i * PPT, PPT, PPT);
-                tile.setOpaque(true);
-                tile.setBorderPainted(false);
-                add(tile);
-            }
-        }
+    /** Get the Tile where the UserCar will start */
+    Tile setStartTile() {
+        return startTile;
     }
 
-    /** Add listeners to every Tile in the Map */
-    void addListeners() {
-        for (int i = 0; i < height; i += 1) {
-            ArrayList<Tile> row = tiles.get(i);
-            for (int j = 0; j < width; j += 1) {
-                Tile tile = row.get(j);
-                tile.addListeners();
-            }
-        }
+    /** Get the angle at which the UserCar will start */
+    double setStartAngle() {
+        return startAngle;
     }
 
     /** Change the Map height */
@@ -89,7 +87,7 @@ class Map extends JPanel implements Serializable {
             for (int h = height; h < newHeight; h += 1) {
                 ArrayList<Tile> row = new ArrayList<>();
                 for (int w = 0; w < width; w += 1) {
-                    row.add(new Tile());
+                    row.add(new Tile(this));
                 }
                 tiles.add(row);
             }
@@ -111,7 +109,7 @@ class Map extends JPanel implements Serializable {
         if (newWidth >= width) {
             for (ArrayList<Tile> row : tiles) {
                 for (int w = width; w < newWidth; w += 1) {
-                    row.add(new Tile());
+                    row.add(new Tile(this));
                 }
             }
         } else {
@@ -126,9 +124,24 @@ class Map extends JPanel implements Serializable {
         render();
     }
 
+    /** Change the number of CPUs to the generated on the Map */
+    void setNumCPUs(int newNumCPUs) {
+        numCPUs = newNumCPUs;
+    }
+
     /** Change the Map tag */
     void setTag(String newTag) {
         tag = newTag;
+    }
+
+    /** Set the Tile where the UserCar will start */
+    void setStartTile(Tile newStartTile) {
+        startTile = newStartTile;
+    }
+
+    /** Set the angle at which the UserCar will start */
+    void setStartAngle(double newStartAngle) {
+        startAngle = newStartAngle;
     }
 
     /** Get the Tile at a specific (x, y) pixel coordinate in the Map */
@@ -144,6 +157,33 @@ class Map extends JPanel implements Serializable {
         int xTile = x % Tile.PIXELS_PER_TILE;
         int yTile = y % Tile.PIXELS_PER_TILE;
         return tile.getFriction(xTile, yTile);
+    }
+
+    /** Add listeners to every Tile in the Map */
+    void addListeners() {
+        for (int i = 0; i < height; i += 1) {
+            ArrayList<Tile> row = tiles.get(i);
+            for (int j = 0; j < width; j += 1) {
+                Tile tile = row.get(j);
+                tile.addListeners();
+            }
+        }
+    }
+
+    /** Render the Map */
+    void render() {
+        int PPT = Tile.PIXELS_PER_TILE;
+        setPreferredSize(new Dimension(width * PPT, height * PPT));
+        for (int i = 0; i < height; i += 1) {
+            ArrayList<Tile> row = tiles.get(i);
+            for (int j = 0; j < width; j += 1) {
+                Tile tile = row.get(j);
+                tile.setBounds(j * PPT, i * PPT, PPT, PPT);
+                tile.setOpaque(true);
+                tile.setBorderPainted(false);
+                add(tile);
+            }
+        }
     }
 
 }

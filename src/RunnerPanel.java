@@ -1,10 +1,44 @@
+import javax.swing.Timer;
+
+import java.awt.event.ActionEvent;
+
 /** RunnerPanel class */
 class RunnerPanel extends Panel {
+
+    /** RunnerPanel attributes */
+    private static final int PLAY_Y        = TOP;
+    private static final int PAUSE_Y       = 300;
+    private static final int BUTTON_SIZE   = PANEL_WIDTH / 3;
+    private static final int STEP_DURATION = 500; // Milliseconds
+    private double START_ANGLE             = 0;
+    private Timer timer;
 
     /** RunnerPanel constructor */
     RunnerPanel(RunnerMenu m) {
         super(m);
+        addPausePlayButtons();
         addBackOption();
+        setTimer();
+    }
+
+    /** Populate the RunnerPanel with pause & play buttons */
+    private void addPausePlayButtons() {
+        String pause = "<html>&#10073;&#10073;<html>";
+        String play  = "\u25B6";
+        addButton(pause, BUTTON_SIZE, PAUSE_Y, BUTTON_SIZE, BUTTON_SIZE,
+            (ActionEvent a) -> {timer.stop();}
+        );
+        addButton(play, BUTTON_SIZE, PLAY_Y, BUTTON_SIZE, BUTTON_SIZE,
+            (ActionEvent a) -> {timer.start();}
+        );
+    }
+
+    /** Initialize the Timer */
+    private void setTimer() {
+        timer = new Timer(STEP_DURATION, (ActionEvent a) -> {
+            // TODO: call each Car's `step` method
+            repaint();
+        });
     }
 
     /** Update fields in the RunnerPanel after changing the Map */
@@ -12,6 +46,14 @@ class RunnerPanel extends Panel {
     }
 
 }
+
+// TODO: address the panel bug that occurs when you have no maps and click "new map"
+
+// TODO: test the NUM_CPUs field in the MakerPanel
+
+// TODO: what happens if you enter a word into height/width textbox?
+
+// TDOO: what happens if you enter a word into num CPUs textbox?
 
 // TODO: MapRunner
 // You put the car down, specifying a cardinal direction on the menu. It appears, but the angle is plus or minus some error, generally going in that direction.
