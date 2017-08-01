@@ -1,247 +1,166 @@
+from Tkinter import Button
+
+from read_config import read_config
+
+configs = read_config()
+PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
+DEFAULT_TERRAIN = configs["DEFAULT_TERRAIN"]
+TEXTURES = configs["TEXTURES"]
+PATHS = configs["PATHS"]
+
 # Tile class
-class Tile:
+class Tile(Button):
 
-    None
+    # Tile class attributes
+    terrain_selection = DEFAULT_TERRAIN
+    pressed = False
 
-# import java.util.HashMap;
-#
-# import javax.swing.JButton;
-# import javax.swing.SwingUtilities;
-#
-# import java.awt.Color;
-# import java.awt.Graphics;
-# import java.awt.event.KeyEvent;
-# import java.awt.event.KeyListener;
-# import java.awt.event.MouseEvent;
-# import java.awt.event.MouseListener;
-#
-# /** Tile subclass */
-# class Tile extends JButton {
-#
-#     /** Tile attributes */
-#     static int PIXELS_PER_TILE = 150;
-#     private static final HashMap<String, Object[]> TEXTURES = new HashMap<>();
-#     static {
-#         TEXTURES.put("grass",  new Object[]{0.5, new Color(65,  145, 65 )});
-#         TEXTURES.put("gravel", new Object[]{0.9, new Color(145, 116, 65 )});
-#         TEXTURES.put("road",   new Object[]{0.5, new Color(86,  81,  72 )});
-#         TEXTURES.put("ice",    new Object[]{0.1, new Color(189, 239, 239)});
-#     }
-#     private static final String[] PATHS = new String[]
-#             {"flat", "convex", "concave"};
-#     private static boolean pressed;
-#     static String terrainSelection;
-#     private Map map;
-#     private String texture;
-#     private int pathInd;
-#     private int orientationInd;
-#
-#     /** Tile constructors */
-#     Tile(Map m) {
-#         this(m,"grass", 0, 0);
-#     }
-#
-#     private Tile(Map m, String t, int p, int o) {
-#         map     = m;
-#         texture = t;
-#         pathInd = p;
-#         orientationInd = o;
-#         setBackground(getColor(texture));
-#         addListeners();
-#     }
-#
-#     /** Populate the Tile with listeners to allow user interfacing */
-#     void addListeners() {
-#         addMouseListener(new MouseListener() {
-#
-#             @Override
-#             public void mouseEntered(MouseEvent e) {
-#                 requestFocus();
-#                 if (pressed) {
-#                     changeTexture(terrainSelection);
-#                 }
-#             }
-#
-#             @Override
-#             public void mouseExited(MouseEvent e) {
-#             }
-#
-#             @Override
-#             public void mouseClicked(MouseEvent e) {
-#             }
-#
-#             @Override
-#             public void mousePressed(MouseEvent e) {
-#                 if (SwingUtilities.isLeftMouseButton(e)) {
-#                     pressed = true;
-#                     changeTexture(terrainSelection);
-#                 } else if (SwingUtilities.isRightMouseButton(e)) {
-#                     cyclePath();
-#                 }
-#             }
-#
-#             @Override
-#             public void mouseReleased(MouseEvent e) {
-#                 pressed = false;
-#             }
-#
-#         });
-#         addKeyListener(new KeyListener() {
-#
-#             @Override
-#             public void keyTyped(KeyEvent e) {
-#                 char key = e.getKeyChar();
-#                 switch (key) {
-#                     case 'r':
-#                         cycleOrientation();
-#                         break;
-#                     case 'w':
-#                         map.setStartAngle(90);
-#                         break;
-#                     case 'a':
-#                         map.setStartAngle(180);
-#                         break;
-#                     case 's':
-#                         map.setStartAngle(270);
-#                         break;
-#                     case 'd':
-#                         map.setStartAngle(0);
-#                         break;
-#                 }
-#                 repaint();
-#             }
-#
-#             @Override
-#             public void keyPressed(KeyEvent e) {
-#             }
-#
-#             @Override
-#             public void keyReleased(KeyEvent e) {
-#             }
-#
-#         });
-#     }
-#
-#     /** Update PIXELS_PER_TILE */
-#     static void setPPT(int pixelsPerTile) {
-#         PIXELS_PER_TILE = pixelsPerTile;
-#     }
-#
-#     /** Get the friction coefficient for the specified texture */
-#     double getFriction(int x, int y) {
-#         String ptTexture = getPtTextureInd(x, y);
-#         return getFriction(ptTexture);
-#     }
-#
-#     private static double getFriction(String texture) {
-#         return (double) TEXTURES.get(texture)[0];
-#     }
-#
-#     /** Get the Color for the specified texture */
-#     private static Color getColor(String texture) {
-#         return (Color) TEXTURES.get(texture)[1];
-#     }
-#
-#     /** Get path shape */
-#     private String getPath() {
-#         return PATHS[pathInd];
-#     }
-#
-#     /** Get texture at a specific (x, y) coordinate on the Tile */
-#     private String getPtTextureInd(int x, int y) {
-#         String path = getPath();
-#         if ("flat".equals(path)) {
-#             return texture;
-#         }
-#         boolean inCircle = true;
-#         switch(getOrientation()) {
-#             case 0:
-#                 inCircle = inCircle(x, y - PIXELS_PER_TILE);
-#                 break;
-#             case 90:
-#                 inCircle = inCircle(x - PIXELS_PER_TILE, y - PIXELS_PER_TILE);
-#                 break;
-#             case 180:
-#                 inCircle = inCircle(x - PIXELS_PER_TILE, y);
-#                 break;
-#             case 270:
-#                 inCircle = inCircle(x, y);
-#                 break;
-#         }
-#         if ("convex".equals(path)) {
-#             return (inCircle) ? texture : "grass";
-#         } else {
-#             return (inCircle) ? "grass" : texture;
-#         }
-#     }
-#
-#     private boolean inCircle(int x, int y) {
-#         return x * x + y * y <= PIXELS_PER_TILE * PIXELS_PER_TILE;
-#     }
-#
-#     /** Get orientation */
-#     private int getOrientation() {
-#         return 90 * orientationInd;
-#     }
-#
-#     /** Cycle to the next path */
-#     private void cyclePath() {
-#         if (!"grass".equals(texture)) {
-#             pathInd = (pathInd + 1) % PATHS.length;
-#             paint(getGraphics());
-#         }
-#     }
-#
-#     /** Change the texture */
-#     private void changeTexture(String newTexture) {
-#         if (TEXTURES.containsKey(newTexture)) {
-#             texture = newTexture;
-#             setBackground(getColor(texture));
-#             if ("grass".equals(texture)) {
-#                 pathInd = 0;
-#             }
-#         }
-#     }
-#
-#     /** Cycle to the next orientation */
-#     private void cycleOrientation() {
-#         String path = getPath();
-#         if ("concave".equals(path) || "convex".equals(path)) {
-#             orientationInd = (orientationInd + 1) % 4;
-#         }
-#     }
-#
-#     /** Draw the Tile */
-#     @Override
-#     public void paint(Graphics g) {
-#         super.paintComponent(g);
-#         for (int i = 0; i < PIXELS_PER_TILE; i += 1) {
-#             for (int j = 0; j < PIXELS_PER_TILE; j += 1) {
-#                 String texture = getPtTextureInd(i, j);
-#                 Color color = getColor(texture);
-#                 g.setColor(color);
-#                 g.fillRect(i, j, 1, 1);
-#             }
-#         }
-#         if (this == map.getStartTile()) {
-#             int x = PIXELS_PER_TILE / 2;
-#             int y = PIXELS_PER_TILE / 2;
-#             g.setColor(Color.ORANGE);
-#             switch (map.getStartAngle()) {
-#                 case 0:
-#                     g.drawString("\u25BA", x, y);
-#                     break;
-#                 case 90:
-#                     g.drawString("\u25B2", x, y);
-#                     break;
-#                 case 180:
-#                     g.drawString("\u25C4", x, y);
-#                     break;
-#                 case 270:
-#                     g.drawString("\u25BC", x, y);
-#                     break;
-#             }
-#         }
-#     }
-#
-# }
+    # Tile constructors
+    def __init__(self, map, texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
+        super(self)
+        self.map = map
+        self.texture = texture
+        self.path_ind = path_ind
+        self.orientation = orientation
+        # TODO: setBackground(getColor(texture));
+        self.add_listeners()
+
+    # Populate the Tile with listeners to allow user interfacing
+    def add_listeners(self):
+        self.bind("<Enter>", self.on_enter)
+        self.bind("<Button-1>", self.on_leftclick)
+        self.bind("<Button-2>", self.on_rightclick)
+        self.bind("<Key>", self.on_keypress)
+
+    def on_enter(self, event):
+        # TODO: requestFocus()
+        if Tile.pressed:
+            self.set_texture(Tile.terrain_selection)
+
+    def on_leftclick(self, event):
+        Tile.pressed = True
+        self.change_texture(Tile.terrain_selection)
+
+    def on_rightclick(self, event):
+        self.cycle_path()
+
+    def on_keypress(self, event):
+        char = event.char
+        if char == "r":
+            self.cycle_orientation()
+        elif char == "w":
+            self.map.set_start_angle(90)
+        elif char == "a":
+            self.map.set_start_angle(180)
+        elif char == "s":
+            self.map.set_start_angle(270)
+        elif char == "d":
+            self.map.set_start_angle(0)
+        self.repaint()
+
+    # Getter method: texture
+    def get_texture(self):
+        return self.texture
+
+    # Getter method: texture [given (x, y) coordinate]
+    def get_point_texture(self, x, y):
+        path = self.get_path()
+        if path == "flat":
+            return self.get_texture()
+        else:
+            in_circle = True
+            orientation = self.get_orientation()
+            if orientation == 0:
+                in_circle = self.in_circle(x, y - PIXELS_PER_TILE)
+            elif orientation == 90:
+                in_circle = self.in_circle(x - PIXELS_PER_TILE, y - PIXELS_PER_TILE)
+            elif orientation == 180:
+                in_circle = self.in_circle(x - PIXELS_PER_TILE, y)
+            elif orientation == 270:
+                in_circle = self.in_circle(x, y)
+            else:
+                raise Exception("Unsupported texture")
+            if path == "convex":
+                return self.get_texture() if in_circle else DEFAULT_TERRAIN
+            elif path == "concave":
+                return DEFAULT_TERRAIN if in_circle else self.get_texture()
+            else:
+                raise Exception("Unsupported path type")
+
+    @staticmethod
+    def in_circle(x, y):
+        return x * x + y * y <= PIXELS_PER_TILE * PIXELS_PER_TILE
+
+    # Getter method: path
+    def get_path(self):
+        return PATHS[self.path_ind]
+
+    # Getter method: orientation
+    def get_orientation(self):
+        return self.orientation
+
+    # Getter method: friction [provided texture]
+    @staticmethod
+    def get_texture_friction(texture):
+        return TEXTURES[texture][0]
+
+    # Getter method: friction [provided (x, y) coordinate]
+    def get_point_friction(self, x, y):
+        texture = self.get_point_texture(x, y)
+        return Tile.get_texture_friction(self.get_texture())
+
+    # Setter method: texture
+    def set_texture(self, texture):
+        if TEXTURES.has_key(texture):
+            self.texture = texture
+            # TODO: setBackground(getColor(texture))
+            if self.texture == DEFAULT_TERRAIN:
+                self.path_ind = 0
+
+    # Cycle to the next path type
+    def cycle_path(self):
+        if self.get_texture() != DEFAULT_TERRAIN:
+            self.path_ind = (self.path_ind + 1) % len(PATHS)
+            # TODO: paint(getGraphics());
+
+    # Cycle to the next orientation
+    def cycle_orientation(self):
+        path = self.get_path()
+        if path == "convex" or path == "concave":
+            self.orientation = (self.orientation + 90) % 360
+
+    # TODO
+    #     /** Draw the Tile */
+    #     @Override
+    #     public void paint(Graphics g) {
+    #         super.paintComponent(g);
+    #         for (int i = 0; i < PIXELS_PER_TILE; i += 1) {
+    #             for (int j = 0; j < PIXELS_PER_TILE; j += 1) {
+    #                 String texture = getPtTextureInd(i, j);
+    #                 Color color = getColor(texture);
+    #                 g.setColor(color);
+    #                 g.fillRect(i, j, 1, 1);
+    #             }
+    #         }
+    #         if (this == map.getStartTile()) {
+    #             int x = PIXELS_PER_TILE / 2;
+    #             int y = PIXELS_PER_TILE / 2;
+    #             g.setColor(Color.ORANGE);
+    #             switch (map.getStartAngle()) {
+    #                 case 0:
+    #                     g.drawString("\u25BA", x, y);
+    #                     break;
+    #                 case 90:
+    #                     g.drawString("\u25B2", x, y);
+    #                     break;
+    #                 case 180:
+    #                     g.drawString("\u25C4", x, y);
+    #                     break;
+    #                 case 270:
+    #                     g.drawString("\u25BC", x, y);
+    #                     break;
+    #             }
+    #         }
+    #     }
+    #
+    # }

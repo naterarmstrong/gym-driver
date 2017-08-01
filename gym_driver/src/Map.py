@@ -3,15 +3,6 @@ class Map:
 
     None
 
-# import java.util.ArrayList;
-#
-# import java.io.Serializable;
-#
-# import javax.swing.JPanel;
-#
-# import java.awt.Color;
-# import java.awt.Dimension;
-#
 # /** Map class */
 # class Map extends JPanel implements Serializable {
 #
