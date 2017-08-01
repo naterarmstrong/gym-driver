@@ -1,7 +1,37 @@
 from Panel import Panel
+import Tkinter
 
 # MainPanel class
 class MainPanel(Panel):
+    button_height = 10
+    button_width = 20
+
+    next_prev_width = 10
+    next_prev_height = 10
+
+    def __init__(self, root):
+        self.root = root
+        self.setEditButton()
+        self.setRunButton()
+        self.setNextButton()
+        self.setPrevButton()
+
+    def setEditButton(self):
+        editButton = Tkinter.Button(self.root, text="EDIT", command=None, width=self.button_width, height=self.button_height, borderwidth = 0)
+        editButton.place(x = 1000, y=0)
+
+    def setRunButton(self):
+        editButton = Tkinter.Button(self.root, text="RUN", command=None, width=self.button_width, height=self.button_height, borderwidth = 0)
+        editButton.place(x = 1000, y = 10 * self.button_height)
+
+    def setNextButton(self):
+        editButton = Tkinter.Button(self.root, text=">", command=None)
+        editButton.place(x = 200, y = 20 * self.button_height)
+
+    def setPrevButton(self):
+        editButton = Tkinter.Button(self.root, text="<", command=None)
+        editButton.place(x = 1100 - 5*self.next_prev_width, y = 20 * self.button_height)
+
 
     None
 

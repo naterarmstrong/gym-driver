@@ -1,8 +1,23 @@
 from MapMenu import MapMenu
+from MainPanel import MainPanel
+from Tkinter import *
+
+
+
+frame_height = 600
+frame_width = 1200
+
 
 class MainMenu(MapMenu):
+    def __init__(self, root):
+        panel = MainPanel(root)
+        return;
 
-    None
+root = Tk()
+frame = Frame(root, height = frame_height, width = frame_width)
+frame.pack()
+MainMenu(root)
+root.mainloop()
 
 # import javax.swing.JFrame;
 # import javax.swing.WindowConstants;
