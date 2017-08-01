@@ -14,4 +14,4 @@ class PointCar(Car):
         dy = dist * sin(deg2rad(self.angle))
         self.x += dx
         self.y += dy
-        self.vel = max(min(vel, MAX_VEL), 0)
+        self.vel = max(min(self.vel + self.acc, MAX_VEL), 0)
