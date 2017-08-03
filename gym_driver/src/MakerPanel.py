@@ -17,7 +17,6 @@ class MakerPanel(Panel):
     # MakerPanel constructor
     def __init__(self, maker_menu):
         Panel.__init__(self, maker_menu)
-        self.add_buttons()
         self.terrain_selection = DEFAULT_TERRAIN
 
     # Populate the MakerPanel with buttons

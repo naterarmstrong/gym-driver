@@ -36,6 +36,7 @@ class Menu(PanedWindow):
     # Setter method: title
     def set_title(self, title):
         self.title = title
+        self.root.wm_title(self.get_title())
 
     # Setter method: map
     def set_map(self, map):

@@ -16,6 +16,7 @@ class Panel:
     # Panel constructor
     def __init__(self, menu):
         self.menu = menu
+        self.add_buttons()
 
 #     /** Panel attributes */
 #     static final int TOP           = 30;
