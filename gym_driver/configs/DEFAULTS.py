@@ -13,6 +13,10 @@ SAVE_EXT = ".pkl"
 # Panel
 LABEL_W = 50
 LABEL_H = 30
+MARGIN = 5
+
+# MainPanel
+EDIT_MAP_Y = 10
 
 # Map
 DEFAULT_NUM_CPUS = 4
@@ -46,6 +50,10 @@ configs = {
     # Panel
     "LABEL_W": LABEL_W,
     "LABEL_H": LABEL_H,
+    "MARGIN": MARGIN,
+
+    # MainPanel
+    "EDIT_MAP_Y": EDIT_MAP_Y,
 
     # Map
     "DEFAULT_NUM_CPUS": DEFAULT_NUM_CPUS,

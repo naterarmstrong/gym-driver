@@ -9,18 +9,21 @@ from read_config import read_config
 configs = read_config()
 SAVE_DIR = configs["SAVE_DIR"]
 SAVE_EXT = configs["SAVE_EXT"]
+WINDOW_W = configs["WINDOW_W"]
+WINDOW_H = configs["WINDOW_H"]
 PANEL_W = configs["PANEL_W"]
 PANEL_H = configs["PANEL_H"]
+EDIT_MAP_Y = configs["EDIT_MAP_Y"]
 
 # MainPanel class
 class MainPanel(Panel):
 
     # MainPanel constructor
-    def __init__(self, main_menu):
+    def __init__(self, root, main_menu):
         self.saves = MapList()
         if self.saves.get_size():
             self.set_map(self.saves.peek())
-        Panel.__init__(self, main_menu)
+        Panel.__init__(self, root, main_menu)
 
     # Populate the MainPanel with buttons
     def add_buttons(self):
@@ -37,24 +40,24 @@ class MainPanel(Panel):
             text = "Name: " + self.get_map().get_tag()
         else:
             text = "No Map Selected"
-        self.name_field = Label(text=text)
-
-
-    # /** Populate the MainPanel with a label corresponding to its Map's name */
-    #     private void addNameLabel() {
-    #         String text;
-    #         if (saves.getSize() != 0) {
-    #             text = NAME_LABEL + getMap().getTag();
-    #         } else {
-    #             text = "No Map Selected";
-    #         }
-    #         NAME_FIELD = new JLabel(text);
-    #         NAME_FIELD.setBounds(0, TOP, PANEL_W, INPUT_H);
-    #         add(NAME_FIELD);
-    #     }
+        self.add_label(text, 0, 0)
 
     def add_edit_map(self):
-        None
+        def edit_map():
+            None
+        self.add_button("Edit Map", 30, 1, edit_map)
+
+    #     /** Populate the MainPanel with edit options */
+    #     private void addEditButton() {
+    #         addButton("Edit Map", 0, EDIT_Y, PANEL_W, INPUT_H,
+    #                 (ActionEvent a) -> {
+    #                     Map map = getMap();
+    #                     if (saves.getSize() != 0) {
+    #                         map.addListeners();
+    #                         changeScreen(new MakerMenu(map));
+    #                     }
+    #                 });
+    #     }
 
     def add_run_map(self):
         None
@@ -84,33 +87,6 @@ class MainPanel(Panel):
 #     private static final String NAME_LABEL = "Name: ";
 #     private JLabel NAME_FIELD;
 #     private MapList saves;
-#
-#     /** MainPanel constructor */
-#     MainPanel(MainMenu m) {
-#         super(m);
-#         saves = new MapList();
-#         addNameLabel();
-#         addEditButton();
-#         addRunButton();
-#         addPrevNextButtons();
-#         addSelectButton();
-#         addNewButton();
-#         if (saves.getSize() != 0) {
-#             setMap(saves.peek());
-#         }
-#     }
-#
-#     /** Populate the MainPanel with edit options */
-#     private void addEditButton() {
-#         addButton("Edit Map", 0, EDIT_Y, PANEL_W, INPUT_H,
-#                 (ActionEvent a) -> {
-#                     Map map = getMap();
-#                     if (saves.getSize() != 0) {
-#                         map.addListeners();
-#                         changeScreen(new MakerMenu(map));
-#                     }
-#                 });
-#     }
 #
 #     /** Populate the MainPanel with run options */
 #     private void addRunButton() {

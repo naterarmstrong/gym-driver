@@ -10,4 +10,4 @@ class MainMenu(Menu):
 
     # Make a new MainPanel for the MainMenu
     def make_panel(self):
-        return MainPanel(self)
+        return MainPanel(self.root, self)

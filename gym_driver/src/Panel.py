@@ -1,4 +1,6 @@
-from Tkinter import Label, Entry
+from Tkinter import\
+    Button, Label, Entry,\
+    X
 
 from read_config import read_config
 
@@ -13,42 +15,43 @@ PANEL_W = configs["PANEL_W"]
 PANEL_H = configs["PANEL_H"]
 LABEL_W = configs["LABEL_W"]
 LABEL_H = configs["LABEL_H"]
+MARGIN = configs["MARGIN"]
+PANEL_X = WINDOW_W - PANEL_W
 
 # Panel class
 class Panel:
 
     # Panel constructor
-    def __init__(self, menu):
+    def __init__(self, root, menu):
+        self.root = root
         self.menu = menu
         self.add_buttons()
 
-    # Utility method for populating the Panel with Text field
-    def add_text_field(self, label_text, field_text, y):
-        label = Label(self.menu.root, text=label_text)
-        label.place(x=0, y=y)
-        text_field = Entry(self.menu.root, text=field_text)
-        text_field.place(x=30, y=y)
+    # Getter method: map
+    def get_map(self):
+        return self.menu.get_map()
 
-#     /** Panel attributes */
-#     static final int MIDDLE        = PANEL_W / 2;
-#     static final int MARGIN        = 2;
-#     static final int LABEL_W       = 50;
-#     static final int INPUT_H       = 25;
-#     static final int BOTTOM        = WINDOW_H - INPUT_H - 60;
-#     Menu menu;
-#
-#     /** Utility method for populating the Panel with TextFields */
-#     TextField addTextField(String lTx, String fTx, int y, int w) {
-#         Label label = new Label(lTx);
-#         label.setBackground(Color.WHITE);
-#         label.setBounds(0, y, LABEL_W, INPUT_H);
-#         TextField field = new TextField(fTx);
-#         field.setBounds(LABEL_W, y, w, INPUT_H);
-#         add(label);
-#         add(field);
-#         return field;
-#     }
-#
+    # Setter method: map
+    def set_map(self, map):
+        self.menu.map.set_map(map)
+
+    # Utility method for populating the Panel with a Label
+    def add_label(self, text, x, y):
+        label = Label(self.root, text=text)
+        label.place(x=PANEL_X + x, y=y)
+
+    # Utility method for populating the Panel with Buttons
+    def add_button(self, text, y, cmd):
+        button = Button(self.root, text=text, command=cmd)
+        button.pack(fill=X)
+        button.place(x=PANEL_X, y=y + MARGIN)
+
+    # Utility method for populating the Panel with Label & Entry fields
+    def add_text_field(self, label_text, field_text, y):
+        self.add_label(label_text, y)
+        text_field = Entry(self.root, text=field_text)
+        text_field.place(x=PANEL_X + LABEL_W, y=y)
+
 #     /** Utility method for populating the Panel with JButtons */
 #     JButton addButton(String t, int x, int y, int w, int h,
 #                               ActionListener a) {

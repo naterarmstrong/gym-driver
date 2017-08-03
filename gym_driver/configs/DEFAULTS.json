@@ -17,13 +17,15 @@
             "#565148"
         ]
     }, 
+    "MARGIN": 5, 
+    "BACKGROUND_COLOR": "#4286f4", 
+    "PANEL_W": 200, 
+    "EDIT_MAP_Y": 10, 
     "PATHS": [
         "straight", 
         "convex", 
         "concave"
     ], 
-    "BACKGROUND_COLOR": "#4286f4", 
-    "PANEL_W": 200, 
     "DEFAULT_NUM_CPUS": 4, 
     "WINDOW_H": 600, 
     "PANE_W": 800, 
