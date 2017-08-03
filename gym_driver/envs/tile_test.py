@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from PIL import Image, ImageTk
 root = Tk()
 
 frame = ttk.Frame(root, padding='3 3 3 3')
@@ -42,28 +43,45 @@ def doneStroke(event):
     canvas.itemconfigure('currentline', width=1)  
 
 def setTileColor(newcolor, w, z):
-    index = 10*w + z
+    index = 4*w + z
+    if newcolor == "green":
+        print "YAY"
     print tile_list[index]
     canvas.itemconfigure(tile_list[index], fill=newcolor)
+
+def setTileImage(newimage, w, z):
+    index = 4*w + z
+    canvas.itemconfigure(tile_list[index], image=newimage)
+def test(event):
+    pass
         
 canvas.bind("<Button-1>", xy)
 canvas.bind("<B1-Motion>", addLine)
 canvas.bind("<B1-ButtonRelease>", doneStroke)
+canvas.bind("<Shift-Button-1>", test)
 
+moddable_curve_road = Image.open("../resources/curve_road.png")
+upleft_curve_road = ImageTk.PhotoImage(moddable_curve_road)
+upright_curve_road = ImageTk.PhotoImage(moddable_curve_road.rotate(90))
+straight_road = ImageTk.PhotoImage(Image.open("../resources/straight_road.png"))
+straight_ice = ImageTk.PhotoImage(Image.open("../resources/straight_ice.png"))
 tile_list = []
 def populate(tile_list):
     def creator(x, y):
-        id = canvas.create_rectangle((100*x, 100*y, 100*(x+1), 100*(y+1)), fill=cur_color)
-        canvas.tag_bind(id, "<Button-1>", lambda _: setTileColor("black", x, y))
+        id = canvas.create_image(75+150*x, 75 + 150*y, image=straight_road)
+        canvas.tag_bind(id, "<Button-1>", lambda _: setTileImage(upleft_curve_road, x, y))
+        canvas.tag_bind(id, "<Shift-Button-1>", lambda _: setTileImage(straight_road, x, y))
         tile_list.append(id)
-    for x in range(10):
-        for y in range(10):
+    for x in range(4):
+        for y in range(4):
             if x*y % 2 == 0:
                 cur_color = "red"
             else:
                 cur_color = "blue"
             creator(x, y)
 populate(tile_list)
+
+
 
 
 #id = canvas.create_rectangle((10, 10, 30, 30), fill="red", tags=('palette', 'palettered'))
