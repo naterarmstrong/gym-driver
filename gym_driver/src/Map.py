@@ -1,3 +1,5 @@
+from Tkinter import Canvas
+
 from Tile import Tile
 
 from read_config import read_config
@@ -31,6 +33,7 @@ class Map:
         else:
             self.set_start_tile(None)
         self.set_start_angle(DEFAULT_START_ANGLE)
+        self.set_canvas(Canvas())
         # TODO: setBackground(BACKGROUND_COLOR)
         # TODO: setLayout(null)
         # TODO: render()
@@ -78,6 +81,10 @@ class Map:
         x_pixel = x % PIXELS_PER_TILE
         y_pixel = y % PIXELS_PER_TILE
         return self.get_tile(x, y).get_point_friction(x_pixel, y_pixel)
+
+    # Getter method: canvas
+    def get_canvas(self):
+        return self.canvas
 
     # Setter method: width
     def set_width(self, width):
@@ -138,3 +145,16 @@ class Map:
     #     }
     #
     # }
+
+    # Setter method: canvas
+    def set_canvas(self, canvas):
+        self.canvas = canvas
+
+    # Step
+
+    # Reset
+
+    # Render
+
+    # TODO: putting cars on map, step, reset, render
+    # TODO: in Robert's code, where it has `Canvas()`, just set that equal to the Map's canvas
