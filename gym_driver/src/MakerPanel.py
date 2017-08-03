@@ -42,6 +42,9 @@ class MakerPanel(Panel):
     def add_back(self):
         None
 
+# TODO: see the revised Tile class on branch `natepy`
+# TODO: since Tile no longer extends button, you need to bind every Tile to a key listener with [canvas].tag_bind(id, <binding>, command)
+
 #     private TextField WIDTH_FIELD, HEIGHT_FIELD, NUM_CPUS_FIELD, NAME_FIELD;
 #
 #     /** Populate the MakerPanel with Map-resize options */

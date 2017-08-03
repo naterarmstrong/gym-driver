@@ -17,23 +17,27 @@
             "#565148"
         ]
     }, 
+    "MARGIN": 5, 
+    "BACKGROUND_COLOR": "#4286f4", 
+    "PANEL_W": 200, 
+    "EDIT_MAP_Y": 10, 
     "PATHS": [
         "straight", 
         "convex", 
         "concave"
     ], 
-    "WINDOW_HEIGHT": 600, 
     "DEFAULT_NUM_CPUS": 4, 
-    "SAVE_DIR": "../maps/", 
-    "WINDOW_WIDTH": 1000, 
-    "SAVE_EXT": ".ser", 
+    "WINDOW_H": 600, 
+    "PANE_W": 800, 
+    "LABEL_H": 30, 
+    "SAVE_EXT": ".pkl", 
     "DEFAULT_TERRAIN": "grass", 
-    "PANE_WIDTH": 400, 
-    "BACKGROUND_COLOR": "#4286f4", 
-    "PANE_HEIGHT": 600, 
-    "PANEL_HEIGHT": 600, 
+    "LABEL_W": 50, 
+    "PANE_H": 600, 
+    "WINDOW_W": 1000, 
+    "SAVE_DIR": "../maps/", 
     "DEFAULT_TAG": "New Map", 
     "PIXELS_PER_TILE": 200, 
-    "PANEL_WIDTH": 200, 
+    "PANEL_H": 600, 
     "DEFAULT_START_ANGLE": 0
 }

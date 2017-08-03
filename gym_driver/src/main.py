@@ -5,13 +5,13 @@ from MainMenu import MainMenu
 from read_config import read_config
 
 configs = read_config()
-WINDOW_WIDTH = configs["WINDOW_WIDTH"]
-WINDOW_HEIGHT = configs["WINDOW_HEIGHT"]
+WINDOW_W = configs["WINDOW_W"]
+WINDOW_H = configs["WINDOW_H"]
 
 # Run the FORDS app
 def main():
     root = Tk()
-    root.config(width=WINDOW_WIDTH, height=WINDOW_HEIGHT)
+    root.config(width=WINDOW_W, height=WINDOW_H)
     root.propagate(0)
     frame = Frame(root)
     main_menu = MainMenu(root)

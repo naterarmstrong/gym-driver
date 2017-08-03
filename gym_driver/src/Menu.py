@@ -5,10 +5,10 @@ from Tkinter import\
 from read_config import read_config
 
 configs = read_config()
-WINDOW_WIDTH = configs["WINDOW_WIDTH"]
-WINDOW_HEIGHT = configs["WINDOW_HEIGHT"]
-PANE_WIDTH = configs["PANE_WIDTH"]
-PANE_HEIGHT = configs["PANE_HEIGHT"]
+WINDOW_W = configs["WINDOW_W"]
+WINDOW_H = configs["WINDOW_H"]
+PANE_W = configs["PANE_W"]
+PANE_H = configs["PANE_H"]
 BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
 
 # Menu class
@@ -16,14 +16,15 @@ class Menu(PanedWindow):
 
     # Menu constructor
     def __init__(self, root, title, map,
-                 width=WINDOW_WIDTH, height=WINDOW_HEIGHT):
+                 width=WINDOW_W, height=WINDOW_H):
         PanedWindow.__init__(self)
         self.root = root
         self.set_title(title)
         self.set_map(map)
         self.width = width
         self.height = height
-        self.add_map_pane()
+        self.add_pane()
+        self.add_panel()
 
     # Getter method:
     def get_title(self):
@@ -43,7 +44,7 @@ class Menu(PanedWindow):
         self.map = map
 
     # Populate the Menu with a Map pane
-    def add_map_pane(self):
+    def add_pane(self):
         master = PanedWindow(bg=BACKGROUND_COLOR)
         master.pack(side=LEFT)
         master.propagate(0)
@@ -56,5 +57,9 @@ class Menu(PanedWindow):
         vbar.config(command=canvas.yview)
         canvas.config(xscrollcommand=hbar.set, yscrollcommand=vbar.set)
         canvas.pack(side=LEFT, expand=True, fill=BOTH)
-        master.config(width=PANE_WIDTH - 200, height=PANE_HEIGHT)
+        master.config(width=PANE_W, height=PANE_H)
         master.add(canvas)
+
+    # Populate the Menu with a Panel
+    def add_panel(self):
+        panel = self.make_panel()
