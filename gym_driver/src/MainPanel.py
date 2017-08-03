@@ -1,3 +1,4 @@
+from Tkinter import Label
 from os import listdir, path
 from pickle import load
 
@@ -36,6 +37,7 @@ class MainPanel(Panel):
             text = "Name: " + self.get_map().get_tag()
         else:
             text = "No Map Selected"
+        self.name_field = Label(text=text)
 
 
     # /** Populate the MainPanel with a label corresponding to its Map's name */
