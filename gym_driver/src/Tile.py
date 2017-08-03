@@ -22,7 +22,8 @@ PATHS = ['straight', 'quarter_turn']
 
 root = Tk()
 
-TEST_IMAGE = ImageTk.PhotoImage(Image.open("../resources/straight_road_200.png"))
+TEST_IMAGE = ImageTk.PhotoImage(Image.open("../resources/straight_road_20.png"))
+print Image.open("../resources/straight_road_20.png")
 
 def populate_terrain_images():
     # It's really ugly, but Tk has super weird scoping issues
@@ -113,7 +114,7 @@ class Tile:
             print "Not currently editing anything"
 
     def on_rightclick(self, event):
-        self.cycle_orientation()
+        print self.get_point_texture(event.x % PIXELS_PER_TILE, event.y % PIXELS_PER_TILE)
 
     def on_keypress(self, event):
         print "AYYY"
@@ -138,32 +139,62 @@ class Tile:
 
     # Getter method: texture [given (x, y) coordinate]
     def get_point_texture(self, x, y):
-        #TODO:: FIX
         path = self.get_path()
-        if path == "flat":
-            return self.get_texture()
+        texture = self.get_texture()
+        if texture == 'grass': # for efficiency
+            return 'grass'
+        elif path == 'straight':
+            return texture if self.in_straight_track(x, y) else 'grass'
+        elif path == 'quarter_turn':
+            return texture if self.in_quarter_turn(x, y) else 'grass'
         else:
-            orientation = self.get_orientation()
-            if orientation == 0:
-                in_circle = self.in_circle(x, y - PIXELS_PER_TILE)
-            elif orientation == 90:
-                in_circle = self.in_circle(x - PIXELS_PER_TILE, y - PIXELS_PER_TILE)
-            elif orientation == 180:
-                in_circle = self.in_circle(x - PIXELS_PER_TILE, y)
-            elif orientation == 270:
-                in_circle = self.in_circle(x, y)
-            else:
-                raise Exception("Unsupported orientation")
-            if path == "convex":
-                return self.get_texture() if in_circle else DEFAULT_TERRAIN
-            elif path == "concave":
-                return DEFAULT_TERRAIN if in_circle else self.get_texture()
-            else:
-                raise Exception("Unsupported path type")
+            raise Exception("Unsupported path type")
 
     @staticmethod
-    def in_circle(x, y):
-        return x * x + y * y <= PIXELS_PER_TILE * PIXELS_PER_TILE
+    def in_circle(x, y, r):
+        return x ** 2 + y ** 2 <= r ** 2
+
+
+    # Returns if point is in a straight track
+    # Assumes width of the track is 1/2 PIXELS_PER_TILE
+    def in_straight_track(self, x, y):
+        orientation = self.orientation
+        if orientation == 0 or orientation == 180:
+        # Horizontal straight track
+            if PIXELS_PER_TILE / 4 <= y and PIXELS_PER_TILE * .75 >= y:
+                return True
+            else:
+                return False
+        elif orientation == 90 or orientation == 270:
+            if PIXELS_PER_TILE / 4 <= x and PIXELS_PER_TILE * .75 >= x:
+                return True
+            else:
+                return False
+
+
+    # Returns if point is in a quarter turn
+    # Assumes width of the track is 1/2 PIXELS_PER_TILE
+    def in_quarter_turn(self, x, y):
+        # Orientation defines a right hand turn, with the
+        # right hand side along orientation. So a turn from
+        # orientation-90 degree to orientation degrees
+        orientation = self.get_orientation()
+        if orientation == 0:
+            newx, newy = PIXELS_PER_TILE - x, PIXELS_PER_TILE - y
+        elif orientation == 90:
+            newx, newy = PIXELS_PER_TILE - x, y
+        elif orientation == 180:
+            newx, newy = x, y
+        elif orientation == 270:
+            newx, newy = x, PIXELS_PER_TILE - y
+        else:
+            raise Exception("Unsupported orientation for a quarter turn")
+        sq_dist = newx ** 2 + newy ** 2
+        if sq_dist <= (PIXELS_PER_TILE ** 2) / 16 or \
+        sq_dist >= (PIXELS_PER_TILE ** 2) * 9 / 16:
+            return False
+        else:
+            return True
 
     # Getter method: path
     def get_path(self):
@@ -190,7 +221,6 @@ class Tile:
     # Setter method: texture
     def set_texture(self, texture):
         if texture in TEXTURES:
-            print "yay!"
             self.texture = texture
             if self.get_texture() == DEFAULT_TERRAIN:
                 self.set_path_ind(0)
@@ -219,41 +249,7 @@ class Tile:
         if newterrain in TEXTURES:
             Tile.terrain_selection = newterrain
 
-    # TODO
-    #     /** Draw the Tile */
-    #     @Override
-    #     public void paint(Graphics g) {
-    #         super.paintComponent(g);
-    #         for (int i = 0; i < PIXELS_PER_TILE; i += 1) {
-    #             for (int j = 0; j < PIXELS_PER_TILE; j += 1) {
-    #                 String texture = getPtTextureInd(i, j);
-    #                 Color color = getColor(texture);
-    #                 g.setColor(color);
-    #                 g.fillRect(i, j, 1, 1);
-    #             }
-    #         }
-    #         if (this == map.getStartTile()) {
-    #             int x = PIXELS_PER_TILE / 2;
-    #             int y = PIXELS_PER_TILE / 2;
-    #             g.setColor(Color.ORANGE);
-    #             switch (map.getStartAngle()) {
-    #                 case 0:
-    #                     g.drawString("\u25BA", x, y);
-    #                     break;
-    #                 case 90:
-    #                     g.drawString("\u25B2", x, y);
-    #                     break;
-    #                 case 180:
-    #                     g.drawString("\u25C4", x, y);
-    #                     break;
-    #                 case 270:
-    #                     g.drawString("\u25BC", x, y);
-    #                     break;
-    #             }
-    #         }
-    #     }
-    #
-    # }
+
 
 #### TEST
 h = ttk.Scrollbar(root, orient=HORIZONTAL)
@@ -304,23 +300,15 @@ choice_ice.grid(column=0, row=10)
 #### END MAKESHIFT SIDEPANEL
 
 canvas2.bind("<Enter>", lambda event: canvas2.focus_set())
-def terrain_changer(event):
-    char = event.char
-    if char == 'g':
-        Tile.terrain_selection == 'gravel'
-    elif char == 'i':
-        Tile.terrain_selection == 'ice'
-
-canvas2.bind("<Key>", terrain_changer)
 
 
-#images = Tile.terrain_images['road']['straight']
-#images = ImageTk.PhotoImage(images)
-#canvas2.create_image(0, 0, image=images)
+
+images = Tile.terrain_images['road']['straight'][0]
+canvas2.create_image(0, 0, image=images)
 
 tiles = []
-for x in range(3):
-    for y in range(3):
+for x in range(5):
+    for y in range(5):
         t = Tile(None, canvas=canvas2)
         t.render_to_canvas(x, y)
         t.add_listeners()
