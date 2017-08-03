@@ -1,4 +1,5 @@
 # Menu class
+from Tkinter import *
 class Menu:
 
     None

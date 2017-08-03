@@ -18,11 +18,13 @@ class MainPanel(Panel):
 
     def setEditButton(self):
         editButton = Tkinter.Button(self.root, text="EDIT", command=None, width=self.button_width, height=self.button_height, borderwidth = 0)
+        editButton.pack()
         editButton.place(x = 1000, y=0)
 
     def setRunButton(self):
-        editButton = Tkinter.Button(self.root, text="RUN", command=None, width=self.button_width, height=self.button_height, borderwidth = 0)
-        editButton.place(x = 1000, y = 10 * self.button_height)
+        runButton = Tkinter.Button(self.root, text="RUN", command=None, width = 10, height= 0, borderwidth = 0, highlightbackground='#3E4149')
+        runButton.pack()
+        runButton.place(x = 1000, y = 10 * self.button_height)
 
     def setNextButton(self):
         editButton = Tkinter.Button(self.root, text=">", command=None)

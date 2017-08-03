@@ -60,7 +60,8 @@ class MainMenu(PanedWindow):
         master = PanedWindow(bg="blue")
         master.pack(side=LEFT)
         master.propagate(0)
-        canvas = Canvas(master, scrollregion=(0, 0, frame_width, frame_height), bg="green")
+        canvas = Canvas(master, scrollregion=(0, 0, frame_width, frame_height), bg="blue")
+        canvas.config(width = frame_width, height = frame_height)
         hbar = Scrollbar(master, orient=HORIZONTAL)
         hbar.pack(side=BOTTOM, fill=X)
         hbar.config(command=canvas.xview)
@@ -70,6 +71,13 @@ class MainMenu(PanedWindow):
         canvas.config(xscrollcommand=hbar.set, yscrollcommand=vbar.set)
         canvas.pack(side=LEFT, expand=True, fill=BOTH)
         master.config(width=frame_width - self.button_width * LETTER_SIZE, height=frame_height)
+
+        b = Button(canvas)
+        b.pack()
+        canvas.create_window(235, 160, window=b)
+
+        canvas.create_rectangle(100, 100, 200, 200, fill="green")
+
         master.add(canvas)
 
 
