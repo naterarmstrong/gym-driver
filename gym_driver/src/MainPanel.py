@@ -3,20 +3,44 @@ from Panel import Panel
 # MainPanel class
 class MainPanel(Panel):
 
-    None
+    # MainPanel constructor
+    def __init__(self, main_menu):
+        Panel.__init__(self, main_menu)
 
-# import java.io.File;
-# import java.io.FileInputStream;
-# import java.io.ObjectInputStream;
-#
-# import javax.swing.JFileChooser;
-# import javax.swing.JLabel;
-#
-# import java.awt.event.ActionEvent;
-#
-# /** MainPanel class */
-# class MainPanel extends Panel {
-#
+    # Populate the MainPanel with buttons
+    def add_buttons(self):
+        self.add_map_name()
+        self.add_edit_map()
+        self.add_run_map()
+        self.add_prev()
+        self.add_next()
+        self.add_new_map()
+        self.add_select_map()
+
+    def add_map_name(self):
+        None
+
+    def add_edit_map(self):
+        None
+
+    def add_run_map(self):
+        None
+
+    def add_prev(self):
+        None
+
+    def add_next(self):
+        None
+
+    def add_new_map(self):
+        None
+        # default map size:
+        # this(new Map(PANE_WIDTH / Tile.PIXELS_PER_TILE + 1,
+        #                      PANE_HEIGHT / Tile.PIXELS_PER_TILE + 1));
+
+    def add_select_map(self):
+        None
+
 #     /** MapList subclass */
 #     private class MapList {
 #
@@ -198,5 +222,3 @@ class MainPanel(Panel):
 #     void updateFields() {
 #         NAME_FIELD.setText(NAME_LABEL + getMap().getTag());
 #     }
-#
-# }
