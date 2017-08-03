@@ -5,8 +5,6 @@ from Tile import Tile
 from read_config import read_config
 
 configs = read_config()
-DEFAULT_WIDTH = configs["DEFAULT_WIDTH"]
-DEFAULT_HEIGHT = configs["DEFAULT_HEIGHT"]
 DEFAULT_NUM_CPUS = configs["DEFAULT_NUM_CPUS"]
 DEFAULT_TAG = configs["DEFAULT_TAG"]
 DEFAULT_START_ANGLE = configs["DEFAULT_START_ANGLE"]
@@ -17,7 +15,7 @@ PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
 class Map:
 
     # Map constructor
-    def __init__(self, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT):
+    def __init__(self, width, height):
         self.width = width
         self.height = height
         self.tiles = []
@@ -34,7 +32,6 @@ class Map:
             self.set_start_tile(None)
         self.set_start_angle(DEFAULT_START_ANGLE)
         self.set_canvas(Canvas())
-        # TODO: setBackground(BACKGROUND_COLOR)
         # TODO: setLayout(null)
         # TODO: render()
 

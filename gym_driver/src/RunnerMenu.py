@@ -1,7 +1,7 @@
-from MapMenu import MapMenu
+from Menu import Menu
 
 # RunnerMenu class
-class RunnerMenu(MapMenu):
+class RunnerMenu(Menu):
 
     None
 
