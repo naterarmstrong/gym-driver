@@ -1,4 +1,6 @@
-from Tkinter import Canvas
+from tkinter import Canvas
+
+from PIL import Image, ImageTk
 
 from Tile import Tile
 
@@ -15,14 +17,25 @@ PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
 class Map:
 
     # Map constructor
-    def __init__(self, width, height):
+    def __init__(self, width, height, is_rendered=False):
         self.width = width
         self.height = height
         self.tiles = []
+        # If is_render_mode, renders to interface
+        self.is_rendered = is_rendered
+        if self.is_rendered:
+            self.set_canvas(Canvas())
         for i in range(self.height):
             row = []
             for j in range(self.width):
-                row.append(Tile(self))
+                if self.is_rendered:
+                    cur_canvas = self.get_canvas()
+                    new_tile = Tile(self, canvas=cur_canvas)
+                    new_tile.render_to_canvas(j, i)
+                    new_tile.add_listeners()
+                else:
+                    new_tile = Tile(self, canvas=None)
+                row.append(new_tile)
             self.tiles.append(row)
         self.set_num_CPUs(DEFAULT_NUM_CPUS)
         self.set_tag(DEFAULT_TAG)
@@ -31,7 +44,6 @@ class Map:
         else:
             self.set_start_tile(None)
         self.set_start_angle(DEFAULT_START_ANGLE)
-        self.set_canvas(Canvas())
         # TODO: setLayout(null)
         # TODO: render()
 

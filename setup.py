@@ -1,0 +1,1 @@
+# We need pillow (imported as PIL) for image processing in Tkinter

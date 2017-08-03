@@ -3,7 +3,6 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 root = Tk()
 
-frame = ttk.Frame(root, padding='3 3 3 3')
 
 h = ttk.Scrollbar(root, orient=HORIZONTAL)
 v = ttk.Scrollbar(root, orient=VERTICAL)
@@ -12,7 +11,6 @@ h['command'] = canvas.xview
 v['command'] = canvas.yview
 ttk.Sizegrip(root).grid(column=10, row=10, sticky=(S,E))
 
-frame.grid(column=1, row=0, sticky=(N, W, E, S))
 canvas.grid(column=0, row=0, sticky=(N,W,E,S))
 h.grid(column=0, row=10, sticky=(W,E))
 v.grid(column=10, row=0, sticky=(N,S))
@@ -60,15 +58,15 @@ canvas.bind("<B1-Motion>", addLine)
 canvas.bind("<B1-ButtonRelease>", doneStroke)
 canvas.bind("<Shift-Button-1>", test)
 
-moddable_curve_road = Image.open("../resources/curve_road.png")
+moddable_curve_road = Image.open("../resources/quarter_turn_road_200.png")
 upleft_curve_road = ImageTk.PhotoImage(moddable_curve_road)
 upright_curve_road = ImageTk.PhotoImage(moddable_curve_road.rotate(90))
-straight_road = ImageTk.PhotoImage(Image.open("../resources/straight_road.png"))
-straight_ice = ImageTk.PhotoImage(Image.open("../resources/straight_ice.png"))
+straight_road = ImageTk.PhotoImage(Image.open("../resources/straight_road_200.png"))
+straight_ice = ImageTk.PhotoImage(Image.open("../resources/quarter_turn_road_200.png"))
 tile_list = []
 def populate(tile_list):
     def creator(x, y):
-        id = canvas.create_image(75+150*x, 75 + 150*y, image=straight_road)
+        id = canvas.create_image(100+200*x, 100 + 200*y, image=straight_road)
         canvas.tag_bind(id, "<Button-1>", lambda _: setTileImage(upleft_curve_road, x, y))
         canvas.tag_bind(id, "<Shift-Button-1>", lambda _: setTileImage(straight_road, x, y))
         tile_list.append(id)
