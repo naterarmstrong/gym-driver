@@ -46,6 +46,7 @@ class Tile:
     terrain_selection = DEFAULT_TERRAIN
     pressed = False
     terrain_images = populate_terrain_images()
+    currently_editing = 'path'
 
     # Tile constructors
     def __init__(self, map, canvas=None, texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
@@ -101,8 +102,15 @@ class Tile:
     def on_leftclick(self, event):
         #Tile.pressed = True
         #self.set_texture(Tile.terrain_selection)
-        print Tile.terrain_selection
-        self.cycle_path()
+        print Tile.currently_editing
+        if Tile.currently_editing == 'path':
+            self.cycle_path()
+        elif Tile.currently_editing == 'terrain':
+            self.set_texture(Tile.terrain_selection)
+        elif Tile.currently_editing == 'orientation':
+            self.cycle_orientation()
+        else:
+            print "Not currently editing anything"
 
     def on_rightclick(self, event):
         self.cycle_orientation()
@@ -110,7 +118,6 @@ class Tile:
     def on_keypress(self, event):
         print "AYYY"
         char = event.char
-        print char
         if char == "r":
             self.cycle_orientation()
         elif char == "g":
@@ -183,6 +190,7 @@ class Tile:
     # Setter method: texture
     def set_texture(self, texture):
         if texture in TEXTURES:
+            print "yay!"
             self.texture = texture
             if self.get_texture() == DEFAULT_TERRAIN:
                 self.set_path_ind(0)
@@ -205,6 +213,11 @@ class Tile:
     def cycle_orientation(self):
         self.set_orientation((self.orientation + 90) % 360)
         self.update_canvas_render()
+
+    @staticmethod
+    def set_terrain_selection(newterrain):
+        if newterrain in TEXTURES:
+            Tile.terrain_selection = newterrain
 
     # TODO
     #     /** Draw the Tile */
@@ -256,6 +269,40 @@ v.grid(column=10, row=0, sticky=(N,S))
 root.grid_columnconfigure(0, weight=1)
 root.grid_rowconfigure(0, weight=1)
 
+def edit_terrain(tile_class):
+    print "editing terrain"
+    Tile.currently_editing = 'terrain'
+
+def edit_path(tile_class):
+    print "editing path"
+    Tile.currently_editing = 'path'
+
+def edit_orientation(tile_class):
+    print "editing orientation"
+    Tile.currently_editing = 'orientation'
+
+
+# BEGIN MAKESHIFT SIDEPANEL
+frame = ttk.Frame(root)
+frame.grid(column=1, row=0, sticky=(N, S, E))
+terrain_button = ttk.Button(frame, text="Change Terrain", command=lambda : edit_terrain(Tile))
+terrain_button.grid(column=0, row=3)
+path_button = ttk.Button(frame, text="Change Path", command=lambda : edit_path(Tile))
+path_button.grid(column=0, row=4)
+orientation_button = ttk.Button(frame, text="Change Orientation", command=lambda : edit_orientation(Tile))
+orientation_button.grid(column=0, row=5)
+choices_label = ttk.Label(frame, text="Available terrain")
+choices_label.grid(column=0, row=6)
+choice_grass = ttk.Button(frame, text="grass", command=lambda: Tile.set_terrain_selection('grass'))
+choice_grass.grid(column=0, row=7)
+choice_road = ttk.Button(frame, text="road", command=lambda: Tile.set_terrain_selection('road'))
+choice_road.grid(column=0, row=8)
+choice_gravel = ttk.Button(frame, text="gravel", command=lambda: Tile.set_terrain_selection('gravel'))
+choice_gravel.grid(column=0, row=9)
+choice_ice = ttk.Button(frame, text="ice", command=lambda: Tile.set_terrain_selection('ice'))
+choice_ice.grid(column=0, row=10)
+#### END MAKESHIFT SIDEPANEL
+
 canvas2.bind("<Enter>", lambda event: canvas2.focus_set())
 def terrain_changer(event):
     char = event.char
@@ -271,11 +318,13 @@ canvas2.bind("<Key>", terrain_changer)
 #images = ImageTk.PhotoImage(images)
 #canvas2.create_image(0, 0, image=images)
 
+tiles = []
 for x in range(3):
     for y in range(3):
         t = Tile(None, canvas=canvas2)
         t.render_to_canvas(x, y)
         t.add_listeners()
+        tiles.append(t)
 
 
 #canvas2.itemconfigure(2, image=Tile.terrain_images['road']['quarter_turn'][180])
