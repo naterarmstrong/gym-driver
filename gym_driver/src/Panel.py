@@ -1,34 +1,23 @@
+from read_config import read_config
+
+configs = read_config()
+SAVE_DIR = configs["SAVE_DIR"]
+SAVE_EXT = configs["SAVE_EXT"]
+WINDOW_WIDTH = configs["WINDOW_WIDTH"]
+WINDOW_HEIGHT = configs["WINDOW_HEIGHT"]
+PANE_WIDTH = configs["PANE_WIDTH"]
+PANE_HEIGHT = configs["PANE_HEIGHT"]
+PANEL_WIDTH = configs["PANEL_WIDTH"]
+PANEL_HEIGHT = configs["PANEL_HEIGHT"]
+
 # Panel class
 class Panel:
 
-    None
+    # Panel constructor
+    def __init__(self, menu):
+        self.menu = menu
 
-# import javax.swing.BorderFactory;
-# import javax.swing.JButton;
-# import javax.swing.JFrame;
-# import javax.swing.JPanel;
-# import javax.swing.JScrollPane;
-# import javax.swing.SwingUtilities;
-#
-# import java.awt.Color;
-# import java.awt.Dimension;
-# import java.awt.Label;
-# import java.awt.TextField;
-# import java.awt.event.ActionListener;
-# import java.awt.event.ActionEvent;
-#
-# /** Panel class */
-# abstract class Panel extends JPanel {
-#
 #     /** Panel attributes */
-#     static final String SAVE_DIR   = "saved maps";
-#     static final String SAVE_EXT   = ".ser";
-#     static final int WINDOW_WIDTH  = Menu.WINDOW_WIDTH;
-#     static final int WINDOW_HEIGHT = Menu.WINDOW_HEIGHT;
-#     static final int PANEL_WIDTH   = Menu.PANEL_WIDTH;
-#     static final int PANEL_HEIGHT  = Menu.PANEL_HEIGHT;
-#     static final int PANE_WIDTH    = Menu.PANE_WIDTH;
-#     static final int PANE_HEIGHT   = Menu.PANE_HEIGHT;
 #     static final int TOP           = 30;
 #     static final int MIDDLE        = PANEL_WIDTH / 2;
 #     static final int MARGIN        = 2;
@@ -108,5 +97,3 @@ class Panel:
 #
 #     /** Update fields in the Panel after changing the Map */
 #     abstract void updateFields();
-#
-# }

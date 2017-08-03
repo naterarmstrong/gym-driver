@@ -1,8 +1,12 @@
-from MapMenu import MapMenu
+from Menu import Menu
 
-class MainMenu(MapMenu):
+class MainMenu(Menu):
 
     None
+
+# default map size:
+# this(new Map(PANE_WIDTH / Tile.PIXELS_PER_TILE + 1,
+#                      PANE_HEIGHT / Tile.PIXELS_PER_TILE + 1));
 
 # import javax.swing.JFrame;
 # import javax.swing.WindowConstants;

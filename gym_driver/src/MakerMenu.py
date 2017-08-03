@@ -1,30 +1,13 @@
-from MapMenu import MapMenu
+from Menu import Menu
+from MakerPanel import MakerPanel
 
 # MakerMenu class
-class MakerMenu(MapMenu):
+class MakerMenu(Menu):
 
-    None
+    # MakerMenu constructor
+    def __init__(self, root, map):
+        Menu.__init__(self, root, "Maker Menu", map)
 
-# /** MakerMenu class */
-# class MakerMenu extends MapMenu {
-#
-#     /** MakerMenu constructors */
-#     MakerMenu() {
-#         super();
-#     }
-#
-#     MakerMenu(Map m) {
-#         super(m);
-#     }
-#
-#     /** Make a new Panel for the MakerMenu */
-#     MakerPanel makePanel() {
-#         return new MakerPanel(this);
-#     }
-#
-#     /** Get the MakerMenu's title */
-#     String getTitle() {
-#         return "Map Maker";
-#     }
-#
-# }
+    # Make a new MakerPanel for the MakerMenu
+    def make_panel(self):
+        return MakerPanel(self)
