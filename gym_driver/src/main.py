@@ -28,7 +28,7 @@ class Program:
        self.root.mainloop()
 
    def clear_frame(self):
-       for widget in self.program.frame.winfo_children():
+       for widget in self.frame.winfo_children():
            widget.destroy()
 
    def make_main_menu(self):
