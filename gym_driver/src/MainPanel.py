@@ -1,165 +1,90 @@
+from Tkinter import Label, Frame, BOTH
+from os import listdir, path
+from pickle import load
+
 from Panel import Panel
-import Tkinter
+
+from read_config import read_config
+
+configs = read_config()
+SAVE_DIR = configs["SAVE_DIR"]
+SAVE_EXT = configs["SAVE_EXT"]
+WINDOW_W = configs["WINDOW_W"]
+WINDOW_H = configs["WINDOW_H"]
+PANEL_W = configs["PANEL_W"]
+PANEL_H = configs["PANEL_H"]
+EDIT_MAP_Y = configs["EDIT_MAP_Y"]
+RUN_MAP_Y = configs["RUN_MAP_Y"]
 
 # MainPanel class
 class MainPanel(Panel):
-    button_height = 10
-    button_width = 20
 
-    next_prev_width = 10
-    next_prev_height = 10
+    # MainPanel constructor
+    def __init__(self, program, main_menu):
+        self.program = program
+        self.saves = MapList()
+        if self.saves.get_size():
+            self.set_map(self.saves.peek())
+        self.main_menu = main_menu
 
-    def __init__(self, root):
-        self.root = root
-        self.setEditButton()
-        self.setRunButton()
-        self.setNextButton()
-        self.setPrevButton()
+        Panel.__init__(self, program, main_menu)
 
-    def setEditButton(self):
-        editButton = Tkinter.Button(self.root, text="EDIT", command=None, width=self.button_width, height=self.button_height, borderwidth = 0)
-        editButton.pack()
-        editButton.place(x = 1000, y=0)
-
-    def setRunButton(self):
-        runButton = Tkinter.Button(self.root, text="RUN", command=None, width = 10, height= 0, borderwidth = 0, highlightbackground='#3E4149')
-        runButton.pack()
-        runButton.place(x = 1000, y = 10 * self.button_height)
-
-    def setNextButton(self):
-        editButton = Tkinter.Button(self.root, text=">", command=None)
-        editButton.place(x = 200, y = 20 * self.button_height)
-
-    def setPrevButton(self):
-        editButton = Tkinter.Button(self.root, text="<", command=None)
-        editButton.place(x = 1100 - 5*self.next_prev_width, y = 20 * self.button_height)
+    # Populate the MainPanel with buttons
+    def add_buttons(self):
+        self.add_map_name()
+        self.add_edit_map()
+        self.add_run_map()
+        self.add_prev()
+        self.add_next()
+        self.add_select_map()
+        self.add_new_map()
+        self.add_button("MapMaker", 0, EDIT_MAP_Y + 100, self.toMapMaker)
 
 
-    None
 
-# import java.io.File;
-# import java.io.FileInputStream;
-# import java.io.ObjectInputStream;
-#
-# import javax.swing.JFileChooser;
-# import javax.swing.JLabel;
-#
-# import java.awt.event.ActionEvent;
-#
-# /** MainPanel class */
-# class MainPanel extends Panel {
-#
-#     /** MapList subclass */
-#     private class MapList {
-#
-#         /** MapList attributes */
-#         private final Map[] saves;
-#         private int index;
-#
-#         /** MapList constructor */
-#         private MapList() {
-#             File[] files = new File(SAVE_DIR).listFiles(
-#                     (dir, name) -> name.endsWith(SAVE_EXT)
-#             );
-#             if (files == null) {
-#                 files = new File[0];
-#             }
-#             saves = new Map[files.length];
-#             ObjectInputStream in = null;
-#             try {
-#                 for (int i = 0; i < saves.length; i += 1) {
-#                     String name = SAVE_DIR + "/" + files[i].getName();
-#                     FileInputStream f = new FileInputStream(name);
-#                     in = new ObjectInputStream(f);
-#                     saves[i] = (Map) in.readObject();
-#                 }
-#                 if (in != null) {
-#                     in.close();
-#                 }
-#             } catch (Exception e) {
-#                 e.printStackTrace();
-#             }
-#             index = 0;
-#         }
-#
-#         /** Get the size of the MapList */
-#         private int getSize() {
-#             return saves.length;
-#         }
-#
-#         /** Get the current Map in the MapList */
-#         private Map peek() {
-#             return saves[index];
-#         }
-#
-#         /** Get the previous Map in the MapList */
-#         private Map prev() {
-#             index = (index == 0) ? getSize() - 1 : index - 1;
-#             return saves[index];
-#         }
-#
-#         /** Get the next Map in the MapList */
-#         private Map next() {
-#             index = (index + 1) % getSize();
-#             return saves[index];
-#         }
-#
-#     }
-#
-#     /** MainPanel attributes */
-#     private static final int NAME_Y        = TOP;
-#     private static final int EDIT_Y        = NAME_Y + INPUT_H;
-#     private static final int RUN_Y         = EDIT_Y + INPUT_H;
-#     private static final int CYCLE_Y       = RUN_Y + INPUT_H;
-#     private static final int SELECT_Y      = CYCLE_Y + INPUT_H;
-#     private static final int CYCLE_W       = MIDDLE;
-#     private static final String NAME_LABEL = "Name: ";
-#     private JLabel NAME_FIELD;
-#     private MapList saves;
-#
-#     /** MainPanel constructor */
-#     MainPanel(MainMenu m) {
-#         super(m);
-#         saves = new MapList();
-#         addNameLabel();
-#         addEditButton();
-#         addRunButton();
-#         addPrevNextButtons();
-#         addSelectButton();
-#         addNewButton();
-#         if (saves.getSize() != 0) {
-#             setMap(saves.peek());
-#         }
-#     }
-#
-#     /** Populate the MainPanel with a label corresponding to its Map's name */
-#     private void addNameLabel() {
-#         String text;
-#         if (saves.getSize() != 0) {
-#             text = NAME_LABEL + getMap().getTag();
-#         } else {
-#             text = "No Map Selected";
-#         }
-#         NAME_FIELD = new JLabel(text);
-#         NAME_FIELD.setBounds(0, TOP, PANEL_WIDTH, INPUT_H);
-#         add(NAME_FIELD);
-#     }
-#
-#     /** Populate the MainPanel with edit options */
-#     private void addEditButton() {
-#         addButton("Edit Map", 0, EDIT_Y, PANEL_WIDTH, INPUT_H,
-#                 (ActionEvent a) -> {
-#                     Map map = getMap();
-#                     if (saves.getSize() != 0) {
-#                         map.addListeners();
-#                         changeScreen(new MakerMenu(map));
-#                     }
-#                 });
-#     }
-#
+    def toMapMaker(self):
+        for widget in self.program.frame.winfo_children():
+            widget.destroy()
+
+    def add_map_name(self):
+        if self.saves.get_size():
+            text = "Name: " + self.get_map().get_tag()
+        else:
+            text = "No Map Selected"
+        self.add_label(text, 0)
+
+    def add_edit_map(self):
+        def edit_map():
+
+            None
+            # TODO: map.add_listeners()
+            # TODO: change_screen(MakerMenu(map))
+        self.add_button("Edit Map", 0, EDIT_MAP_Y, edit_map)
+
+    def add_run_map(self):
+        def run_map():
+            None
+            # TODO: if saves.get_size(): change_screen(RunnerMenu(map))
+        self.add_button("Run Map", 0, RUN_MAP_Y, run_map)
+
+    def add_prev(self):
+        None
+
+    def add_next(self):
+        None
+
+    def add_new_map(self):
+        None
+        # default map size:
+        # this(new Map(PANE_W / Tile.PIXELS_PER_TILE + 1,
+        #                      PANE_H / Tile.PIXELS_PER_TILE + 1));
+
+    def add_select_map(self):
+        None
+
 #     /** Populate the MainPanel with run options */
 #     private void addRunButton() {
-#         addButton("Run Map", 0, RUN_Y, PANEL_WIDTH, INPUT_H,
+#         addButton("Run Map", 0, RUN_Y, PANEL_W, INPUT_H,
 #                 (ActionEvent a) -> {
 #                     Map map = getMap();
 #                     if (saves.getSize() != 0) {
@@ -202,7 +127,7 @@ class MainPanel(Panel):
 #
 #     /** Populate the MainPanel with the option to select Map from directory */
 #     private void addSelectButton() {
-#         addButton("Select Map", 0, SELECT_Y, PANEL_WIDTH, INPUT_H,
+#         addButton("Select Map", 0, SELECT_Y, PANEL_W, INPUT_H,
 #                 (ActionEvent a) -> {
 #                     JFileChooser fileChooser = new JFileChooser(SAVE_DIR);
 #                     int fileType = fileChooser.showOpenDialog(null);
@@ -222,7 +147,7 @@ class MainPanel(Panel):
 #
 #     /** Populate the MainPanel with the option to create a new Map */
 #     private void addNewButton() {
-#         addButton("New Map", 0, BOTTOM, PANEL_WIDTH, INPUT_H,
+#         addButton("New Map", 0, BOTTOM, PANEL_W, INPUT_H,
 #                 (ActionEvent a) -> changeScreen(new MakerMenu()));
 #     }
 #
@@ -230,5 +155,40 @@ class MainPanel(Panel):
 #     void updateFields() {
 #         NAME_FIELD.setText(NAME_LABEL + getMap().getTag());
 #     }
-#
-# }
+
+# MapList helper class
+class MapList:
+
+    # MapList constructor
+    def __init__(self):
+        self.saves = self.read_saves()
+        self.index = 0
+
+    # Read the saved maps
+    @staticmethod
+    def read_saves():
+        saves = []
+        for file in listdir(SAVE_DIR):
+            if path.isfile(file) and path.splitext(file) == SAVE_EXT:
+                with open(file, "rb") as f:
+                    saved_map = load(f)
+                    saves.append(saved_map)
+        return saves
+
+    # Getter method: size
+    def get_size(self):
+        return len(self.saves)
+
+    # Get the current Map in the MapList
+    def peek(self):
+        return self.saves[self.index]
+
+    # Get the previous Map in the MapList
+    def prev(self):
+        self.index = self.index - 1 if self.index else self.get_size() - 1
+        return self.saves[self.index]
+
+    # Get the next Map in the MapList
+    def next(self):
+        self.index = (self.index + 1) % self.get_size()
+        return self.saves[self.index]

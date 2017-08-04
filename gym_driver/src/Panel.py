@@ -1,95 +1,69 @@
+from Tkinter import Button, Entry, PanedWindow, Label, BOTH, W
+
+from read_config import read_config
+
+configs = read_config()
+SAVE_DIR = configs["SAVE_DIR"]
+SAVE_EXT = configs["SAVE_EXT"]
+WINDOW_W = configs["WINDOW_W"]
+WINDOW_H = configs["WINDOW_H"]
+PANE_W = configs["PANE_W"]
+PANE_H = configs["PANE_H"]
+PANEL_W = configs["PANEL_W"]
+PANEL_H = configs["PANEL_H"]
+LABEL_W = configs["LABEL_W"]
+LABEL_H = configs["LABEL_H"]
+MARGIN = configs["MARGIN"]
+ELEMENT_H = configs["ELEMENT_H"]
+PANEL_X = WINDOW_W - PANEL_W
+
 # Panel class
 class Panel:
 
-    None
+    # Panel constructor
+    def __init__(self, program, menu):
+        self.program = program
+        self.menu = menu
+        self.add_buttons()
 
-# import javax.swing.BorderFactory;
-# import javax.swing.JButton;
-# import javax.swing.JFrame;
-# import javax.swing.JPanel;
-# import javax.swing.JScrollPane;
-# import javax.swing.SwingUtilities;
-#
-# import java.awt.Color;
-# import java.awt.Dimension;
-# import java.awt.Label;
-# import java.awt.TextField;
-# import java.awt.event.ActionListener;
-# import java.awt.event.ActionEvent;
-#
-# /** Panel class */
-# abstract class Panel extends JPanel {
-#
-#     /** Panel attributes */
-#     static final String SAVE_DIR   = "saved maps";
-#     static final String SAVE_EXT   = ".ser";
-#     static final int WINDOW_WIDTH  = Menu.WINDOW_WIDTH;
-#     static final int WINDOW_HEIGHT = Menu.WINDOW_HEIGHT;
-#     static final int PANEL_WIDTH   = Menu.PANEL_WIDTH;
-#     static final int PANEL_HEIGHT  = Menu.PANEL_HEIGHT;
-#     static final int PANE_WIDTH    = Menu.PANE_WIDTH;
-#     static final int PANE_HEIGHT   = Menu.PANE_HEIGHT;
-#     static final int TOP           = 30;
-#     static final int MIDDLE        = PANEL_WIDTH / 2;
-#     static final int MARGIN        = 2;
-#     static final int LABEL_W       = 50;
-#     static final int INPUT_H       = 25;
-#     static final int BOTTOM        = WINDOW_HEIGHT - INPUT_H - 60;
-#     Menu menu;
-#
-#     /** Panel constructor */
-#     Panel(MapMenu m) {
-#         menu       = m;
-#         setLayout(null);
-#         setOpaque(false);
-#         setVisible(true);
-#         setPreferredSize(new Dimension(PANEL_WIDTH, PANEL_HEIGHT));
-#     }
-#
-#     /** Utility method for populating the Panel with TextFields */
-#     TextField addTextField(String lTx, String fTx, int y, int w) {
-#         Label label = new Label(lTx);
-#         label.setBackground(Color.WHITE);
-#         label.setBounds(0, y, LABEL_W, INPUT_H);
-#         TextField field = new TextField(fTx);
-#         field.setBounds(LABEL_W, y, w, INPUT_H);
-#         add(label);
-#         add(field);
-#         return field;
-#     }
-#
-#     /** Utility method for populating the Panel with JButtons */
-#     JButton addButton(String t, int x, int y, int w, int h,
-#                               ActionListener a) {
-#         JButton button = new JButton(t);
-#         button.setBounds(x + MARGIN, y + MARGIN, w - MARGIN, h - MARGIN);
-#         button.addActionListener(a);
-#         button.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-#         add(button);
-#         return button;
-#     }
-#
+    # Getter method: map
+    def get_map(self):
+        return self.menu.get_map()
+
+    # Setter method: map
+    def set_map(self, map):
+        self.menu.map.set_map(map)
+
+    # Utility method for defining a window of specific dimensions
+    def make_window(self, x, y, width, height):
+        window = PanedWindow(self.program.frame)
+        window.place(x=PANEL_X + x + MARGIN, y=y + MARGIN,
+                     width=width - MARGIN, height=height - MARGIN)
+        return window
+
+    # Utility method for populating the Panel with a Label
+    def add_label(self, text, y):
+        window = self.make_window(0, y, PANEL_W, ELEMENT_H)
+        label = Label(window, text=text)
+        label.pack(anchor=W, expand=1)
+
+    # Utility method for populating the Panel with Buttons
+    def add_button(self, text, x, y, command, width=PANEL_W, height=ELEMENT_H):
+        window = self.make_window(x, y, width, height)
+        button = Button(window, text=text, command=command)
+        button.pack(fill=BOTH, expand=1)
+
+    # Utility method for populating the Panel with Label & Entry fields
+    def add_text_field(self, label_text, field_text, y):
+        self.add_label(label_text, y)
+        window = self.make_window(LABEL_W, y, PANEL_W - LABEL_W, ELEMENT_H)
+        text_field = Entry(window, text=field_text)
+        text_field.pack(fill=BOTH, expand=1)
+
 #     /** Populate the MakerPanel with back options */
 #     void addBackOption() {
-#         addButton("main menu", 0, BOTTOM, PANEL_WIDTH, INPUT_H,
+#         addButton("main menu", 0, BOTTOM, PANEL_W, INPUT_H,
 #                 (ActionEvent a) -> changeScreen(new MainMenu()));
-#     }
-#
-#     /** Get the Menu's Map */
-#     Map getMap() {
-#         return menu.map;
-#     }
-#
-#     /** Get the Menu's JScrollPane */
-#     JScrollPane getPane() {
-#         return menu.scrollPane;
-#     }
-#
-#     /** Set the Menu's Map to the one specified */
-#     void setMap(Map m) {
-#         menu.map = m;
-#         menu.scrollPane.setViewportView(m);
-#         updateFields();
 #     }
 #
 #     /** Change to a different screen */
@@ -108,5 +82,3 @@ class Panel:
 #
 #     /** Update fields in the Panel after changing the Map */
 #     abstract void updateFields();
-#
-# }

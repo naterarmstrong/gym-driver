@@ -1,20 +1,21 @@
+from Tkinter import Canvas
+
 from Tile import Tile
 
 from read_config import read_config
 
 configs = read_config()
-DEFAULT_WIDTH = configs["DEFAULT_WIDTH"]
-DEFAULT_HEIGHT = configs["DEFAULT_HEIGHT"]
 DEFAULT_NUM_CPUS = configs["DEFAULT_NUM_CPUS"]
 DEFAULT_TAG = configs["DEFAULT_TAG"]
 DEFAULT_START_ANGLE = configs["DEFAULT_START_ANGLE"]
 BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
+PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
 
 # Map class
 class Map:
 
     # Map constructor
-    def __init__(self, width=DEFAULT_WIDTH, height=DEFAULT_HEIGHT):
+    def __init__(self, width, height):
         self.width = width
         self.height = height
         self.tiles = []
@@ -30,7 +31,7 @@ class Map:
         else:
             self.set_start_tile(None)
         self.set_start_angle(DEFAULT_START_ANGLE)
-        # TODO: setBackground(BACKGROUND_COLOR)
+        self.set_canvas(Canvas())
         # TODO: setLayout(null)
         # TODO: render()
 
@@ -65,6 +66,22 @@ class Map:
     # Getter method: start_angle
     def get_start_angle(self):
         return self.start_angle
+
+    # Getter method: Tile [provided (x, y) coordinate]
+    def get_tile(self, x, y):
+        x_tile = x // PIXELS_PER_TILE
+        y_tile = y // PIXELS_PER_TILE
+        return self.tiles[x_tile][y_tile]
+
+    # Getter method: friction [provided (x, y) coordinate]
+    def get_point_friction(self, x, y):
+        x_pixel = x % PIXELS_PER_TILE
+        y_pixel = y % PIXELS_PER_TILE
+        return self.get_tile(x, y).get_point_friction(x_pixel, y_pixel)
+
+    # Getter method: canvas
+    def get_canvas(self):
+        return self.canvas
 
     # Setter method: width
     def set_width(self, width):
@@ -125,3 +142,16 @@ class Map:
     #     }
     #
     # }
+
+    # Setter method: canvas
+    def set_canvas(self, canvas):
+        self.canvas = canvas
+
+    # Step
+
+    # Reset
+
+    # Render
+
+    # TODO: putting cars on map, step, reset, render
+    # TODO: in Robert's code, where it has `Canvas()`, just set that equal to the Map's canvas
