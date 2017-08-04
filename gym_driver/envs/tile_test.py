@@ -79,6 +79,14 @@ def populate(tile_list):
             creator(x, y)
 populate(tile_list)
 
+car_png = Image.open('../resources/blue_car.png')
+car_gif = Image.open('../resources/blue_car.gif')
+fcar_png = ImageTk.PhotoImage(car_png)
+fcar_gif = ImageTk.PhotoImage(car_gif)
+
+canvas.create_image(100, 100, image=fcar_png)
+canvas.create_image(200, 200, image=fcar_gif)
+
 
 
 

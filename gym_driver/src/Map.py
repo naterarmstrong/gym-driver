@@ -2,9 +2,12 @@ from tkinter import Canvas
 from PIL import Image, ImageTk
 import pygame as pg
 import sys, os
+import random
+import time
 
 
 from Tile import Tile
+from Car import Car
 
 from read_config import read_config
 
@@ -38,6 +41,9 @@ class Map:
             self.set_canvas(Canvas())
         # End rendering logic
 
+        # Used/accessed by tile / car to edit properly
+        self.set_currently_editing('path')
+
 
         # Tile Generation Logic
         for i in range(self.height):
@@ -64,7 +70,6 @@ class Map:
 
         self.set_start_angle(DEFAULT_START_ANGLE)
         # TODO: setLayout(null)
-        self.render_to_pygame((0, 0))
 
     # Add listeners to every Tile on the Map
     def add_listeners(self):
@@ -73,6 +78,13 @@ class Map:
             for j in range(self.get_width()):
                 tile = row[j]
                 tile.add_listeners()
+
+    # Getter method: currently_editing
+    def get_currently_editing(self):
+        return self.currently_editing
+
+    def set_currently_editing(self, currently_editing):
+        self.currently_editing = currently_editing
 
     # Getter method: width
     def get_width(self):
@@ -174,10 +186,18 @@ class Map:
         #main_car.render_to_pygame(self.screen)
         pg.display.update()
 
+    def test_pygame_movement(self, t):
+        # runs for 10 seconds, .1 second per t
+        self.render_to_pygame((t*5, t*5))
+        time.sleep(.05)
+
 
     # Setter method: canvas
     def set_canvas(self, canvas):
         self.canvas = canvas
+
+    def add_car(self, x, y):
+        pass
 
     # Step
 
@@ -192,8 +212,18 @@ if __name__ == "__main__":
     pg.init()
     screen = pg.display.set_mode((512, 512))
     a = Map(3, 3, is_tkrendered=False, screen=screen)
-    while True:
+    a.render_to_pygame((0, 0))
+    for row in a.tiles:
+        for tile in row:
+            tile.cycle_path()
+    a.render_to_pygame((0, 0))
+    pg.display.update()
+    counter = 0
+    while counter < 300:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 sys.exit()
+        a.test_pygame_movement(counter)
+        print counter
+        counter += 1

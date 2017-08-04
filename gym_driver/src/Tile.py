@@ -5,6 +5,7 @@ import pygame as pg
 
 import time
 
+from Car import Car
 from read_config import read_config
 
 #configs = read_config()
@@ -61,7 +62,6 @@ class Tile:
     pressed = False
     terrain_images = populate_terrain_images()
     pg_terrain_images = populate_pg_terrain_images()
-    currently_editing = 'path'
 
     # Tile constructors
     def __init__(self, map, canvas=None, location=(0, 0), texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
@@ -101,13 +101,9 @@ class Tile:
     # Renders the tile to pygame. Location dependent on viewing window location
     def render_to_pygame(self, screen, screen_coords):
         image = self.get_image('pg')
-        #print "----------"
-        #print self.coords
-        #print screen_coords
         if -PIXELS_PER_TILE <= self.coords[0] - screen_coords[0] <= SCREEN_SIZE and \
             -PIXELS_PER_TILE <= self.coords[1] - screen_coords[1] <= SCREEN_SIZE:
             pos = (int(self.coords[0] - screen_coords[0]), int(self.coords[1] - screen_coords[1]))
-            #print pos
             screen.blit(image, pos)
         else:
             print "not rendered"
@@ -139,13 +135,16 @@ class Tile:
     def on_leftclick(self, event):
         #Tile.pressed = True
         #self.set_texture(Tile.terrain_selection)
-        print Tile.currently_editing
-        if Tile.currently_editing == 'path':
+        print self.map.get_currently_editing()
+        currently_editing = self.map.get_currently_editing()
+        if currently_editing == 'path':
             self.cycle_path()
-        elif Tile.currently_editing == 'terrain':
+        elif currently_editing == 'terrain':
             self.set_texture(Tile.terrain_selection)
-        elif Tile.currently_editing == 'orientation':
+        elif currently_editing == 'orientation':
             self.cycle_orientation()
+        elif currently_editing == 'cars':
+            self.map.add_car(event.x, event.y)
         else:
             print "Not currently editing anything"
 
@@ -287,7 +286,19 @@ class Tile:
 
 
 
-#### TEST
+#### TEST #####################
+class TestingMap:
+    def __init__(self):
+        self.currently_editing = None
+    def get_currently_editing(self):
+        return self.currently_editing
+    def set_currently_editing(self, currently_editing):
+        self.currently_editing = currently_editing
+    def add_car(self, x, y):
+        b = Car(self, x, y, 0, canvas=canvas2)
+        b.render_to_canvas()
+
+
 h = ttk.Scrollbar(root, orient=HORIZONTAL)
 v = ttk.Scrollbar(root, orient=VERTICAL)
 canvas2 = Canvas(root, scrollregion=(0, 0, 1000, 1000), yscrollcommand=v.set, xscrollcommand=h.set)
@@ -301,29 +312,33 @@ v.grid(column=10, row=0, sticky=(N,S))
 root.grid_columnconfigure(0, weight=1)
 root.grid_rowconfigure(0, weight=1)
 
-def edit_terrain(tile_class):
+def edit_terrain(map):
     print "editing terrain"
-    Tile.currently_editing = 'terrain'
+    map.set_currently_editing('terrain')
 
-def edit_path(tile_class):
+def edit_path(map):
     print "editing path"
-    Tile.currently_editing = 'path'
+    map.set_currently_editing('path')
 
-def edit_orientation(tile_class):
+def edit_orientation(map):
     print "editing orientation"
-    Tile.currently_editing = 'orientation'
+    map.set_currently_editing('orientation')
 
-
+def edit_cars(map):
+    print "editing cars"
+    map.set_currently_editing('cars')
 
 if __name__ == '__main__':
 # BEGIN MAKESHIFT SIDEPANEL
     frame = ttk.Frame(root)
     frame.grid(column=1, row=0, sticky=(N, S, E))
-    terrain_button = ttk.Button(frame, text="Change Terrain", command=lambda : edit_terrain(Tile))
+    cars_button = ttk.Button(frame, text="Add Cars", command = lambda : edit_cars(a))
+    cars_button.grid(column=0, row=2)
+    terrain_button = ttk.Button(frame, text="Change Terrain", command=lambda : edit_terrain(a))
     terrain_button.grid(column=0, row=3)
-    path_button = ttk.Button(frame, text="Change Path", command=lambda : edit_path(Tile))
+    path_button = ttk.Button(frame, text="Change Path", command=lambda : edit_path(a))
     path_button.grid(column=0, row=4)
-    orientation_button = ttk.Button(frame, text="Change Orientation", command=lambda : edit_orientation(Tile))
+    orientation_button = ttk.Button(frame, text="Change Orientation", command=lambda : edit_orientation(a))
     orientation_button.grid(column=0, row=5)
     choices_label = ttk.Label(frame, text="Available terrain")
     choices_label.grid(column=0, row=6)
@@ -345,9 +360,11 @@ if __name__ == '__main__':
     canvas2.create_image(0, 0, image=images)
 
     tiles = []
+    a = TestingMap()
+    a.set_currently_editing('path')
     for x in range(5):
         for y in range(5):
-            t = Tile(None, canvas=canvas2)
+            t = Tile(a, canvas=canvas2)
             t.render_to_canvas(x, y)
             t.add_listeners()
             tiles.append(t)

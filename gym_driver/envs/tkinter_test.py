@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from PIL import ImageTk, Image
 root = Tk()
 
 h = ttk.Scrollbar(root, orient=HORIZONTAL)
@@ -48,6 +49,8 @@ id = canvas.create_rectangle((10, 35, 30, 55), fill="blue", tags=('palette', 'pa
 canvas.tag_bind(id, "<Button-1>", lambda x: setColor("blue"))
 id = canvas.create_rectangle((10, 60, 30, 80), fill="black", tags=('palette', 'paletteblack', 'paletteSelected'))
 canvas.tag_bind(id, "<Button-1>", lambda x: setColor("black"))
+
+
 
 setColor('black')
 canvas.itemconfigure('palette', width=5)
