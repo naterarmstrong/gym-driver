@@ -1,0 +1,45 @@
+{
+    "TEXTURES": {
+        "gravel": [
+            0.9, 
+            "#917441"
+        ], 
+        "grass": [
+            0.5, 
+            "#419141"
+        ], 
+        "ice": [
+            0.1, 
+            "#bdefef"
+        ], 
+        "road": [
+            0.5, 
+            "#565148"
+        ]
+    }, 
+    "WINDOW_H": 600, 
+    "SAVE_EXT": ".pkl", 
+    "ELEMENT_H": 25, 
+    "WINDOW_W": 1000, 
+    "DEFAULT_TAG": "New Map", 
+    "DEFAULT_START_ANGLE": 0, 
+    "EDIT_MAP_Y": 25, 
+    "DEFAULT_TERRAIN": "grass", 
+    "DEFAULT_NUM_CPUS": 4, 
+    "PATHS": [
+        "straight", 
+        "convex", 
+        "concave"
+    ], 
+    "PANEL_W": 200, 
+    "LABEL_H": 25, 
+    "LABEL_W": 120, 
+    "RUN_MAP_Y": 50, 
+    "SAVE_DIR": "../maps/", 
+    "PANEL_H": 600, 
+    "BACKGROUND_COLOR": "#4286f4", 
+    "PANE_W": 800, 
+    "PANE_H": 600, 
+    "MARGIN": 2, 
+    "PIXELS_PER_TILE": 200
+}
