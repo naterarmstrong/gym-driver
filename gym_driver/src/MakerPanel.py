@@ -56,7 +56,7 @@ class MakerPanel(Panel):
         width_str = str(self.get_map().get_width())
         height_str = str(self.get_map().get_height())
         self.width_field = self.add_text_field("Width:", width_str, RESIZE_Y)
-        self.height_field = self.add_text_field("Height:", height_str, RESIZE_Y)
+        self.height_field = self.add_text_field("Height:", height_str, RESIZE_Y + ELEMENT_H)
         def update_dimensions():
             try:
                 new_width = self.width_field.get()
@@ -64,8 +64,8 @@ class MakerPanel(Panel):
                 self.get_map().set_size(new_width, new_height)
             except:
                 print "Invalid dimensions"
-        self.add_button("Update", PANEL_W - UPDATE_W, RESIZE_Y,
-                        update_dimensions, UPDATE_W, 2 * ELEMENT_H)
+        self.add_button("Update", 0, RESIZE_Y + 2 * ELEMENT_H,
+                        update_dimensions, UPDATE_W, ELEMENT_H)
 
     def add_chng_terrain(self):
         self.add_terrain_button("grass", 0, CHNG_TERRAIN_Y)
