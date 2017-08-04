@@ -1,40 +1,55 @@
 from tkinter import Canvas
-
 from PIL import Image, ImageTk
+import pygame as pg
+import sys, os
+
 
 from Tile import Tile
 
 from read_config import read_config
 
-configs = read_config()
-DEFAULT_NUM_CPUS = configs["DEFAULT_NUM_CPUS"]
-DEFAULT_TAG = configs["DEFAULT_TAG"]
-DEFAULT_START_ANGLE = configs["DEFAULT_START_ANGLE"]
-BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
-PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
+#configs = read_config()
+#DEFAULT_NUM_CPUS = configs["DEFAULT_NUM_CPUS"]
+#DEFAULT_TAG = configs["DEFAULT_TAG"]
+#DEFAULT_START_ANGLE = configs["DEFAULT_START_ANGLE"]
+#BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
+#PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
+
+DEFAULT_NUM_CPUS = 0
+DEFAULT_TAG = None
+DEFAULT_START_ANGLE = 0
+BACKGROUND_COLOR = (25, 123, 48)
+PIXELS_PER_TILE = 200
 
 # Map class
 class Map:
 
     # Map constructor
-    def __init__(self, width, height, is_rendered=False):
+    def __init__(self, width, height, is_tkrendered=False, screen=None):
         self.width = width
         self.height = height
         self.tiles = []
-        # If is_render_mode, renders to interface
-        self.is_rendered = is_rendered
-        if self.is_rendered:
+
+        # Rendering / Screen creation logic
+        # If is_tkrendered, renders to tk interface
+        self.is_tkrendered = is_tkrendered
+        self.screen = screen
+        if self.is_tkrendered:
             self.set_canvas(Canvas())
+        # End rendering logic
+
+
+        # Tile Generation Logic
         for i in range(self.height):
             row = []
             for j in range(self.width):
-                if self.is_rendered:
+                if self.is_tkrendered:
                     cur_canvas = self.get_canvas()
-                    new_tile = Tile(self, canvas=cur_canvas)
+                    new_tile = Tile(self, canvas=cur_canvas, location=(j, i))
                     new_tile.render_to_canvas(j, i)
                     new_tile.add_listeners()
                 else:
-                    new_tile = Tile(self, canvas=None)
+                    new_tile = Tile(self, canvas=None, location=(j, i))
                 row.append(new_tile)
             self.tiles.append(row)
         self.set_num_CPUs(DEFAULT_NUM_CPUS)
@@ -43,9 +58,13 @@ class Map:
             self.set_start_tile(self.tiles[0][0])
         else:
             self.set_start_tile(None)
+        # End Tile Generation Logic
+
+        self.cars = []
+
         self.set_start_angle(DEFAULT_START_ANGLE)
         # TODO: setLayout(null)
-        # TODO: render()
+        self.render_to_pygame((0, 0))
 
     # Add listeners to every Tile on the Map
     def add_listeners(self):
@@ -136,24 +155,25 @@ class Map:
     def set_start_angle(self, start_angle):
         self.start_angle = start_angle
 
-    # TODO
-    #     /** Render the Map */
-    #     void render() {
-    #         int PPT = Tile.PIXELS_PER_TILE;
-    #         setPreferredSize(new Dimension(width * PPT, height * PPT));
-    #         for (int i = 0; i < height; i += 1) {
-    #             ArrayList<Tile> row = tiles.get(i);
-    #             for (int j = 0; j < width; j += 1) {
-    #                 Tile tile = row.get(j);
-    #                 tile.setBounds(j * PPT, i * PPT, PPT, PPT);
-    #                 tile.setOpaque(true);
-    #                 tile.setBorderPainted(false);
-    #                 add(tile);
-    #             }
-    #         }
-    #     }
-    #
-    # }
+    # Steps the map forward by 1 timestep
+    def step(self, action):
+        for car in self.cars:
+            car.step(car_heuristic_func())
+        main_car.step(action)
+
+        # TODO: Actually return stuff
+    
+    # Renders everything to pygame properly
+    def render_to_pygame(self, coords):
+        self.screen.fill((25, 123, 48))
+        for row in self.tiles:
+            for tile in row:
+                tile.render_to_pygame(self.screen, coords)
+        for car in self.cars:
+            car.render_to_pygame(self.screen)
+        #main_car.render_to_pygame(self.screen)
+        pg.display.update()
+
 
     # Setter method: canvas
     def set_canvas(self, canvas):
@@ -167,3 +187,13 @@ class Map:
 
     # TODO: putting cars on map, step, reset, render
     # TODO: in Robert's code, where it has `Canvas()`, just set that equal to the Map's canvas
+
+if __name__ == "__main__":
+    pg.init()
+    screen = pg.display.set_mode((512, 512))
+    a = Map(3, 3, is_tkrendered=False, screen=screen)
+    while True:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                pg.quit()
+                sys.exit()

@@ -1,6 +1,7 @@
 from tkinter import * #TODO: CHANGE
 from tkinter import ttk
 from PIL import Image, ImageTk
+import pygame as pg
 
 import time
 
@@ -19,11 +20,11 @@ PIXELS_PER_TILE = 200
 DEFAULT_TERRAIN = 'road'
 TEXTURES = ['grass', 'ice', 'gravel', 'road']
 PATHS = ['straight', 'quarter_turn']
+SCREEN_SIZE = 512
 
 root = Tk()
 
 TEST_IMAGE = ImageTk.PhotoImage(Image.open("../resources/straight_road_20.png"))
-print Image.open("../resources/straight_road_20.png")
 
 def populate_terrain_images():
     # It's really ugly, but Tk has super weird scoping issues
@@ -40,6 +41,18 @@ def populate_terrain_images():
                 ImageTk.PhotoImage(cur_image.rotate(orientation))
     return terrain_images
 
+def populate_pg_terrain_images():
+    # Exact same thing, but uses pygame image handling instead
+    terrain_images = {}
+    for texture in TEXTURES:
+        terrain_images[texture] = {}
+        for path in PATHS:
+            terrain_images[texture][path] = {}
+            cur_image = pg.image.load("../resources/{}_{}_{}.png".format(path, texture, PIXELS_PER_TILE))
+            for orientation in ORIENTATIONS:
+                terrain_images[texture][path][orientation] = \
+                pg.transform.rotate(cur_image, orientation)
+    return terrain_images
 # Tile class
 class Tile:
 
@@ -47,19 +60,21 @@ class Tile:
     terrain_selection = DEFAULT_TERRAIN
     pressed = False
     terrain_images = populate_terrain_images()
+    pg_terrain_images = populate_pg_terrain_images()
     currently_editing = 'path'
 
     # Tile constructors
-    def __init__(self, map, canvas=None, texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
+    def __init__(self, map, canvas=None, location=(0, 0), texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
         # Boolean flag to check if updates to visuals are needed
         self._rendered = False
         self.canvas = canvas
-        #self.set_map(map)
+        self.set_map(map)
         self.set_texture(texture)
         self.set_path_ind(path_ind)
         self.set_orientation(orientation)
-        # TODO: setBackground(getColor(texture));
-        #self.add_listeners()
+
+        print location
+        self.coords = (location[0]*PIXELS_PER_TILE, location[1]* PIXELS_PER_TILE)
 
     # Populate the Tile with listeners to allow user interfacing
     def add_listeners(self):
@@ -70,10 +85,7 @@ class Tile:
 
     # Creates a rendered image at appropriate point on canvas
     def render_to_canvas(self, x, y):
-        texture = self.get_texture()
-        path = self.get_path()
-        orientation = self.get_orientation()
-        image = Tile.terrain_images[texture][path][orientation]
+        image = get_image('tk')
         id = self.canvas.create_image(self.calculate_placement(x), self.calculate_placement(y), image=image)
         self.id = id
         self._rendered = True
@@ -83,11 +95,35 @@ class Tile:
     def update_canvas_render(self):
         if not self._rendered:
             return
+        image = self.get_image('tk')
+        self.canvas.itemconfigure(self.id, image=image)
+
+    # Renders the tile to pygame. Location dependent on viewing window location
+    def render_to_pygame(self, screen, screen_coords):
+        image = self.get_image('pg')
+        #print "----------"
+        #print self.coords
+        #print screen_coords
+        if -PIXELS_PER_TILE <= self.coords[0] - screen_coords[0] <= SCREEN_SIZE and \
+            -PIXELS_PER_TILE <= self.coords[1] - screen_coords[1] <= SCREEN_SIZE:
+            pos = (int(self.coords[0] - screen_coords[0]), int(self.coords[1] - screen_coords[1]))
+            #print pos
+            screen.blit(image, pos)
+        else:
+            print "not rendered"
+
+    # Gets the image of a tile, in either 'pg' or 'tk' format
+    def get_image(self, image_format):
         texture = self.get_texture()
         path = self.get_path()
         orientation = self.get_orientation()
-        image = Tile.terrain_images[texture][path][orientation]
-        self.canvas.itemconfigure(self.id, image=image)
+        if image_format == 'tk':
+            image = Tile.terrain_images[texture][path][orientation]
+        elif image_format == 'pg':
+            image = Tile.pg_terrain_images[texture][path][orientation]
+        else:
+            raise Exception("Image format {} not supported".format(image_format))
+        return image
 
     @staticmethod
     def calculate_placement(x):
@@ -278,43 +314,45 @@ def edit_orientation(tile_class):
     Tile.currently_editing = 'orientation'
 
 
+
+if __name__ == '__main__':
 # BEGIN MAKESHIFT SIDEPANEL
-frame = ttk.Frame(root)
-frame.grid(column=1, row=0, sticky=(N, S, E))
-terrain_button = ttk.Button(frame, text="Change Terrain", command=lambda : edit_terrain(Tile))
-terrain_button.grid(column=0, row=3)
-path_button = ttk.Button(frame, text="Change Path", command=lambda : edit_path(Tile))
-path_button.grid(column=0, row=4)
-orientation_button = ttk.Button(frame, text="Change Orientation", command=lambda : edit_orientation(Tile))
-orientation_button.grid(column=0, row=5)
-choices_label = ttk.Label(frame, text="Available terrain")
-choices_label.grid(column=0, row=6)
-choice_grass = ttk.Button(frame, text="grass", command=lambda: Tile.set_terrain_selection('grass'))
-choice_grass.grid(column=0, row=7)
-choice_road = ttk.Button(frame, text="road", command=lambda: Tile.set_terrain_selection('road'))
-choice_road.grid(column=0, row=8)
-choice_gravel = ttk.Button(frame, text="gravel", command=lambda: Tile.set_terrain_selection('gravel'))
-choice_gravel.grid(column=0, row=9)
-choice_ice = ttk.Button(frame, text="ice", command=lambda: Tile.set_terrain_selection('ice'))
-choice_ice.grid(column=0, row=10)
-#### END MAKESHIFT SIDEPANEL
+    frame = ttk.Frame(root)
+    frame.grid(column=1, row=0, sticky=(N, S, E))
+    terrain_button = ttk.Button(frame, text="Change Terrain", command=lambda : edit_terrain(Tile))
+    terrain_button.grid(column=0, row=3)
+    path_button = ttk.Button(frame, text="Change Path", command=lambda : edit_path(Tile))
+    path_button.grid(column=0, row=4)
+    orientation_button = ttk.Button(frame, text="Change Orientation", command=lambda : edit_orientation(Tile))
+    orientation_button.grid(column=0, row=5)
+    choices_label = ttk.Label(frame, text="Available terrain")
+    choices_label.grid(column=0, row=6)
+    choice_grass = ttk.Button(frame, text="grass", command=lambda: Tile.set_terrain_selection('grass'))
+    choice_grass.grid(column=0, row=7)
+    choice_road = ttk.Button(frame, text="road", command=lambda: Tile.set_terrain_selection('road'))
+    choice_road.grid(column=0, row=8)
+    choice_gravel = ttk.Button(frame, text="gravel", command=lambda: Tile.set_terrain_selection('gravel'))
+    choice_gravel.grid(column=0, row=9)
+    choice_ice = ttk.Button(frame, text="ice", command=lambda: Tile.set_terrain_selection('ice'))
+    choice_ice.grid(column=0, row=10)
+    #### END MAKESHIFT SIDEPANEL
 
-canvas2.bind("<Enter>", lambda event: canvas2.focus_set())
-
-
-
-images = Tile.terrain_images['road']['straight'][0]
-canvas2.create_image(0, 0, image=images)
-
-tiles = []
-for x in range(5):
-    for y in range(5):
-        t = Tile(None, canvas=canvas2)
-        t.render_to_canvas(x, y)
-        t.add_listeners()
-        tiles.append(t)
+    canvas2.bind("<Enter>", lambda event: canvas2.focus_set())
 
 
-#canvas2.itemconfigure(2, image=Tile.terrain_images['road']['quarter_turn'][180])
-root.mainloop()
+
+    images = Tile.terrain_images['road']['straight'][0]
+    canvas2.create_image(0, 0, image=images)
+
+    tiles = []
+    for x in range(5):
+        for y in range(5):
+            t = Tile(None, canvas=canvas2)
+            t.render_to_canvas(x, y)
+            t.add_listeners()
+            tiles.append(t)
+
+
+    #canvas2.itemconfigure(2, image=Tile.terrain_images['road']['quarter_turn'][180])
+    root.mainloop()
 
