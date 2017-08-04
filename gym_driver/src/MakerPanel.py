@@ -1,15 +1,23 @@
+from pickle import dump
+
 from Panel import Panel
 
 from read_config import read_config
 
 configs = read_config()
+SAVE_DIR = configs["SAVE_DIR"]
+SAVE_EXT = configs["SAVE_EXT"]
 DEFAULT_TERRAIN = configs["DEFAULT_TERRAIN"]
-# RESIZE_Y = configs["RESIZE_Y"]
-# CHNG_TERRAIN_Y = configs["CHNG_TERRAIN_Y"]
-# NUM_CPUS_Y = configs["NUM_CPUS_Y"]
-# UPDATE_W = configs["UPDATE_W"]
-# CHNG_TERRAIN_W = configs["CHNG_TERRAIN_W"]
-# CHNG_TERRAIN_H = configs["CHNG_TERRAIN_H"]
+PANEL_W = configs["PANEL_W"]
+ELEMENT_H = configs["ELEMENT_H"]
+RESIZE_Y = configs["RESIZE_Y"]
+CHNG_TERRAIN_Y = configs["CHNG_TERRAIN_Y"]
+NUM_CPUS_Y = configs["NUM_CPUS_Y"]
+TAG_Y = configs["TAG_Y"]
+SAVE_Y = configs["SAVE_Y"]
+UPDATE_W = configs["UPDATE_W"]
+CHNG_TERRAIN_H = configs["CHNG_TERRAIN_H"]
+MIDDLE = PANEL_W // 2
 
 # MakerPanel class
 class MakerPanel(Panel):
@@ -17,148 +25,78 @@ class MakerPanel(Panel):
     # MakerPanel constructor
     def __init__(self, program, maker_menu):
         Panel.__init__(self, program, maker_menu)
-        self.terrain_selection = DEFAULT_TERRAIN
+        self.set_terrain_selection(DEFAULT_TERRAIN)
+
+    # Getter method: terrain_selection
+    def get_terrain_selection(self):
+        return self.terrain_selection
+
+    # Getter method: num_CPUs
+    def get_num_CPUs(self):
+        return self.num_CPUs.get()
+
+    # Getter method: tag
+    def get_tag(self):
+        return self.tag.get()
+
+    # Setter method: terrain_selection
+    def set_terrain_selection(self, terrain_selection):
+        self.terrain_selection = terrain_selection
 
     # Populate the MakerPanel with buttons
     def add_buttons(self):
         self.add_resize()
         self.add_chng_terrain()
         self.add_num_CPUs()
+        self.add_tag()
         self.add_save()
         self.add_back()
 
     def add_resize(self):
-        self.add_button("Run Map", 0, 50, lambda : None)
-        print "here"
+        width_str = str(self.get_map().get_width())
+        height_str = str(self.get_map().get_height())
+        self.width_field = self.add_text_field("Width:", width_str, RESIZE_Y)
+        self.height_field = self.add_text_field("Height:", height_str, RESIZE_Y)
+        def update_dimensions():
+            try:
+                new_width = self.width_field.get()
+                new_height = self.height_field.get()
+                self.get_map().set_size(new_width, new_height)
+            except:
+                print "Invalid dimensions"
+        self.add_button("Update", PANEL_W - UPDATE_W, RESIZE_Y,
+                        update_dimensions, UPDATE_W, 2 * ELEMENT_H)
 
     def add_chng_terrain(self):
-        None
+        self.add_terrain_button("grass", 0, CHNG_TERRAIN_Y)
+        self.add_terrain_button("gravel", MIDDLE, CHNG_TERRAIN_Y)
+        self.add_terrain_button("road", 0, CHNG_TERRAIN_Y + CHNG_TERRAIN_H)
+        self.add_terrain_button("ice", MIDDLE, CHNG_TERRAIN_Y + CHNG_TERRAIN_H)
+
+    def add_terrain_button(self, terrain, x, y):
+        chng_terrain_type = lambda: self.set_terrain_selection(terrain)
+        self.add_button(terrain, x, y, chng_terrain_type, height=CHNG_TERRAIN_H, width=PANEL_W/2)
 
     def add_num_CPUs(self):
-        None
+        CPUs_str = str(self.get_map().get_num_CPUs())
+        self.num_CPUs = self.add_text_field("Num CPUs:", CPUs_str, NUM_CPUS_Y)
+
+    def add_tag(self):
+        self.tag = self.add_text_field("Name:", self.get_map().get_tag(), TAG_Y)
 
     def add_save(self):
-        None
-
-    def add_back(self):
-        None
+        def save():
+            map = self.get_map()
+            map.set_num_CPUs(self.get_num_CPUs())
+            map.set_tag(self.get_tag())
+            save_dir = "{}/{}{}".format(SAVE_DIR, map.get_tag(), SAVE_EXT)
+            with open(save_dir, "w") as f:
+                dump(map, f)
+        self.add_button("Save Map", 0, SAVE_Y, save)
 
 # TODO: see the revised Tile class on branch `natepy`
 # TODO: since Tile no longer extends button, you need to bind every Tile to a key listener with [canvas].tag_bind(id, <binding>, command)
 
-#     private TextField WIDTH_FIELD, HEIGHT_FIELD, NUM_CPUS_FIELD, NAME_FIELD;
-#
-#     /** Populate the MakerPanel with Map-resize options */
-#     private void addResizeOptions() {
-#         Map map          = getMap();
-#         int yResizeW     = RESIZE_Y;
-#         int yResizeH     = yResizeW + INPUT_H;
-#         int fieldWidth   = PANEL_WIDTH - LABEL_W - UPDATE_W;
-#         String w         = (new Integer(map.mapWidth())).toString();
-#         WIDTH_FIELD      = addTextField("Width:", w, yResizeW, fieldWidth);
-#         String h         = (new Integer(map.mapHeight())).toString();
-#         HEIGHT_FIELD     = addTextField("Height:", h, yResizeH, fieldWidth);
-#         int xUpdate      = PANEL_WIDTH - UPDATE_W;
-#         int updateHeight = 2 * INPUT_H;
-#         addButton("Update", xUpdate, yResizeW, UPDATE_W, updateHeight,
-#                 (ActionEvent a) -> {
-#                     try {
-#                         String wField = WIDTH_FIELD.getText();
-#                         int newWidth  = Integer.valueOf(wField);
-#                         String hField = HEIGHT_FIELD.getText();
-#                         int newHeight = Integer.valueOf(hField);
-#                         changeMapSize(newWidth, newHeight);
-#                     } catch (NumberFormatException e) {
-#                         e.printStackTrace();
-#                     }
-#                 });
-#     }
-#
-#     /** Populate the MakerPanel with toggle-terrain options */
-#     private void addTerrainOptions() {
-#         int xR  = MIDDLE;
-#         int xL  = xR - TERRAIN_W;
-#         int top = TERRAIN_Y;
-#         int low = top + TERRAIN_H;
-#         addTerrainButton("grass",  xL, top, TERRAIN_W, TERRAIN_H);
-#         addTerrainButton("road",   xR, top, TERRAIN_W, TERRAIN_H);
-#         addTerrainButton("gravel", xL, low, TERRAIN_W, TERRAIN_H);
-#         addTerrainButton("ice",    xR, low, TERRAIN_W, TERRAIN_H);
-#     }
-#
-#     private void addTerrainButton(String t, int x, int y, int w, int h) {
-#         addButton(t, x, y, w, h, (ActionEvent e) -> setTerrain(t));
-#     }
-#
-#     /** Populate the MakerPanel with options to adjust the number of CPUs */
-#     private void addNumCPUsOptions() {
-#         String numCPUs = String.valueOf(getMap().getNumCPUs());
-#         int CPUs_W     = PANEL_WIDTH - LABEL_W;
-#         NUM_CPUS_FIELD = addTextField("CPUs:", numCPUs, NUM_CPUS_Y, CPUs_W);
-#     }
-#
-#     /** Populate the MakerPanel with zoom-in and zoom-out options */
-#     private void addZoomOptions() {
-#         int xR = MIDDLE;
-#         int xL = MIDDLE - ZOOM_WH;
-#         addButton("+", xL, ZOOM_Y, ZOOM_WH, ZOOM_WH,
-#                 (ActionEvent a) -> {
-#                     Map map       = getMap();
-#                     int PPT       = Tile.PIXELS_PER_TILE;
-#                     int stdZoom   = PPT + ZOOM_STEP;
-#                     if (stdZoom < PANE_WIDTH && stdZoom < PANE_HEIGHT) {
-#                         Tile.setPPT(stdZoom);
-#                     }
-#                     map.render();
-#                 });
-#         addButton("-", xR, ZOOM_Y, ZOOM_WH, ZOOM_WH,
-#                 (ActionEvent a) -> {
-#                     Map map       = getMap();
-#                     int PPT       = Tile.PIXELS_PER_TILE;
-#                     int minWidth  = PANE_WIDTH / map.mapWidth();
-#                     int minHeight = PANE_HEIGHT / map.mapHeight();
-#                     int stdZoom   = PPT - ZOOM_STEP;
-#                     if (minWidth < stdZoom || minHeight < stdZoom) {
-#                         Tile.setPPT(stdZoom);
-#                     } else {
-#                         Tile.setPPT(Math.min(minWidth, minHeight));
-#                     }
-#                     map.render();
-#                 });
-#     }
-#
-#     /** Populate the MakerPanel with save options */
-#     private void addSaveOption() {
-#         Map map       = getMap();
-#         int ySave     = BOTTOM - INPUT_H;
-#         int yName     = ySave - INPUT_H;
-#         int nameWidth = PANEL_WIDTH - LABEL_W;
-#         addButton("save map", 0, ySave, PANEL_WIDTH, INPUT_H,
-#                 (ActionEvent a) -> {
-#                     ObjectOutputStream out;
-#                     try {
-#                         String tag = NAME_FIELD.getText();
-#                         map.setTag(tag);
-#                         int CPUs = Integer.valueOf(NUM_CPUS_FIELD.getText());
-#                         map.setNumCPUs(CPUs);
-#                         String dir = String.format("%s/%s%s",
-#                                 SAVE_DIR, tag, SAVE_EXT);
-#                         FileOutputStream f = new FileOutputStream(dir);
-#                         out = new ObjectOutputStream(f);
-#                         out.writeObject(map);
-#                         out.close();
-#                     } catch (Exception e) {
-#                         e.printStackTrace();
-#                     }
-#                 });
-#         NAME_FIELD = addTextField("Name:", map.getTag(), yName, nameWidth);
-#     }
-#
-#     /** Set the terrain pen to the specified terrain type */
-#     private void setTerrain(String terrainSelection) {
-#         Tile.terrainSelection = terrainSelection;
-#     }
-#
 #     /** Change the dimensions of the Map */
 #     private void changeMapSize(int width, int height) {
 #         Map map                = getMap();

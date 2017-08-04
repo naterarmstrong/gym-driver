@@ -23,19 +23,18 @@ class Program:
        self.root.propagate(0)
        self.frame = Frame(self.root)
        self.frame.pack(fill=BOTH, expand=1)
-       self.frame.config(bg="yellow")
-       self.make_main_menu()
+       self.set_main_menu()
        self.root.mainloop()
 
    def clear_frame(self):
        for widget in self.frame.winfo_children():
            widget.destroy()
 
-   def make_main_menu(self):
+   def set_main_menu(self):
        self.clear_frame()
        MainMenu(self)
 
-   def make_maker_manu(self):
+   def set_maker_menu(self):
        self.clear_frame()
        MakerMenu(self, Map(0,0))
 

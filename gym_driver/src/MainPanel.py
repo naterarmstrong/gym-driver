@@ -1,7 +1,9 @@
-from Tkinter import Label, Frame, BOTH
 from os import listdir, path
 from pickle import load
+import tkFileDialog
 
+from MakerMenu import MakerMenu
+from Map import Map
 from Panel import Panel
 
 from read_config import read_config
@@ -13,20 +15,22 @@ WINDOW_W = configs["WINDOW_W"]
 WINDOW_H = configs["WINDOW_H"]
 PANEL_W = configs["PANEL_W"]
 PANEL_H = configs["PANEL_H"]
+MAP_LABEL_Y = configs["MAP_LABEL_Y"]
 EDIT_MAP_Y = configs["EDIT_MAP_Y"]
 RUN_MAP_Y = configs["RUN_MAP_Y"]
+CYCLE_MAP_Y = configs["CYCLE_MAP_Y"]
+NEW_MAP_Y = configs["NEW_MAP_Y"]
+SELECT_MAP_Y = configs["SELECT_MAP_Y"]
+MIDDLE = PANEL_W // 2
 
 # MainPanel class
 class MainPanel(Panel):
 
     # MainPanel constructor
     def __init__(self, program, main_menu):
-        self.program = program
         self.saves = MapList()
         if self.saves.get_size():
             self.set_map(self.saves.peek())
-        self.main_menu = main_menu
-
         Panel.__init__(self, program, main_menu)
 
     # Populate the MainPanel with buttons
@@ -38,28 +42,16 @@ class MainPanel(Panel):
         self.add_next()
         self.add_select_map()
         self.add_new_map()
-        self.add_button("MapMaker", 0, EDIT_MAP_Y + 100, self.toMapMaker)
-
-
-
-    def toMapMaker(self):
-        self.program.make_maker_manu()
-
 
     def add_map_name(self):
         if self.saves.get_size():
             text = "Name: " + self.get_map().get_tag()
         else:
             text = "No Map Selected"
-        self.add_label(text, 0)
+        self.add_label(text, MAP_LABEL_Y)
 
     def add_edit_map(self):
-        def edit_map():
-
-            None
-            # TODO: map.add_listeners()
-            # TODO: change_screen(MakerMenu(map))
-        self.add_button("Edit Map", 0, EDIT_MAP_Y, edit_map)
+        self.add_button("Edit Map", 0, EDIT_MAP_Y, self.program.set_maker_menu)
 
     def add_run_map(self):
         def run_map():
@@ -68,89 +60,37 @@ class MainPanel(Panel):
         self.add_button("Run Map", 0, RUN_MAP_Y, run_map)
 
     def add_prev(self):
-        None
+        def prev_map():
+            if self.saves.get_size():
+                prev = self.saves.prev()
+                self.set_map(prev)
+        self.add_button("<", 0, CYCLE_MAP_Y, prev_map, MIDDLE)
 
     def add_next(self):
-        None
+        def next_map():
+            if self.saves.get_size():
+                next = self.saves.next()
+                self.set_map(next)
+        self.add_button(">", MIDDLE, CYCLE_MAP_Y, next_map, MIDDLE)
 
     def add_new_map(self):
-        None
-        # default map size:
-        # this(new Map(PANE_W / Tile.PIXELS_PER_TILE + 1,
-        #                      PANE_H / Tile.PIXELS_PER_TILE + 1));
+        def new_map():
+            self.change_screen(MakerMenu(self.program.root, Map()))
+        self.add_button("New Map", 0, NEW_MAP_Y, new_map)
 
     def add_select_map(self):
-        None
+        def select_map():
+            try:
+                filename = tkFileDialog.askopenfilename(initialdir="../maps/",
+                                                        title="Select a Map")
+                with open(filename, "r") as f:
+                    map = load(f)
+                self.set_map(map)
+            except:
+                print "Unsupported file type."
+        self.add_button("Select Map", 0, SELECT_MAP_Y, select_map)
 
-#     /** Populate the MainPanel with run options */
-#     private void addRunButton() {
-#         addButton("Run Map", 0, RUN_Y, PANEL_W, INPUT_H,
-#                 (ActionEvent a) -> {
-#                     Map map = getMap();
-#                     if (saves.getSize() != 0) {
-#                         changeScreen(new RunnerMenu(map));
-#                     }
-#                 });
-#     }
-#
-#     /** Populate the MainPanel with prev & next options to cycle Maps */
-#     private void addPrevNextButtons() {
-#         addButton("<", 0, CYCLE_Y, CYCLE_W, INPUT_H,
-#                 (ActionEvent a) -> {
-#                     Map map = getMap();
-#                     try {
-#                         if (saves.getSize() != 0) {
-#                             remove(map);
-#                             map = saves.prev();
-#                             setMap(map);
-#                             updateFields();
-#                         }
-#                     } catch (Exception e) {
-#                         e.printStackTrace();
-#                     }
-#                 });
-#         addButton(">", MIDDLE, CYCLE_Y, CYCLE_W, INPUT_H,
-#                 (ActionEvent a) -> {
-#                     Map map = getMap();
-#                     try {
-#                         if (saves.getSize() != 0) {
-#                             remove(map);
-#                             map = saves.next();
-#                             setMap(map);
-#                             updateFields();
-#                         }
-#                     } catch (Exception e) {
-#                         e.printStackTrace();
-#                     }
-#                 });
-#     }
-#
-#     /** Populate the MainPanel with the option to select Map from directory */
-#     private void addSelectButton() {
-#         addButton("Select Map", 0, SELECT_Y, PANEL_W, INPUT_H,
-#                 (ActionEvent a) -> {
-#                     JFileChooser fileChooser = new JFileChooser(SAVE_DIR);
-#                     int fileType = fileChooser.showOpenDialog(null);
-#                     if (fileType == JFileChooser.APPROVE_OPTION) {
-#                         File file = fileChooser.getSelectedFile();
-#                         try {
-#                             FileInputStream f = new FileInputStream(file);
-#                             ObjectInputStream in = new ObjectInputStream(f);
-#                             Map map = (Map) in.readObject();
-#                             setMap(map);
-#                         } catch (Exception e) {
-#                             e.printStackTrace();
-#                         }
-#                     }
-#                 });
-#     }
-#
-#     /** Populate the MainPanel with the option to create a new Map */
-#     private void addNewButton() {
-#         addButton("New Map", 0, BOTTOM, PANEL_W, INPUT_H,
-#                 (ActionEvent a) -> changeScreen(new MakerMenu()));
-#     }
-#
+# TODO
 #     /** Update fields in the MainPanel after changing the Map */
 #     void updateFields() {
 #         NAME_FIELD.setText(NAME_LABEL + getMap().getTag());
