@@ -85,7 +85,7 @@ class Tile:
 
     # Creates a rendered image at appropriate point on canvas
     def render_to_canvas(self, x, y):
-        image = get_image('tk')
+        image = self.get_image('tk')
         id = self.canvas.create_image(self.calculate_placement(x), self.calculate_placement(y), image=image)
         self.id = id
         self._rendered = True
