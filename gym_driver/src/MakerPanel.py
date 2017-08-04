@@ -4,19 +4,19 @@ from read_config import read_config
 
 configs = read_config()
 DEFAULT_TERRAIN = configs["DEFAULT_TERRAIN"]
-RESIZE_Y = configs["RESIZE_Y"]
-CHNG_TERRAIN_Y = configs["CHNG_TERRAIN_Y"]
-NUM_CPUS_Y = configs["NUM_CPUS_Y"]
-UPDATE_W = configs["UPDATE_W"]
-CHNG_TERRAIN_W = configs["CHNG_TERRAIN_W"]
-CHNG_TERRAIN_H = configs["CHNG_TERRAIN_H"]
+# RESIZE_Y = configs["RESIZE_Y"]
+# CHNG_TERRAIN_Y = configs["CHNG_TERRAIN_Y"]
+# NUM_CPUS_Y = configs["NUM_CPUS_Y"]
+# UPDATE_W = configs["UPDATE_W"]
+# CHNG_TERRAIN_W = configs["CHNG_TERRAIN_W"]
+# CHNG_TERRAIN_H = configs["CHNG_TERRAIN_H"]
 
 # MakerPanel class
 class MakerPanel(Panel):
 
     # MakerPanel constructor
-    def __init__(self, maker_menu):
-        Panel.__init__(self, maker_menu)
+    def __init__(self, program, maker_menu):
+        Panel.__init__(self, program, maker_menu)
         self.terrain_selection = DEFAULT_TERRAIN
 
     # Populate the MakerPanel with buttons
@@ -28,7 +28,8 @@ class MakerPanel(Panel):
         self.add_back()
 
     def add_resize(self):
-        None
+        self.add_button("Run Map", 0, 50, lambda : None)
+        print "here"
 
     def add_chng_terrain(self):
         None

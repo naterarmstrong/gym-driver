@@ -43,8 +43,8 @@ class MainPanel(Panel):
 
 
     def toMapMaker(self):
-        for widget in self.program.frame.winfo_children():
-            widget.destroy()
+        self.program.make_maker_manu()
+
 
     def add_map_name(self):
         if self.saves.get_size():

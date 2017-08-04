@@ -2,6 +2,8 @@ from Tkinter import Tk, Frame, BOTH
 from tkinter import ttk
 
 from MainMenu import MainMenu
+from MakerMenu import MakerMenu
+from Map import Map
 
 from read_config import read_config
 
@@ -14,6 +16,7 @@ def main():
     Program()
 
 class Program:
+
    def __init__(self):
        self.root = Tk()
        self.root.config(width=WINDOW_W, height=WINDOW_H)
@@ -21,8 +24,20 @@ class Program:
        self.frame = Frame(self.root)
        self.frame.pack(fill=BOTH, expand=1)
        self.frame.config(bg="yellow")
-       MainMenu(self)
+       self.make_main_menu()
        self.root.mainloop()
+
+   def clear_frame(self):
+       for widget in self.program.frame.winfo_children():
+           widget.destroy()
+
+   def make_main_menu(self):
+       self.clear_frame()
+       MainMenu(self)
+
+   def make_maker_manu(self):
+       self.clear_frame()
+       MakerMenu(self, Map(0,0))
 
 
 if __name__ == "__main__":
