@@ -1,43 +1,51 @@
 from Panel import Panel
 
+from read_config import read_config
+
+configs = read_config()
+DEFAULT_TERRAIN = configs["DEFAULT_TERRAIN"]
+RESIZE_Y = configs["RESIZE_Y"]
+CHNG_TERRAIN_Y = configs["CHNG_TERRAIN_Y"]
+NUM_CPUS_Y = configs["NUM_CPUS_Y"]
+UPDATE_W = configs["UPDATE_W"]
+CHNG_TERRAIN_W = configs["CHNG_TERRAIN_W"]
+CHNG_TERRAIN_H = configs["CHNG_TERRAIN_H"]
+
 # MakerPanel class
 class MakerPanel(Panel):
 
-    None
+    # MakerPanel constructor
+    def __init__(self, maker_menu):
+        Panel.__init__(self, maker_menu)
+        self.terrain_selection = DEFAULT_TERRAIN
 
-# import java.io.FileOutputStream;
-# import java.io.ObjectOutputStream;
-#
-# import javax.swing.JScrollPane;
-#
-# import java.awt.TextField;
-# import java.awt.event.ActionEvent;
-#
-# /** MakerPanel class */
-# class MakerPanel extends Panel {
-#
-#     /** MakerPanel attributes */
-#     private static final int RESIZE_Y   = TOP;
-#     private static final int TERRAIN_Y  = 200;
-#     private static final int NUM_CPUS_Y = 300;
-#     private static final int ZOOM_Y     = 350;
-#     private static final int UPDATE_W   = 60;
-#     private static final int TERRAIN_W  = MIDDLE;
-#     private static final int TERRAIN_H  = 50;
-#     private static final int ZOOM_WH    = 20;
-#     private static final int ZOOM_STEP  = 25;
+    # Populate the MakerPanel with buttons
+    def add_buttons(self):
+        self.add_resize()
+        self.add_chng_terrain()
+        self.add_num_CPUs()
+        self.add_save()
+        self.add_back()
+
+    def add_resize(self):
+        None
+
+    def add_chng_terrain(self):
+        None
+
+    def add_num_CPUs(self):
+        None
+
+    def add_save(self):
+        None
+
+    def add_back(self):
+        None
+
+# TODO: see the revised Tile class on branch `natepy`
+# TODO: since Tile no longer extends button, you need to bind every Tile to a key listener with [canvas].tag_bind(id, <binding>, command)
+
 #     private TextField WIDTH_FIELD, HEIGHT_FIELD, NUM_CPUS_FIELD, NAME_FIELD;
-#
-#     /** MakerPanel constructor */
-#     MakerPanel(MakerMenu m) {
-#         super(m);
-#         addResizeOptions();
-#         addTerrainOptions();
-#         addNumCPUsOptions();
-#         addZoomOptions();
-#         addSaveOption();
-#         addBackOption();
-#     }
 #
 #     /** Populate the MakerPanel with Map-resize options */
 #     private void addResizeOptions() {
@@ -162,5 +170,3 @@ class MakerPanel(Panel):
 #     /** Update fields in the MakerPanel after changing the Map */
 #     void updateFields() {
 #     }
-#
-# }
