@@ -2,7 +2,6 @@ from Tkinter import Tk, Frame, BOTH
 
 from MainMenu import MainMenu
 from MakerMenu import MakerMenu
-from Map import Map
 
 from read_config import read_config
 

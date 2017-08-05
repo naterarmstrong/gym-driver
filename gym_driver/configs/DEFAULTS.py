@@ -9,6 +9,7 @@ PANE_W = WINDOW_W - PANEL_W
 PANE_H= WINDOW_H
 SAVE_DIR = "../maps/"
 SAVE_EXT = ".json"
+RESOURCE_DIR = "../resources/"
 
 # Panel
 LABEL_W = 60
@@ -69,6 +70,7 @@ configs = {
     "PANE_H": PANE_H,
     "SAVE_DIR": SAVE_DIR,
     "SAVE_EXT": SAVE_EXT,
+    "RESOURCE_DIR": RESOURCE_DIR,
 
     # Panel
     "LABEL_W": LABEL_W,

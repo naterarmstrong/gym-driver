@@ -133,13 +133,3 @@ class Map:
     def step(self, action):
         for car in self.get_cars():
             car.step(car_heuristic())
-
-    # Render the Map
-    def render(self, coordinates):
-        self.program.fill((25, 123, 48)) #TODO: What are these numbers?
-        for row in self.tiles:
-            for tile in row:
-                tile.render(self.program, coordinates)
-        for car in self.get_cars():
-            car.render(self.program)
-        display.update()

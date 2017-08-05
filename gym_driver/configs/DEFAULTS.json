@@ -21,6 +21,12 @@
         "straight", 
         "quarter_turn"
     ], 
+    "ORIENTATIONS": [
+        0, 
+        90, 
+        180, 
+        270
+    ], 
     "PANEL_W": 200, 
     "MAP_LABEL_Y": 0, 
     "CYCLE_MAP_Y": 75, 
@@ -42,12 +48,7 @@
     "NEW_MAP_Y": 100, 
     "EDIT_MAP_Y": 25, 
     "DEFAULT_MAP_W": 5, 
-    "ORIENTATIONS": [
-        0, 
-        90, 
-        180, 
-        270
-    ], 
+    "MARGIN": 2, 
     "PANE_W": 800, 
     "NAME_Y": 525, 
     "UPDATE_SIZE_W": 70, 
@@ -58,7 +59,7 @@
     "DEFAULT_MAP_H": 4, 
     "SAVE_Y": 550, 
     "PIXELS_PER_TILE": 200, 
-    "MARGIN": 2, 
+    "RESOURCE_DIR": "../resources/", 
     "SET_HEIGHT_Y": 25, 
     "SET_TERRAIN_H": 50, 
     "SELECT_MAP_Y": 125
