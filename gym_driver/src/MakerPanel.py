@@ -1,6 +1,7 @@
 from json import dump
 
 from Panel import Panel
+from Tile import Tile
 
 from read_config import read_config
 
@@ -30,7 +31,7 @@ class MakerPanel(Panel):
 
     # Getter method: terrain_selection
     def get_terrain_selection(self):
-        return self.terrain_selection
+        return Tile.terrain_selection
 
     # Getter method: num_CPUs
     def get_num_CPUs(self):
@@ -42,7 +43,7 @@ class MakerPanel(Panel):
 
     # Setter method: terrain_selection
     def set_terrain_selection(self, terrain_selection):
-        self.terrain_selection = terrain_selection
+        Tile.terrain_selection = terrain_selection
 
     # Populate the MakerPanel with buttons
     def add_buttons(self):

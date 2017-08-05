@@ -10,16 +10,20 @@ TEXTURES = configs["TEXTURES"]
 PATHS = configs["PATHS"]
 ORIENTATIONS = configs["ORIENTATIONS"]
 
+# TODO: Make the colors make sense in each tile png. (road = dark grey, gravel = brown, ice = blue-white)
+
 # Tile class
 class Tile:
 
     # Tile class attributes
-    terrain_selection = DEFAULT_TERRAIN
     pressed = False
     imgs_computed_TODO_fix = False
 
     # Tile constructors
     def __init__(self, map, x, y, texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
+        self.x, self.y = x, y
+        self.set_path_ind(path_ind)
+        self.set_orientation(orientation)
         self.set_map(map)
         self.root = self.map.program.root
         if not self.imgs_computed_TODO_fix:
@@ -27,26 +31,31 @@ class Tile:
             Tile.terrain_images = self.populate_terrain_images()
             Tile.pg_terrain_images = self.populate_terrain_images()
         self.set_texture(texture)
-        self.set_path_ind(path_ind)
-        self.set_orientation(orientation)
+
         self.tk_render(x, y)
         self.add_listeners()
 
     # Populate the Tile with listeners to allow user interfacing
     def add_listeners(self):
-        self.map.get_canvas().tag_bind(self.id, "<Enter>", self.on_enter)
-        self.map.get_canvas().tag_bind(self.id, "<Button-1>", self.on_leftclick)
-        self.map.get_canvas().tag_bind(self.id, "<Button-2>", self.on_rightclick)
-        self.map.get_canvas().tag_bind(self.id, "<Key>", self.on_keypress)
+        canvas = self.map.get_canvas()
+        canvas.tag_bind(self.id, "<Enter>", self.on_enter)
+        canvas.tag_bind(self.id, "<Button-1>", self.on_leftclick)
+        canvas.tag_bind(self.id, "<ButtonRelease-1>", self.on_leftrelease)
+        canvas.tag_bind(self.id, "<Button-2>", self.on_rightclick)
+        canvas.tag_bind(self.id, "<Key>", self.on_keypress)
 
     def on_enter(self, event):
         # TODO: requestFocus()
+        print self.texture
         if Tile.pressed:
             self.set_texture(Tile.terrain_selection)
 
     def on_leftclick(self, event):
         Tile.pressed = True
         self.set_texture(Tile.terrain_selection)
+
+    def on_leftrelease(self, event):
+        Tile.pressed = False
 
     def on_rightclick(self, event):
         self.cycle_path()
@@ -136,6 +145,7 @@ class Tile:
     def set_texture(self, texture):
         if texture in TEXTURES:
             self.texture = texture
+            self.tk_render(self.x, self.y)
             # TODO: setBackground(getColor(texture))
             if self.get_texture() == DEFAULT_TERRAIN:
                 self.set_path_ind(0)
@@ -164,7 +174,6 @@ class Tile:
     def tk_render(self, x, y):
         image = self.get_image('tk')
         self.id = self.map.get_canvas().create_image(self.calculate_placement(x), self.calculate_placement(y), image=image)
-        self._rendered = True
 
     # TODO
     #     /** Draw the Tile */
