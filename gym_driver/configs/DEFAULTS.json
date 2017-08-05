@@ -45,7 +45,7 @@
     "DEFAULT_NUM_CPUS": 4, 
     "PANE_W": 800, 
     "NAME_Y": 525, 
-    "UPDATE_SIZE_W": 60, 
+    "UPDATE_SIZE_W": 70, 
     "SET_TERRAIN_Y": 50, 
     "DEFAULT_TERRAIN": "grass", 
     "BACK_Y": 575, 
