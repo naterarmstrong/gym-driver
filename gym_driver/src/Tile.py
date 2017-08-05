@@ -1,3 +1,6 @@
+from PIL import Image, ImageTk
+from pygame import image, transform
+
 from read_config import read_config
 
 configs = read_config()
@@ -13,21 +16,28 @@ class Tile:
     # Tile class attributes
     terrain_selection = DEFAULT_TERRAIN
     pressed = False
+    imgs_computed_TODO_fix = False
 
     # Tile constructors
-    def __init__(self, map, texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
+    def __init__(self, map, x, y, texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
         self.set_map(map)
+        self.root = self.map.program.root
+        if not self.imgs_computed_TODO_fix:
+            Tile.imgs_computed_TODO_fix = True
+            Tile.terrain_images = self.populate_terrain_images()
+            Tile.pg_terrain_images = self.populate_terrain_images()
         self.set_texture(texture)
         self.set_path_ind(path_ind)
         self.set_orientation(orientation)
+        self.tk_render(x, y)
         self.add_listeners()
 
     # Populate the Tile with listeners to allow user interfacing
     def add_listeners(self):
-        self.bind("<Enter>", self.on_enter)
-        self.bind("<Button-1>", self.on_leftclick)
-        self.bind("<Button-2>", self.on_rightclick)
-        self.bind("<Key>", self.on_keypress)
+        self.map.get_canvas().tag_bind(self.id, "<Enter>", self.on_enter)
+        self.map.get_canvas().tag_bind(self.id, "<Button-1>", self.on_leftclick)
+        self.map.get_canvas().tag_bind(self.id, "<Button-2>", self.on_rightclick)
+        self.map.get_canvas().tag_bind(self.id, "<Key>", self.on_keypress)
 
     def on_enter(self, event):
         # TODO: requestFocus()
@@ -105,6 +115,19 @@ class Tile:
         texture = self.get_point_texture(x, y)
         return Tile.get_texture_friction(texture)
 
+    # Get the image of a tile, in either 'pg' or 'tk' format TODO fix
+    def get_image(self, image_format):
+        texture = self.get_texture()
+        path = self.get_path()
+        orientation = self.get_orientation()
+        if image_format == 'tk':
+            image = Tile.terrain_images[texture][path][orientation]
+        elif image_format == 'pg':
+            image = Tile.pg_terrain_images[texture][path][orientation]
+        else:
+            raise Exception("Image format {} not supported".format(image_format))
+        return image
+
     # Setter method: map
     def set_map(self, map):
         self.map = map
@@ -136,6 +159,12 @@ class Tile:
         path = self.get_path()
         if path == "convex" or path == "concave":
             self.set_orientation((self.orientation + 90) % 360)
+
+    # Render the Tile in Tkinter
+    def tk_render(self, x, y):
+        image = self.get_image('tk')
+        self.id = self.map.get_canvas().create_image(self.calculate_placement(x), self.calculate_placement(y), image=image)
+        self._rendered = True
 
     # TODO
     #     /** Draw the Tile */
@@ -172,3 +201,41 @@ class Tile:
     #     }
     #
     # }
+
+    @staticmethod
+    def populate_terrain_images():
+        # It's really ugly, but Tk has super weird scoping issues
+        # They are avoided by definiing all PhotoImages in the global frame, I think
+        # Only mess with this if brave and patient
+        terrain_images = {}
+        for texture in TEXTURES:
+            terrain_images[texture] = {}
+            for path in PATHS:
+                terrain_images[texture][path] = {}
+                cur_image = Image.open(
+                    "../resources/{}_{}_{}.png".format(path, texture,
+                                                       PIXELS_PER_TILE))
+                for orientation in ORIENTATIONS:
+                    terrain_images[texture][path][orientation] = \
+                        ImageTk.PhotoImage(cur_image.rotate(orientation))
+        return terrain_images
+
+    @staticmethod
+    def populate_pg_terrain_images():
+        # Exact same thing, but uses pygame image handling instead
+        terrain_images = {}
+        for texture in TEXTURES:
+            terrain_images[texture] = {}
+            for path in PATHS:
+                terrain_images[texture][path] = {}
+                cur_image = image.load(
+                    "../resources/{}_{}_{}.png".format(path, texture,
+                                                       PIXELS_PER_TILE))
+                for orientation in ORIENTATIONS:
+                    terrain_images[texture][path][orientation] = \
+                        transform.rotate(cur_image, orientation)
+        return terrain_images
+
+    @staticmethod
+    def calculate_placement(x):
+        return (PIXELS_PER_TILE / 2) + PIXELS_PER_TILE * x

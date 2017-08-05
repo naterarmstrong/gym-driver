@@ -59,19 +59,8 @@ class Menu(PanedWindow):
 
     # Populate the Menu with a Map pane
     def add_pane(self):
-        master = Frame(self.program.frame, bg=BACKGROUND_COLOR)
-        master.pack(side=LEFT)
-        master.propagate(0)
-        canvas = self.get_map().get_canvas()
-        hbar = Scrollbar(master, orient=HORIZONTAL)
-        hbar.pack(side=BOTTOM, fill=X)
-        hbar.config(command=canvas.xview)
-        vbar = Scrollbar(master, orient=VERTICAL)
-        vbar.pack(side=RIGHT, fill=Y)
-        vbar.config(command=canvas.yview)
-        canvas.config(xscrollcommand=hbar.set, yscrollcommand=vbar.set)
-        canvas.pack(side=LEFT, expand=True, fill=BOTH)
-        master.config(width=PANE_W, height=PANE_H)
+        pane = self.get_map().get_pane()
+        pane.pack(side=LEFT)
 
     # Populate the Menu with a Panel
     def add_panel(self):

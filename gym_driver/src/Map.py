@@ -1,11 +1,13 @@
-from pygame import display
-from Tkinter import Canvas
+from Tkinter import Canvas, PanedWindow, Scrollbar,\
+    BOTH, LEFT, RIGHT, VERTICAL, HORIZONTAL, X, Y, BOTTOM, Frame
 
 from Tile import Tile
 
 from read_config import read_config
 
 configs = read_config()
+PANE_W = configs["PANE_W"]
+PANE_H = configs["PANE_H"]
 PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
 DEFAULT_MAP_W = configs["DEFAULT_MAP_W"]
 DEFAULT_MAP_H = configs["DEFAULT_MAP_H"]
@@ -18,15 +20,17 @@ BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
 class Map:
 
     # Map constructor
-    def __init__(self, width=DEFAULT_MAP_W, height=DEFAULT_MAP_H):
-        self.set_canvas(Canvas())
+    def __init__(self, program, width=DEFAULT_MAP_W, height=DEFAULT_MAP_H):
+        self.program = program
+        self.make_pane()
         self.width = width
         self.height = height
         self.tiles = []
         for i in range(self.height):
             row = []
             for j in range(self.width):
-                row.append(Tile(self))
+                tile = Tile(self, j, i)
+                row.append(tile)
             self.tiles.append(row)
         self.set_num_CPUs(DEFAULT_NUM_CPUS)
         self.set_tag(DEFAULT_TAG)
@@ -35,6 +39,21 @@ class Map:
         else:
             self.set_start_tile(None)
         self.set_cars([])
+        
+    # Make the Map pane
+    def make_pane(self):
+        self.pane = Frame(self.program.frame, bg=BACKGROUND_COLOR)
+        hbar = Scrollbar(self.pane, orient=HORIZONTAL)
+        hbar.pack(side=BOTTOM, fill=X)
+        vbar = Scrollbar(self.pane, orient=VERTICAL)
+        vbar.pack(side=RIGHT, fill=Y)
+        self.canvas = Canvas(self.pane, scrollregion=(0, 0, 1000, 1000),
+                             yscrollcommand=vbar.set, xscrollcommand=hbar.set)
+        hbar.config(command=self.canvas.xview)
+        vbar.config(command=self.canvas.yview)
+        self.canvas.propagate(0)
+        self.canvas.config(width=PANE_W, height=PANE_H)
+        self.canvas.pack(side=LEFT, expand=True, fill=BOTH)
 
     # Add listeners to every Tile on the Map
     def add_listeners(self):
@@ -43,6 +62,10 @@ class Map:
             for j in range(self.get_width()):
                 tile = row[j]
                 tile.add_listeners()
+
+    # Getter method: pane
+    def get_pane(self):
+        return self.pane
 
     # Getter method: width
     def get_width(self):
