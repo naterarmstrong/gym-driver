@@ -1,3 +1,4 @@
+from pygame import display
 from Tkinter import Canvas
 
 from Tile import Tile
@@ -135,31 +136,10 @@ class Map:
 
     # Render the Map
     def render(self, coordinates):
-        None
-
-    # TODO
-    #     /** Render the Map */
-    #     void render() {
-    #         int PPT = Tile.PIXELS_PER_TILE;
-    #         setPreferredSize(new Dimension(width * PPT, height * PPT));
-    #         for (int i = 0; i < height; i += 1) {
-    #             ArrayList<Tile> row = tiles.get(i);
-    #             for (int j = 0; j < width; j += 1) {
-    #                 Tile tile = row.get(j);
-    #                 tile.setBounds(j * PPT, i * PPT, PPT, PPT);
-    #                 tile.setOpaque(true);
-    #                 tile.setBorderPainted(false);
-    #                 add(tile);
-    #             }
-    #         }
-    #     }
-    #
-    # }
-
-    # Step
-
-    # Reset
-
-    # Render
-
-    # TODO: putting cars on map, step, reset, render
+        self.program.fill((25, 123, 48)) #TODO: What are these numbers?
+        for row in self.tiles:
+            for tile in row:
+                tile.render(self.program, coordinates)
+        for car in self.get_cars():
+            car.render(self.program)
+        display.update()

@@ -47,7 +47,8 @@ TEXTURES = {
     "road": [0.5, "#565148"],
     "ice": [0.1, "#bdefef"]
 }
-PATHS = ["straight", "convex", "concave"]
+PATHS = ["straight", "quarter_turn"]
+ORIENTATIONS = [0, 90, 180, 270]
 
 # Map
 DEFAULT_MAP_W = PANE_W // PIXELS_PER_TILE + 1
@@ -101,6 +102,7 @@ configs = {
     "DEFAULT_TERRAIN": DEFAULT_TERRAIN,
     "TEXTURES": TEXTURES,
     "PATHS": PATHS,
+    "ORIENTATIONS": ORIENTATIONS,
 
     # Map
     "DEFAULT_MAP_W": DEFAULT_MAP_W,

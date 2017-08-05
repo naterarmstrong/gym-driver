@@ -1,3 +1,5 @@
+from pygame import image, transform
+
 from read_config import read_config
 
 configs = read_config()
@@ -5,11 +7,27 @@ PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
 DEFAULT_TERRAIN = configs["DEFAULT_TERRAIN"]
 TEXTURES = configs["TEXTURES"]
 PATHS = configs["PATHS"]
+ORIENTATIONS = configs["ORIENTATIONS"]
+
+# Populate an array of terrain images
+def populate_terrain_images():
+    texture_images = {}
+    for texture in TEXTURES:
+        path_images = {}
+        for path in PATHS:
+            orientation_images = {}
+            tp_image = image.load("../resources/{}_{}_{}.png".format(path, texture, PIXELS_PER_TILE))
+            for orientation in ORIENTATIONS:
+                orientation_images[orientation] = transform.rotate(tp_image, orientation)
+            path_images[path] = orientation_images
+        texture_images[texture] = texture_images
+    return texture_images
 
 # Tile class
 class Tile:
 
     # Tile class attributes
+    terrain_images = populate_terrain_images()
     terrain_selection = DEFAULT_TERRAIN
     pressed = False
 

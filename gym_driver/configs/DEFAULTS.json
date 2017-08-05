@@ -19,12 +19,12 @@
     }, 
     "PATHS": [
         "straight", 
-        "convex", 
-        "concave"
+        "quarter_turn"
     ], 
     "PANEL_W": 200, 
     "MAP_LABEL_Y": 0, 
     "CYCLE_MAP_Y": 75, 
+    "DEFAULT_NUM_CPUS": 4, 
     "WINDOW_H": 600, 
     "LABEL_H": 25, 
     "SAVE_EXT": ".json", 
@@ -42,7 +42,12 @@
     "NEW_MAP_Y": 100, 
     "EDIT_MAP_Y": 25, 
     "DEFAULT_MAP_W": 5, 
-    "DEFAULT_NUM_CPUS": 4, 
+    "ORIENTATIONS": [
+        0, 
+        90, 
+        180, 
+        270
+    ], 
     "PANE_W": 800, 
     "NAME_Y": 525, 
     "UPDATE_SIZE_W": 70, 
