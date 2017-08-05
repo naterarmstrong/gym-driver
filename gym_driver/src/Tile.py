@@ -33,7 +33,7 @@ class Tile:
         self.set_texture(texture)
 
         self.tk_render(x, y)
-        self.add_listeners()
+        # self.add_listeners()
 
     # Populate the Tile with listeners to allow user interfacing
     def add_listeners(self):
@@ -46,7 +46,7 @@ class Tile:
 
     def on_enter(self, event):
         # TODO: requestFocus()
-        print self.texture
+        print Tile.pressed
         if Tile.pressed:
             self.set_texture(Tile.terrain_selection)
 
@@ -174,6 +174,7 @@ class Tile:
     def tk_render(self, x, y):
         image = self.get_image('tk')
         self.id = self.map.get_canvas().create_image(self.calculate_placement(x), self.calculate_placement(y), image=image)
+        self.add_listeners()
 
     # TODO
     #     /** Draw the Tile */
