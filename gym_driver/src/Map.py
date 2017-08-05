@@ -187,7 +187,7 @@ class Map:
             for tile in row:
                 tile.render_to_pygame(self.screen, coords)
         for car in self.cars:
-            car.render_to_pygame(self.screen)
+            car.render_to_pygame(self.screen, coords)
         #main_car.render_to_pygame(self.screen)
         pg.display.update()
 
@@ -205,7 +205,11 @@ class Map:
             self.canvas = Canvas()
 
     def add_car(self, x, y):
-        pass
+        newcar = Car(self, x, y, 0, canvas=self.get_canvas())
+        print "car created"
+        newcar.render_to_canvas()
+        print 'car rendered'
+        self.cars.append(newcar)
 
     def get_currently_editing(self):
         return self.currently_editing
@@ -290,6 +294,7 @@ if __name__ == "__main__":
     tiles = []
     a = Map(5, 5, is_tkrendered=True, canvas=canvas2, screen=screen)
     a.set_currently_editing('path')
+    a.add_car(50, 50)
     #for x in range(5):
     #    for y in range(5):
     #        t = Tile(a, canvas=canvas2)

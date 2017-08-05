@@ -11,6 +11,7 @@ configs = read_config()
 #YAW_INTERTIA = configs["YAW_INTERTIA"]
 COLORS = ['green', 'blue', 'grey', 'orange']
 IMAGE_FORMATS = ['pg', 'tk']
+ORIENTATIONS = [0, 90, 180, 270]
 SCREEN_SIZE = 512
 
 
@@ -18,13 +19,16 @@ def populate_car_images():
 	car_images = {}
 	for color in COLORS:
 		car_images[color] = {}
-		for image_format in IMAGE_FORMATS:
-			if image_format == 'pg':
-				image = pg.image.load("../resources/{}_car.png".format(color))
-				car_images[color][image_format] = image
-			elif image_format == 'tk':
-				image = Image.open('../resources/{}_car.gif'.format(color))
-				car_images[color][image_format] = image
+		for orientation in ORIENTATIONS:
+			car_images[color][orientation] = {}
+			for image_format in IMAGE_FORMATS:
+				car_images[color][orientation][image_format] = {}
+				if image_format == 'pg':
+					image = pg.image.load("../resources/{}_car.png".format(color))
+					car_images[color][0][image_format] = image
+				elif image_format == 'tk':
+					image = Image.open('../resources/{}_car.gif'.format(color)).rotate(orientation)
+					car_images[color][orientation][image_format] = ImageTk.PhotoImage(image)
 	return car_images
 
 
@@ -32,7 +36,6 @@ def populate_car_images():
 class Car:
 
     car_images = populate_car_images()
-    print car_images
 
 
     # Car constructor
@@ -50,7 +53,7 @@ class Car:
     # Renders the car to a pygame screen, if it's in an appropriate distance
     def render_to_pygame(self, screen, screen_coords):
         image = self.get_image('pg')
-        coords = (x, y)
+        coords = (self.x, self.y)
         if -50 <= coords[0] - screen_coords[0] <= SCREEN_SIZE and \
             -50 <= coords[1] - screen_coords[1] <= SCREEN_SIZE:
             pos = (int(coords[0] - screen_coords[0]), int(coords[1] - screen_coords[1]))
@@ -60,13 +63,17 @@ class Car:
             print "not rendered"
 
 
+    # Renders the car to a canvas
     def render_to_canvas(self):
     	# TODO:: FIX
     	image = self.get_image('tk')
-    	id = self.canvas.create_image(50, 50, image=ImageTk.PhotoImage(Image.open('../resources/straight_gravel_200.png')))
+    	print image
+    	id = self.canvas.create_image(self.x, self.y, image=image)
     	self.id = id
     	self._rendered = True
 
+
+    # Updates the canvas render
     def update_canvas_render(self):
     	if not self._rendered:
     		return
@@ -77,15 +84,20 @@ class Car:
     # Gets an image for use in either pygame or tk
     def get_image(self, image_type):
     	#TODO: Check that angles go in the right direction
-    	image = Car.car_images[self.color][image_type]
     	angle = self.get_angle()
+    	if angle % 90 == 0 and image_type == 'tk':
+    		image = Car.car_images[self.color][angle][image_type]
+    	else:
+    		image=Car.car_images[self.color][0][image_type]
+
+
     	if image_type == 'pg':
-    		rotated_image = pg.transform.rotate(-angle)
+    		image = pg.transform.rotate(image,-angle)
     	elif image_type == 'tk':
-    		rotated_image = ImageTk.PhotoImage(image.rotate(-angle))
+    		pass
     	else:
     		raise Exception("Unsupported Image Type: {}".format(image_type))
-    	return rotated_image
+    	return image
 
     # Adds listeners
     def add_listeners(self):

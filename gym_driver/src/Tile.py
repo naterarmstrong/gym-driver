@@ -5,7 +5,7 @@ import pygame as pg
 
 import time
 
-from Car import Car
+#from Car import Car
 from read_config import read_config
 
 #configs = read_config()
@@ -86,8 +86,6 @@ class Tile:
     # Creates a rendered image at appropriate point on canvas
     def render_to_canvas(self, x, y):
         image = self.get_image('tk')
-        print image
-        print Tile.terrain_images
         id = self.canvas.create_image(self.calculate_placement(x), self.calculate_placement(y), image=image)
         self.id = id
         self._rendered = True
@@ -108,7 +106,7 @@ class Tile:
             pos = (int(self.coords[0] - screen_coords[0]), int(self.coords[1] - screen_coords[1]))
             screen.blit(image, pos)
         else:
-            print "not rendered"
+            pass
 
     # Gets the image of a tile, in either 'pg' or 'tk' format
     def get_image(self, image_format):
