@@ -2,7 +2,6 @@ from json import load
 from os import listdir, path
 import tkFileDialog
 
-from MakerMenu import MakerMenu
 from Map import Map
 from Panel import Panel
 
@@ -51,7 +50,9 @@ class MainPanel(Panel):
         self.add_label(text, MAP_LABEL_Y)
 
     def add_edit_map(self):
-        self.add_button("Edit Map", 0, EDIT_MAP_Y, self.program.set_maker_menu)
+        def edit_map():
+            self.program.set_maker_menu(self.get_map())
+        self.add_button("Edit Map", 0, EDIT_MAP_Y, edit_map)
 
     def add_run_map(self):
         def run_map():
@@ -75,7 +76,7 @@ class MainPanel(Panel):
 
     def add_new_map(self):
         def new_map():
-            self.change_screen(MakerMenu(self.program.root, Map()))
+            self.program.set_maker_menu(Map())
         self.add_button("New Map", 0, NEW_MAP_Y, new_map)
 
     def add_select_map(self):

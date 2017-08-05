@@ -39,9 +39,9 @@ class Program:
         MainMenu(self)
 
     # Set the frame to the MakerMenu
-    def set_maker_menu(self):
+    def set_maker_menu(self, map):
         self.clear_frame()
-        MakerMenu(self, Map())
+        MakerMenu(self, map)
 
 if __name__ == "__main__":
     main()
