@@ -1,4 +1,9 @@
-from tkinter import Canvas
+from tkinter import *
+
+if __name__ == '__main__':
+    root = Tk()
+
+from tkinter import ttk
 from PIL import Image, ImageTk
 import pygame as pg
 import sys, os
@@ -28,7 +33,7 @@ PIXELS_PER_TILE = 200
 class Map:
 
     # Map constructor
-    def __init__(self, width, height, is_tkrendered=False, screen=None):
+    def __init__(self, width, height, is_tkrendered=False, screen=None, canvas=None):
         self.width = width
         self.height = height
         self.tiles = []
@@ -38,7 +43,7 @@ class Map:
         self.is_tkrendered = is_tkrendered
         self.screen = screen
         if self.is_tkrendered:
-            self.set_canvas(Canvas())
+            self.set_canvas(canvas)
         # End rendering logic
 
         # Used/accessed by tile / car to edit properly
@@ -189,15 +194,25 @@ class Map:
     def test_pygame_movement(self, t):
         # runs for 10 seconds, .1 second per t
         self.render_to_pygame((t*5, t*5))
-        time.sleep(.05)
+        time.sleep(.02)
 
 
     # Setter method: canvas
     def set_canvas(self, canvas):
-        self.canvas = canvas
+        if canvas:
+            self.canvas = canvas
+        else:
+            self.canvas = Canvas()
 
     def add_car(self, x, y):
         pass
+
+    def get_currently_editing(self):
+        return self.currently_editing
+
+
+    def set_currently_editing(self, currently_editing):
+        self.currently_editing = currently_editing
 
     # Step
 
@@ -209,16 +224,94 @@ class Map:
     # TODO: in Robert's code, where it has `Canvas()`, just set that equal to the Map's canvas
 
 if __name__ == "__main__":
+
+
+    h = ttk.Scrollbar(root, orient=HORIZONTAL)
+    v = ttk.Scrollbar(root, orient=VERTICAL)
+    canvas2 = Canvas(root, scrollregion=(0, 0, 1000, 1000), yscrollcommand=v.set, xscrollcommand=h.set)
+    h['command'] = canvas2.xview
+    v['command'] = canvas2.yview
+    ttk.Sizegrip(root).grid(column=10, row=10, sticky=(S,E))
+
+    canvas2.grid(column=0, row=0, sticky=(N,W,E,S))
+    h.grid(column=0, row=10, sticky=(W,E))
+    v.grid(column=10, row=0, sticky=(N,S))
+    root.grid_columnconfigure(0, weight=1)
+    root.grid_rowconfigure(0, weight=1)
+
+    def edit_terrain(map):
+        print "editing terrain"
+        map.set_currently_editing('terrain')
+
+    def edit_path(map):
+        print "editing path"
+        map.set_currently_editing('path')
+
+    def edit_orientation(map):
+        print "editing orientation"
+        map.set_currently_editing('orientation')
+
+    def edit_cars(map):
+        print "editing cars"
+        map.set_currently_editing('cars')
+
+    frame = ttk.Frame(root)
+    frame.grid(column=1, row=0, sticky=(N, S, E))
+    cars_button = ttk.Button(frame, text="Add Cars", command = lambda : edit_cars(a))
+    cars_button.grid(column=0, row=2)
+    terrain_button = ttk.Button(frame, text="Change Terrain", command=lambda : edit_terrain(a))
+    terrain_button.grid(column=0, row=3)
+    path_button = ttk.Button(frame, text="Change Path", command=lambda : edit_path(a))
+    path_button.grid(column=0, row=4)
+    orientation_button = ttk.Button(frame, text="Change Orientation", command=lambda : edit_orientation(a))
+    orientation_button.grid(column=0, row=5)
+    choices_label = ttk.Label(frame, text="Available terrain")
+    choices_label.grid(column=0, row=6)
+    choice_grass = ttk.Button(frame, text="grass", command=lambda: Tile.set_terrain_selection('grass'))
+    choice_grass.grid(column=0, row=7)
+    choice_road = ttk.Button(frame, text="road", command=lambda: Tile.set_terrain_selection('road'))
+    choice_road.grid(column=0, row=8)
+    choice_gravel = ttk.Button(frame, text="gravel", command=lambda: Tile.set_terrain_selection('gravel'))
+    choice_gravel.grid(column=0, row=9)
+    choice_ice = ttk.Button(frame, text="ice", command=lambda: Tile.set_terrain_selection('ice'))
+    choice_ice.grid(column=0, row=10)
+    #### END MAKESHIFT SIDEPANEL
+
+    canvas2.bind("<Enter>", lambda event: canvas2.focus_set())
+
+
+
+    #images = Tile.terrain_images['road']['straight'][0]
+    #canvas2.create_image(0, 0, image=images)
+
     pg.init()
     screen = pg.display.set_mode((512, 512))
-    a = Map(3, 3, is_tkrendered=False, screen=screen)
-    a.render_to_pygame((0, 0))
-    for row in a.tiles:
-        for tile in row:
-            tile.cycle_path()
-    a.render_to_pygame((0, 0))
-    pg.display.update()
+
+    tiles = []
+    a = Map(5, 5, is_tkrendered=True, canvas=canvas2, screen=screen)
+    a.set_currently_editing('path')
+    #for x in range(5):
+    #    for y in range(5):
+    #        t = Tile(a, canvas=canvas2)
+    #        t.render_to_canvas(x, y)
+    #        t.add_listeners()
+    #        tiles.append(t)
+
+
+    #canvas2.itemconfigure(2, image=Tile.terrain_images['road']['quarter_turn'][180])
+    
+
+
+    
+    #a = Map(3, 3, is_tkrendered=False, screen=screen)
+    #a.render_to_pygame((0, 0))
+    #for row in a.tiles:
+    #    for tile in row:
+    #        tile.cycle_path()
+    #a.render_to_pygame((0, 0))
+    #pg.display.update()
     counter = 0
+    root.mainloop()
     while counter < 300:
         for event in pg.event.get():
             if event.type == pg.QUIT:

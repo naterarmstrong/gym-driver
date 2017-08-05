@@ -23,9 +23,9 @@ TEXTURES = ['grass', 'ice', 'gravel', 'road']
 PATHS = ['straight', 'quarter_turn']
 SCREEN_SIZE = 512
 
-root = Tk()
 
-TEST_IMAGE = ImageTk.PhotoImage(Image.open("../resources/straight_road_20.png"))
+
+#TEST_IMAGE = ImageTk.PhotoImage(Image.open("../resources/straight_road_20.png"))
 
 def populate_terrain_images():
     # It's really ugly, but Tk has super weird scoping issues
@@ -86,6 +86,8 @@ class Tile:
     # Creates a rendered image at appropriate point on canvas
     def render_to_canvas(self, x, y):
         image = self.get_image('tk')
+        print image
+        print Tile.terrain_images
         id = self.canvas.create_image(self.calculate_placement(x), self.calculate_placement(y), image=image)
         self.id = id
         self._rendered = True
@@ -299,36 +301,41 @@ class TestingMap:
         b.render_to_canvas()
 
 
-h = ttk.Scrollbar(root, orient=HORIZONTAL)
-v = ttk.Scrollbar(root, orient=VERTICAL)
-canvas2 = Canvas(root, scrollregion=(0, 0, 1000, 1000), yscrollcommand=v.set, xscrollcommand=h.set)
-h['command'] = canvas2.xview
-v['command'] = canvas2.yview
-ttk.Sizegrip(root).grid(column=10, row=10, sticky=(S,E))
 
-canvas2.grid(column=0, row=0, sticky=(N,W,E,S))
-h.grid(column=0, row=10, sticky=(W,E))
-v.grid(column=10, row=0, sticky=(N,S))
-root.grid_columnconfigure(0, weight=1)
-root.grid_rowconfigure(0, weight=1)
-
-def edit_terrain(map):
-    print "editing terrain"
-    map.set_currently_editing('terrain')
-
-def edit_path(map):
-    print "editing path"
-    map.set_currently_editing('path')
-
-def edit_orientation(map):
-    print "editing orientation"
-    map.set_currently_editing('orientation')
-
-def edit_cars(map):
-    print "editing cars"
-    map.set_currently_editing('cars')
 
 if __name__ == '__main__':
+    root = Tk()
+
+    h = ttk.Scrollbar(root, orient=HORIZONTAL)
+    v = ttk.Scrollbar(root, orient=VERTICAL)
+    canvas2 = Canvas(root, scrollregion=(0, 0, 1000, 1000), yscrollcommand=v.set, xscrollcommand=h.set)
+    h['command'] = canvas2.xview
+    v['command'] = canvas2.yview
+    ttk.Sizegrip(root).grid(column=10, row=10, sticky=(S,E))
+
+    canvas2.grid(column=0, row=0, sticky=(N,W,E,S))
+    h.grid(column=0, row=10, sticky=(W,E))
+    v.grid(column=10, row=0, sticky=(N,S))
+    root.grid_columnconfigure(0, weight=1)
+    root.grid_rowconfigure(0, weight=1)
+
+    def edit_terrain(map):
+        print "editing terrain"
+        map.set_currently_editing('terrain')
+
+    def edit_path(map):
+        print "editing path"
+        map.set_currently_editing('path')
+
+    def edit_orientation(map):
+        print "editing orientation"
+        map.set_currently_editing('orientation')
+
+    def edit_cars(map):
+        print "editing cars"
+        map.set_currently_editing('cars')
+
+
 # BEGIN MAKESHIFT SIDEPANEL
     frame = ttk.Frame(root)
     frame.grid(column=1, row=0, sticky=(N, S, E))
