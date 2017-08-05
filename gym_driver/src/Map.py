@@ -218,6 +218,10 @@ class Map:
     def set_currently_editing(self, currently_editing):
         self.currently_editing = currently_editing
 
+    # Sets the screen of the map (for pygame rendering)
+    def set_screen(self, screen):
+        self.screen = screen
+
     # Step
 
     # Reset
@@ -288,11 +292,10 @@ if __name__ == "__main__":
     #images = Tile.terrain_images['road']['straight'][0]
     #canvas2.create_image(0, 0, image=images)
 
-    pg.init()
-    screen = pg.display.set_mode((512, 512))
+
 
     tiles = []
-    a = Map(5, 5, is_tkrendered=True, canvas=canvas2, screen=screen)
+    a = Map(5, 5, is_tkrendered=True, canvas=canvas2, screen=None)
     a.set_currently_editing('path')
     a.add_car(50, 50)
     #for x in range(5):
@@ -317,6 +320,12 @@ if __name__ == "__main__":
     #pg.display.update()
     counter = 0
     root.mainloop()
+
+    pg.init()
+    screen = pg.display.set_mode((512, 512))
+    a.set_screen(screen)
+
+
     while counter < 300:
         for event in pg.event.get():
             if event.type == pg.QUIT:

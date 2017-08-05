@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import pygame as pg
 
 import time
+import random
 
 #from Car import Car
 from read_config import read_config
@@ -149,7 +150,9 @@ class Tile:
             print "Not currently editing anything"
 
     def on_rightclick(self, event):
-        print self.get_point_texture(event.x % PIXELS_PER_TILE, event.y % PIXELS_PER_TILE)
+        print 'Changing angle on cars'
+        for car in self.map.cars:
+            car.set_angle(90*random.random())
 
     def on_keypress(self, event):
         print "AYYY"
