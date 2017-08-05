@@ -11,11 +11,14 @@ DEFAULT_START_ANGLE = configs["DEFAULT_START_ANGLE"]
 BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
 PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
 
+DEFAULT_MAP_W = configs["DEFAULT_MAP_W"]
+DEFAULT_MAP_H = configs["DEFAULT_MAP_H"]
+
 # Map class
 class Map:
 
     # Map constructor
-    def __init__(self, width, height):
+    def __init__(self, width=DEFAULT_MAP_W, height=DEFAULT_MAP_H):
         self.width = width
         self.height = height
         self.tiles = []

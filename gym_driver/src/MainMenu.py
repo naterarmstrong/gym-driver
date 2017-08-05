@@ -2,6 +2,7 @@ from MainPanel import MainPanel
 from Map import Map
 from Menu import Menu
 
+# MainMenu class
 class MainMenu(Menu):
 
     # MainMenu constructor

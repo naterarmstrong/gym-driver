@@ -1,5 +1,4 @@
 from Tkinter import Tk, Frame, BOTH
-from tkinter import ttk
 
 from MainMenu import MainMenu
 from MakerMenu import MakerMenu
@@ -15,32 +14,34 @@ WINDOW_H = configs["WINDOW_H"]
 def main():
     Program()
 
+# Program class
 class Program:
 
-   def __init__(self):
-       self.root = Tk()
-       self.root.config(width=WINDOW_W, height=WINDOW_H)
-       self.root.propagate(0)
-       self.frame = Frame(self.root)
-       self.frame.pack(fill=BOTH, expand=1)
-       self.set_main_menu()
-       self.root.mainloop()
+    # Program constructor
+    def __init__(self):
+        self.root = Tk()
+        self.root.resizable(width=False, height=False)
+        self.root.config(width=WINDOW_W, height=WINDOW_H)
+        self.root.propagate(0)
+        self.frame = Frame(self.root)
+        self.frame.pack(fill=BOTH, expand=1)
+        self.set_main_menu()
+        self.root.mainloop()
 
-   def clear_frame(self):
-       for widget in self.frame.winfo_children():
-           widget.destroy()
+    # Clear the current frame
+    def clear_frame(self):
+        for widget in self.frame.winfo_children():
+            widget.destroy()
 
-   def set_main_menu(self):
-       self.clear_frame()
-       MainMenu(self)
+    # Set the frame to the MainMenu
+    def set_main_menu(self):
+        self.clear_frame()
+        MainMenu(self)
 
-   def set_maker_menu(self):
-       self.clear_frame()
-       MakerMenu(self, Map(0,0))
-
+    # Set the frame to the MakerMenu
+    def set_maker_menu(self):
+        self.clear_frame()
+        MakerMenu(self, Map())
 
 if __name__ == "__main__":
     main()
-
-
-# TODO: make the windows re-sizable, and have the map adjust to take up the extra space

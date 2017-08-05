@@ -1,5 +1,5 @@
+from json import load
 from os import listdir, path
-from pickle import load
 import tkFileDialog
 
 from MakerMenu import MakerMenu
@@ -9,18 +9,18 @@ from Panel import Panel
 from read_config import read_config
 
 configs = read_config()
-SAVE_DIR = configs["SAVE_DIR"]
-SAVE_EXT = configs["SAVE_EXT"]
 WINDOW_W = configs["WINDOW_W"]
 WINDOW_H = configs["WINDOW_H"]
 PANEL_W = configs["PANEL_W"]
 PANEL_H = configs["PANEL_H"]
+SAVE_DIR = configs["SAVE_DIR"]
+SAVE_EXT = configs["SAVE_EXT"]
 MAP_LABEL_Y = configs["MAP_LABEL_Y"]
 EDIT_MAP_Y = configs["EDIT_MAP_Y"]
 RUN_MAP_Y = configs["RUN_MAP_Y"]
 CYCLE_MAP_Y = configs["CYCLE_MAP_Y"]
-NEW_MAP_Y = configs["NEW_MAP_Y"]
 SELECT_MAP_Y = configs["SELECT_MAP_Y"]
+NEW_MAP_Y = configs["NEW_MAP_Y"]
 MIDDLE = PANEL_W // 2
 
 # MainPanel class
@@ -35,7 +35,7 @@ class MainPanel(Panel):
 
     # Populate the MainPanel with buttons
     def add_buttons(self):
-        self.add_map_name()
+        self.add_map_label()
         self.add_edit_map()
         self.add_run_map()
         self.add_prev()
@@ -43,7 +43,7 @@ class MainPanel(Panel):
         self.add_select_map()
         self.add_new_map()
 
-    def add_map_name(self):
+    def add_map_label(self):
         if self.saves.get_size():
             text = "Name: " + self.get_map().get_tag()
         else:
@@ -81,13 +81,13 @@ class MainPanel(Panel):
     def add_select_map(self):
         def select_map():
             try:
-                filename = tkFileDialog.askopenfilename(initialdir="../maps/",
+                filename = tkFileDialog.askopenfilename(initialdir=SAVE_DIR,
                                                         title="Select a Map")
                 with open(filename, "r") as f:
                     map = load(f)
                 self.set_map(map)
             except:
-                print "Unsupported file type."
+                print "Error in MainPanel.add_select_map"
         self.add_button("Select Map", 0, SELECT_MAP_Y, select_map)
 
 # TODO

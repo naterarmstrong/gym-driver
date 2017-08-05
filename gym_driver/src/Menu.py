@@ -1,5 +1,4 @@
-from Tkinter import\
-    PanedWindow, Scrollbar,\
+from Tkinter import PanedWindow, Scrollbar,\
     BOTH, LEFT, RIGHT, VERTICAL, HORIZONTAL, X, Y, BOTTOM, Frame
 
 from read_config import read_config
@@ -15,14 +14,13 @@ BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
 class Menu(PanedWindow):
 
     # Menu constructor
-    def __init__(self, program, title, map,
-                 width=WINDOW_W, height=WINDOW_H):
+    def __init__(self, program, title, map, width=WINDOW_W, height=WINDOW_H):
         PanedWindow.__init__(self, program.frame)
         self.program = program
         self.set_title(title)
         self.set_map(map)
-        self.width = width + 500
-        self.height = height
+        self.set_width(width)
+        self.set_height(height)
         self.add_pane()
         self.add_panel()
 
@@ -34,6 +32,14 @@ class Menu(PanedWindow):
     def get_map(self):
         return self.map
 
+    # Getter method: width
+    def get_width(self):
+        return self.width
+
+    # Getter method: height
+    def get_height(self):
+        return self.height
+
     # Setter method: title
     def set_title(self, title):
         self.title = title
@@ -42,6 +48,14 @@ class Menu(PanedWindow):
     # Setter method: map
     def set_map(self, map):
         self.map = map
+
+    # Setter method: width
+    def set_width(self, width):
+        self.width = width
+
+    # Setter method: height
+    def set_height(self, height):
+        self.height = height
 
     # Populate the Menu with a Map pane
     def add_pane(self):
@@ -61,4 +75,4 @@ class Menu(PanedWindow):
 
     # Populate the Menu with a Panel
     def add_panel(self):
-        panel = self.make_panel()
+        self.make_panel()

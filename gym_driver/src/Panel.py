@@ -3,19 +3,19 @@ from Tkinter import Button, Entry, PanedWindow, Label, BOTH, W
 from read_config import read_config
 
 configs = read_config()
-SAVE_DIR = configs["SAVE_DIR"]
-SAVE_EXT = configs["SAVE_EXT"]
 WINDOW_W = configs["WINDOW_W"]
 WINDOW_H = configs["WINDOW_H"]
-PANE_W = configs["PANE_W"]
-PANE_H = configs["PANE_H"]
 PANEL_W = configs["PANEL_W"]
 PANEL_H = configs["PANEL_H"]
+PANE_W = configs["PANE_W"]
+PANE_H = configs["PANE_H"]
+SAVE_DIR = configs["SAVE_DIR"]
+SAVE_EXT = configs["SAVE_EXT"]
 LABEL_W = configs["LABEL_W"]
 LABEL_H = configs["LABEL_H"]
-BACK_Y = configs["BACK_Y"]
 MARGIN = configs["MARGIN"]
 ELEMENT_H = configs["ELEMENT_H"]
+BACK_Y = configs["BACK_Y"]
 PANEL_X = WINDOW_W - PANEL_W
 
 # Panel class
@@ -68,17 +68,6 @@ class Panel:
     def add_back(self):
         self.add_button("Back", 0, BACK_Y, self.program.set_main_menu)
 
-    # Proceed to another screen in the GUI
-    def change_screen(self, menu):
-        None
-
-#     /** Change to a different screen */
-#     void changeScreen(Menu newMenu) {
-#         JFrame f = (JFrame) SwingUtilities.getWindowAncestor(menu);
-#         f.remove(menu);
-#         newScreen(f, newMenu);
-#     }
-#
 #     /** Set up a new screen */
 #     static void newScreen(JFrame f, Menu newMenu) {
 #         f.setTitle(newMenu.getTitle());

@@ -1,22 +1,23 @@
-from pickle import dump
+from json import dump
 
 from Panel import Panel
 
 from read_config import read_config
 
 configs = read_config()
+PANEL_W = configs["PANEL_W"]
 SAVE_DIR = configs["SAVE_DIR"]
 SAVE_EXT = configs["SAVE_EXT"]
-DEFAULT_TERRAIN = configs["DEFAULT_TERRAIN"]
-PANEL_W = configs["PANEL_W"]
 ELEMENT_H = configs["ELEMENT_H"]
-RESIZE_Y = configs["RESIZE_Y"]
-CHNG_TERRAIN_Y = configs["CHNG_TERRAIN_Y"]
+SET_WIDTH_Y = configs["SET_WIDTH_Y"]
+SET_HEIGHT_Y = configs["SET_HEIGHT_Y"]
+UPDATE_SIZE_W = configs["UPDATE_SIZE_W"]
+SET_TERRAIN_H = configs["SET_TERRAIN_H"]
+SET_TERRAIN_Y = configs["SET_TERRAIN_Y"]
 NUM_CPUS_Y = configs["NUM_CPUS_Y"]
-TAG_Y = configs["TAG_Y"]
 SAVE_Y = configs["SAVE_Y"]
-UPDATE_W = configs["UPDATE_W"]
-CHNG_TERRAIN_H = configs["CHNG_TERRAIN_H"]
+NAME_Y = configs["NAME_Y"]
+DEFAULT_TERRAIN = configs["DEFAULT_TERRAIN"]
 MIDDLE = PANEL_W // 2
 
 # MakerPanel class
@@ -46,43 +47,43 @@ class MakerPanel(Panel):
     # Populate the MakerPanel with buttons
     def add_buttons(self):
         self.add_resize()
-        self.add_chng_terrain()
+        self.add_set_terrain()
         self.add_num_CPUs()
-        self.add_tag()
+        self.add_name()
         self.add_save()
         self.add_back()
 
     def add_resize(self):
         width_str = str(self.get_map().get_width())
         height_str = str(self.get_map().get_height())
-        self.width_field = self.add_text_field("Width:", width_str, RESIZE_Y)
-        self.height_field = self.add_text_field("Height:", height_str, RESIZE_Y + ELEMENT_H)
+        self.width_field = self.add_text_field("Width:", width_str, SET_WIDTH_Y)
+        self.height_field = self.add_text_field("Height:", height_str, SET_HEIGHT_Y)
         def update_dimensions():
             try:
                 new_width = self.width_field.get()
                 new_height = self.height_field.get()
                 self.get_map().set_size(new_width, new_height)
             except:
-                print "Invalid dimensions"
-        self.add_button("Update", 0, RESIZE_Y + 2 * ELEMENT_H,
-                        update_dimensions, UPDATE_W, ELEMENT_H)
+                print "Error in MakerPanel.add_resize"
+        self.add_button("Update", 0, SET_WIDTH_Y + 2 * ELEMENT_H,
+                        update_dimensions, UPDATE_SIZE_W, ELEMENT_H)
 
-    def add_chng_terrain(self):
-        self.add_terrain_button("grass", 0, CHNG_TERRAIN_Y)
-        self.add_terrain_button("gravel", MIDDLE, CHNG_TERRAIN_Y)
-        self.add_terrain_button("road", 0, CHNG_TERRAIN_Y + CHNG_TERRAIN_H)
-        self.add_terrain_button("ice", MIDDLE, CHNG_TERRAIN_Y + CHNG_TERRAIN_H)
+    def add_set_terrain(self):
+        self.add_terrain_button("grass", 0, SET_TERRAIN_Y)
+        self.add_terrain_button("gravel", MIDDLE, SET_TERRAIN_Y)
+        self.add_terrain_button("road", 0, SET_TERRAIN_Y + SET_TERRAIN_H)
+        self.add_terrain_button("ice", MIDDLE, SET_TERRAIN_Y + SET_TERRAIN_H)
 
     def add_terrain_button(self, terrain, x, y):
-        chng_terrain_type = lambda: self.set_terrain_selection(terrain)
-        self.add_button(terrain, x, y, chng_terrain_type, height=CHNG_TERRAIN_H, width=PANEL_W/2)
+        set_terrain_type = lambda: self.set_terrain_selection(terrain)
+        self.add_button(terrain, x, y, set_terrain_type, height=SET_TERRAIN_H, width=PANEL_W/2)
 
     def add_num_CPUs(self):
         CPUs_str = str(self.get_map().get_num_CPUs())
-        self.num_CPUs = self.add_text_field("Num CPUs:", CPUs_str, NUM_CPUS_Y)
+        self.num_CPUs = self.add_text_field("# CPUs:", CPUs_str, NUM_CPUS_Y)
 
-    def add_tag(self):
-        self.tag = self.add_text_field("Name:", self.get_map().get_tag(), TAG_Y)
+    def add_name(self):
+        self.tag = self.add_text_field("Name:", self.get_map().get_tag(), NAME_Y)
 
     def add_save(self):
         def save():
