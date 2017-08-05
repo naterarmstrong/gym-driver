@@ -53,6 +53,7 @@ class MainPanel(Panel):
         def edit_map():
             self.program.set_maker_menu(self.get_map())
         self.add_button("Edit Map", 0, EDIT_MAP_Y, edit_map)
+        #TODO: in order to not error, this needs to be static. so instead of passing in a Map, just pass in the name of the file it's saved to
 
     def add_run_map(self):
         def run_map():
@@ -76,7 +77,7 @@ class MainPanel(Panel):
 
     def add_new_map(self):
         def new_map():
-            self.program.set_maker_menu(Map())
+            self.program.set_maker_menu()
         self.add_button("New Map", 0, NEW_MAP_Y, new_map)
 
     def add_select_map(self):

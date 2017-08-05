@@ -2,6 +2,7 @@ from Tkinter import Tk, Frame, BOTH
 
 from MainMenu import MainMenu
 from MakerMenu import MakerMenu
+from Map import Map
 
 from read_config import read_config
 
@@ -38,9 +39,9 @@ class Program:
         MainMenu(self)
 
     # Set the frame to the MakerMenu
-    def set_maker_menu(self, map):
+    def set_maker_menu(self):
         self.clear_frame()
-        MakerMenu(self, map)
+        MakerMenu(self, Map(self))
 
 if __name__ == "__main__":
     main()

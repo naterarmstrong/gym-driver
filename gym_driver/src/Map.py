@@ -1,4 +1,4 @@
-from Tkinter import Canvas, PanedWindow, Scrollbar,\
+from Tkinter import Canvas, Scrollbar,\
     BOTH, LEFT, RIGHT, VERTICAL, HORIZONTAL, X, Y, BOTTOM, Frame
 
 from Tile import Tile
@@ -21,10 +21,12 @@ class Map:
 
     # Map constructor
     def __init__(self, program, width=DEFAULT_MAP_W, height=DEFAULT_MAP_H):
+        # Rendering & object handling
         self.program = program
-        self.make_pane()
         self.width = width
         self.height = height
+        self.make_pane()
+        # Initialize the Tile array
         self.tiles = []
         for i in range(self.height):
             row = []
@@ -32,6 +34,7 @@ class Map:
                 tile = Tile(self, j, i)
                 row.append(tile)
             self.tiles.append(row)
+        # Initialize Map attributes
         self.set_num_CPUs(DEFAULT_NUM_CPUS)
         self.set_tag(DEFAULT_TAG)
         if self.tiles and self.tiles[0]:
@@ -39,7 +42,7 @@ class Map:
         else:
             self.set_start_tile(None)
         self.set_cars([])
-        
+
     # Make the Map pane
     def make_pane(self):
         self.pane = Frame(self.program.frame, bg=BACKGROUND_COLOR)
@@ -47,7 +50,9 @@ class Map:
         hbar.pack(side=BOTTOM, fill=X)
         vbar = Scrollbar(self.pane, orient=VERTICAL)
         vbar.pack(side=RIGHT, fill=Y)
-        self.canvas = Canvas(self.pane, scrollregion=(0, 0, 1000, 1000),
+        pixel_w = self.get_width() * PIXELS_PER_TILE
+        pixel_h = self.get_width() * PIXELS_PER_TILE
+        self.canvas = Canvas(self.pane, scrollregion=(0, 0, self.get_width() * PIXELS_PER_TILE, self.get_height() * PIXELS_PER_TILE),
                              yscrollcommand=vbar.set, xscrollcommand=hbar.set)
         hbar.config(command=self.canvas.xview)
         vbar.config(command=self.canvas.yview)
