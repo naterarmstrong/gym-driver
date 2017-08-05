@@ -56,8 +56,10 @@ class MakerPanel(Panel):
     def add_resize(self):
         width_str = str(self.get_map().get_width())
         height_str = str(self.get_map().get_height())
-        self.width_field = self.add_text_field("Width:", width_str, SET_WIDTH_Y)
-        self.height_field = self.add_text_field("Height:", height_str, SET_HEIGHT_Y)
+        self.width_field = self.add_text_field("Width:", width_str,
+                                               SET_WIDTH_Y, UPDATE_SIZE_W)
+        self.height_field = self.add_text_field("Height:", height_str,
+                                                SET_HEIGHT_Y, UPDATE_SIZE_W)
         def update_dimensions():
             try:
                 new_width = self.width_field.get()
@@ -65,8 +67,8 @@ class MakerPanel(Panel):
                 self.get_map().set_size(new_width, new_height)
             except:
                 print "Error in MakerPanel.add_resize"
-        self.add_button("Update", 0, SET_WIDTH_Y + 2 * ELEMENT_H,
-                        update_dimensions, UPDATE_SIZE_W, ELEMENT_H)
+        self.add_button("Update", PANEL_W - UPDATE_SIZE_W, SET_WIDTH_Y,
+                        update_dimensions, UPDATE_SIZE_W, 2 * ELEMENT_H)
 
     def add_set_terrain(self):
         self.add_terrain_button("grass", 0, SET_TERRAIN_Y)

@@ -59,8 +59,8 @@ class Panel:
     # Utility method for populating the Panel with Label & Entry fields
     def add_text_field(self, label_text, field_text, y, cutoff=0):
         self.add_label(label_text, y)
-        window = self.make_window(LABEL_W, y,
-                                  PANEL_W - LABEL_W - cutoff, ELEMENT_H)
+        window = self.make_window(LABEL_W, y, PANEL_W - LABEL_W - cutoff,
+                                  ELEMENT_H)
         text_field = Entry(window, text=field_text)
         text_field.pack(fill=BOTH, expand=1)
         return text_field

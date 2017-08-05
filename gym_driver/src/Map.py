@@ -18,6 +18,7 @@ class Map:
 
     # Map constructor
     def __init__(self, width=DEFAULT_MAP_W, height=DEFAULT_MAP_H):
+        self.set_canvas(Canvas())
         self.width = width
         self.height = height
         self.tiles = []
@@ -32,9 +33,7 @@ class Map:
             self.set_start_tile(self.tiles[0][0])
         else:
             self.set_start_tile(None)
-        self.set_canvas(Canvas())
-        # TODO: setLayout(null)
-        # TODO: render()
+        self.set_cars([])
 
     # Add listeners to every Tile on the Map
     def add_listeners(self):
@@ -75,6 +74,10 @@ class Map:
         x_pixel = x % PIXELS_PER_TILE
         y_pixel = y % PIXELS_PER_TILE
         return self.get_tile(x, y).get_point_friction(x_pixel, y_pixel)
+
+    # Getter method: cars
+    def get_cars(self):
+        return self.cars
 
     # Getter method: canvas
     def get_canvas(self):
@@ -117,9 +120,22 @@ class Map:
     def set_start_tile(self, start_tile):
         self.start_tile = start_tile
 
+    # Setter method: cars
+    def set_cars(self, cars):
+        self.cars = cars
+
     # Setter method: canvas
     def set_canvas(self, canvas):
         self.canvas = canvas
+
+    # Step the Map forward
+    def step(self, action):
+        for car in self.get_cars():
+            car.step(car_heuristic())
+
+    # Render the Map
+    def render(self, coordinates):
+        None
 
     # TODO
     #     /** Render the Map */
