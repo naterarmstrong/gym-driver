@@ -95,6 +95,9 @@ class MakerPanel(Panel):
                 dump(map, f)
         self.add_button("Save Map", 0, SAVE_Y, save)
 
+# TODO: when you click on a car, that changes it's starting orientation.
+# TODO: in the Runner, before it begins, a random variance gets added to each car's starting angle.
+
 # TODO: see the revised Tile class on branch `natepy`
 # TODO: since Tile no longer extends button, you need to bind every Tile to a key listener with [canvas].tag_bind(id, <binding>, command)
 
