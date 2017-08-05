@@ -5,14 +5,13 @@ from Tile import Tile
 from read_config import read_config
 
 configs = read_config()
-DEFAULT_NUM_CPUS = configs["DEFAULT_NUM_CPUS"]
-DEFAULT_TAG = configs["DEFAULT_TAG"]
-DEFAULT_START_ANGLE = configs["DEFAULT_START_ANGLE"]
-BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
 PIXELS_PER_TILE = configs["PIXELS_PER_TILE"]
-
 DEFAULT_MAP_W = configs["DEFAULT_MAP_W"]
 DEFAULT_MAP_H = configs["DEFAULT_MAP_H"]
+DEFAULT_NUM_CPUS = configs["DEFAULT_NUM_CPUS"]
+DEFAULT_TAG = configs["DEFAULT_TAG"]
+START_ANGLE = configs["START_ANGLE"]
+BACKGROUND_COLOR = configs["BACKGROUND_COLOR"]
 
 # Map class
 class Map:
@@ -33,7 +32,6 @@ class Map:
             self.set_start_tile(self.tiles[0][0])
         else:
             self.set_start_tile(None)
-        self.set_start_angle(DEFAULT_START_ANGLE)
         self.set_canvas(Canvas())
         # TODO: setLayout(null)
         # TODO: render()
@@ -65,10 +63,6 @@ class Map:
     # Getter method: start_tile
     def get_start_tile(self):
         return self.start_tile
-
-    # Getter method: start_angle
-    def get_start_angle(self):
-        return self.start_angle
 
     # Getter method: Tile [provided (x, y) coordinate]
     def get_tile(self, x, y):
@@ -123,9 +117,9 @@ class Map:
     def set_start_tile(self, start_tile):
         self.start_tile = start_tile
 
-    # Setter method: start_angle
-    def set_start_angle(self, start_angle):
-        self.start_angle = start_angle
+    # Setter method: canvas
+    def set_canvas(self, canvas):
+        self.canvas = canvas
 
     # TODO
     #     /** Render the Map */
@@ -146,10 +140,6 @@ class Map:
     #
     # }
 
-    # Setter method: canvas
-    def set_canvas(self, canvas):
-        self.canvas = canvas
-
     # Step
 
     # Reset
@@ -157,4 +147,3 @@ class Map:
     # Render
 
     # TODO: putting cars on map, step, reset, render
-    # TODO: in Robert's code, where it has `Canvas()`, just set that equal to the Map's canvas

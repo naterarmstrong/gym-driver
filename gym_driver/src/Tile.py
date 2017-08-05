@@ -1,5 +1,3 @@
-from Tkinter import Button
-
 from read_config import read_config
 
 configs = read_config()
@@ -9,7 +7,7 @@ TEXTURES = configs["TEXTURES"]
 PATHS = configs["PATHS"]
 
 # Tile class
-class Tile(Button):
+class Tile:
 
     # Tile class attributes
     terrain_selection = DEFAULT_TERRAIN
@@ -17,12 +15,10 @@ class Tile(Button):
 
     # Tile constructors
     def __init__(self, map, texture=DEFAULT_TERRAIN, path_ind=0, orientation=0):
-        Button.__init__(self) # TODO: args to Button.__init__ ? perhaps don't subclass Button?
         self.set_map(map)
         self.set_texture(texture)
         self.set_path_ind(path_ind)
         self.set_orientation(orientation)
-        # TODO: setBackground(getColor(texture));
         self.add_listeners()
 
     # Populate the Tile with listeners to allow user interfacing
