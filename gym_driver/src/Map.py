@@ -1,19 +1,22 @@
-from tkinter import *
-
-if __name__ == '__main__':
-    root = Tk()
-
-from tkinter import ttk
-from PIL import Image, ImageTk
-import pygame as pg
 import sys, os
 import random
 import time
 
+from tkinter import *
+if __name__ == '__main__':
+    root = Tk()
+from tkinter import ttk
+from PIL import Image, ImageTk
+import pygame as pg
+import numpy as np
+
 
 from Tile import Tile
 from Car import Car
-
+from PointCar import PointCar
+from KinematicCar import KinematicCar
+from DynamicCar import DynamicCar
+from Controller import Controller # TODO: MOVE
 from read_config import read_config
 
 #configs = read_config()
@@ -28,6 +31,7 @@ DEFAULT_TAG = None
 DEFAULT_START_ANGLE = 0
 BACKGROUND_COLOR = (25, 123, 48)
 PIXELS_PER_TILE = 200
+SCREEN_SIZE = 512
 
 # Map class
 class Map:
@@ -72,6 +76,7 @@ class Map:
         # End Tile Generation Logic
 
         self.cars = []
+        self.main_car = None
 
         self.set_start_angle(DEFAULT_START_ANGLE)
         # TODO: setLayout(null)
@@ -117,9 +122,12 @@ class Map:
 
     # Getter method: Tile [provided (x, y) coordinate]
     def get_tile(self, x, y):
-        x_tile = x // PIXELS_PER_TILE
-        y_tile = y // PIXELS_PER_TILE
-        return self.tiles[x_tile][y_tile]
+        print x
+        print type(x)
+        print '---------------'
+        x_tile = int(x) // PIXELS_PER_TILE
+        y_tile = int(y) // PIXELS_PER_TILE
+        return self.tiles[y_tile][x_tile]
 
     # Getter method: friction [provided (x, y) coordinate]
     def get_point_friction(self, x, y):
@@ -175,8 +183,19 @@ class Map:
     # Steps the map forward by 1 timestep
     def step(self, action):
         for car in self.cars:
-            car.step(car_heuristic_func())
-        main_car.step(action)
+            pass
+            #car.step(car_heuristic_func())
+        # Action from controller currently intended to look into the discretized
+        acc, steer = action
+        acc = acc*3.0 - 3.0
+        steer = steer*15.0 - 15.0
+        self.main_car.step((acc, steer))
+        x = self.main_car.x
+        y = self.main_car.y
+        #angle = np.radians(self.main_car.get_angle())
+        coords = (x + (SCREEN_SIZE / 2), y + (SCREEN_SIZE / 2))
+        # TODO: convert action to the state space
+        self.render_to_pygame(coords)
 
         # TODO: Actually return stuff
     
@@ -188,19 +207,15 @@ class Map:
                 tile.render_to_pygame(self.screen, coords)
         for car in self.cars:
             car.render_to_pygame(self.screen, coords)
-        #main_car.render_to_pygame(self.screen)
+        main_car.render_to_pygame(self.screen, coords)
         pg.display.update()
-
-    def test_pygame_movement(self, t):
-        # runs for 10 seconds, .1 second per t
-        self.render_to_pygame((t*5, t*5))
-        time.sleep(.02)
 
 
     # Setter method: canvas
     def set_canvas(self, canvas):
         if canvas:
             self.canvas = canvas
+            canvas.bind("<ButtonRelease-1>", lambda _: Tile.toggle_flag())
         else:
             self.canvas = Canvas()
 
@@ -222,7 +237,15 @@ class Map:
     def set_screen(self, screen):
         self.screen = screen
 
-    # Step
+    # Sets the main car of the map to be a car
+    def set_main_car(self, car):
+        self.main_car = car
+
+    def get_main_car(self):
+        if self.main_car:
+            return self.main_car
+        else:
+            raise Exception("No main car exists")
 
     # Reset
 
@@ -236,7 +259,7 @@ if __name__ == "__main__":
 
     h = ttk.Scrollbar(root, orient=HORIZONTAL)
     v = ttk.Scrollbar(root, orient=VERTICAL)
-    canvas2 = Canvas(root, scrollregion=(0, 0, 1000, 1000), yscrollcommand=v.set, xscrollcommand=h.set)
+    canvas2 = Canvas(root, scrollregion=(0, 0, 5000, 5000), yscrollcommand=v.set, xscrollcommand=h.set)
     h['command'] = canvas2.xview
     v['command'] = canvas2.yview
     ttk.Sizegrip(root).grid(column=10, row=10, sticky=(S,E))
@@ -295,27 +318,22 @@ if __name__ == "__main__":
 
 
     tiles = []
-    a = Map(5, 5, is_tkrendered=True, canvas=canvas2, screen=None)
+    a = Map(25, 25, is_tkrendered=True, canvas=canvas2, screen=None)
     a.set_currently_editing('path')
-    a.add_car(50, 50)
-    #for x in range(5):
-    #    for y in range(5):
-    #        t = Tile(a, canvas=canvas2)
-    #        t.render_to_canvas(x, y)
-    #        t.add_listeners()
-    #        tiles.append(t)
-
-
-    #canvas2.itemconfigure(2, image=Tile.terrain_images['road']['quarter_turn'][180])
+    main_car = DynamicCar(a, 250, 300, 0, canvas2)
+    a.set_main_car(main_car)
+    main_car.render_to_canvas()
     
 
 
     
-    #a = Map(3, 3, is_tkrendered=False, screen=screen)
-    #a.render_to_pygame((0, 0))
-    #for row in a.tiles:
-    #    for tile in row:
-    #        tile.cycle_path()
+
+    for row in a.tiles:
+        for tile in row:
+            if random.random() > .5:
+                tile.cycle_path()
+            if random.random() > .5:
+                tile.cycle_orientation()
     #a.render_to_pygame((0, 0))
     #pg.display.update()
     counter = 0
@@ -325,12 +343,20 @@ if __name__ == "__main__":
     screen = pg.display.set_mode((512, 512))
     a.set_screen(screen)
 
+    controller = Controller()
+    clock = pg.time.Clock()
 
-    while counter < 300:
+
+
+    while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 pg.quit()
                 sys.exit()
-        a.test_pygame_movement(counter)
+        action = controller.process_input(a)
+        a.step(action)
+        #main_car.render_to_pygame(screen, (500, 500))
+        pg.display.update()
+        clock.tick(30)
         print counter
         counter += 1

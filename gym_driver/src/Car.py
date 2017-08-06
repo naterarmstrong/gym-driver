@@ -9,11 +9,19 @@ configs = read_config()
 #LEN_FRONT = configs["LEN_FRONT"]
 #MASS = configs["MASS"]
 #YAW_INTERTIA = configs["YAW_INTERTIA"]
+MAX_VEL = 20
+LEN_REAR = 25.0
+LEN_FRONT = 25.0
+MASS = 100.0
+YAW_INTERTIA = 2510.15 * 25.0
+
+
 COLORS = ['green', 'blue', 'grey', 'orange']
 IMAGE_FORMATS = ['pg', 'tk']
 ORIENTATIONS = [0, 90, 180, 270]
 SCREEN_SIZE = 512
-
+MAX_VEL = 20
+USING_TK = True
 
 def populate_car_images():
 	car_images = {}
@@ -26,7 +34,7 @@ def populate_car_images():
 				if image_format == 'pg':
 					image = pg.image.load("../resources/{}_car.png".format(color))
 					car_images[color][0][image_format] = image
-				elif image_format == 'tk':
+				elif image_format == 'tk' and USING_TK:
 					image = Image.open('../resources/{}_car.gif'.format(color)).rotate(orientation)
 					car_images[color][orientation][image_format] = ImageTk.PhotoImage(image)
 	return car_images
@@ -54,13 +62,21 @@ class Car:
     def render_to_pygame(self, screen, screen_coords):
         image = self.get_image('pg')
         coords = (self.x, self.y)
-        if -50 <= coords[0] - screen_coords[0] <= SCREEN_SIZE and \
-            -50 <= coords[1] - screen_coords[1] <= SCREEN_SIZE:
-            pos = (int(coords[0] - screen_coords[0]), int(coords[1] - screen_coords[1]))
-            rotated_img = pg.transform.rotate(image, -self.get_angle())
-            screen.blit(rotated_img, pos)
+        if False:
+        	pos = (256, 256)
+        	screen.blit(image, pos)
+        elif -(SCREEN_SIZE / 2) <= screen_coords[0] - coords[0] <= (SCREEN_SIZE / 2 + 50) and \
+            -(SCREEN_SIZE / 2) <= screen_coords[1] - coords[1] <= (SCREEN_SIZE / 2 + 50):
+            pos = (int(screen_coords[0] - coords[0]), int(screen_coords[1] - coords[1]))
+            print pos
+            #rotated_img = pg.transform.rotate(image, -self.get_angle())
+            screen.blit(image, pos)
+            pg.display.update()
         else:
             print "not rendered"
+            pos = (int(coords[0] - screen_coords[0]), int(coords[1] - screen_coords[1]))
+            print pos
+            print '--------------------------'
 
 
     # Renders the car to a canvas

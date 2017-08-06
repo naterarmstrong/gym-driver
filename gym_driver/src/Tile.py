@@ -21,6 +21,13 @@ ORIENTATIONS = [0, 90, 180, 270]
 PIXELS_PER_TILE = 200
 DEFAULT_TERRAIN = 'road'
 TEXTURES = ['grass', 'ice', 'gravel', 'road']
+# Checking if textures should be dictionary
+TEXTURES = {
+    'grass': .6,
+    'ice': .1,
+    'gravel': .5,
+    'road': .9
+    }
 PATHS = ['straight', 'quarter_turn']
 SCREEN_SIZE = 512
 
@@ -130,14 +137,16 @@ class Tile:
     def on_enter(self, event):
         # TODO: requestFocus()
         # TODO: Fix
-        if Tile.pressed:
-            self.set_texture(Tile.terrain_selection)
+        #if Tile.pressed:
+        #    self.on_leftclick(event)
+        pass
 
     def on_leftclick(self, event):
         #Tile.pressed = True
         #self.set_texture(Tile.terrain_selection)
         print self.map.get_currently_editing()
         currently_editing = self.map.get_currently_editing()
+        #Tile.toggle_flag()
         if currently_editing == 'path':
             self.cycle_path()
         elif currently_editing == 'terrain':
@@ -150,9 +159,12 @@ class Tile:
             print "Not currently editing anything"
 
     def on_rightclick(self, event):
-        print 'Changing angle on cars'
-        for car in self.map.cars:
-            car.set_angle(90*random.random())
+        print 'Returning texture and friction'
+        print self.map
+        texture = self.get_point_texture(event.x % PIXELS_PER_TILE, event.y % PIXELS_PER_TILE)
+        friction = self.map.get_point_friction(event.x, event.y)
+        print texture, ' : ', friction
+        
 
     def on_keypress(self, event):
         print "AYYY"
@@ -175,7 +187,7 @@ class Tile:
     def get_texture(self):
         return self.texture
 
-    # Getter method: texture [given (x, y) coordinate]
+    # Getter method: texture [given (x, y) coordinate] relative to tile
     def get_point_texture(self, x, y):
         path = self.get_path()
         texture = self.get_texture()
@@ -245,7 +257,8 @@ class Tile:
     # Getter method: friction [provided texture]
     @staticmethod
     def get_texture_friction(texture):
-        return TEXTURES[texture][0]
+        print texture
+        return TEXTURES[texture]
 
     # Getter method: friction [provided (x, y) coordinate]
     def get_point_friction(self, x, y):
@@ -286,6 +299,13 @@ class Tile:
     def set_terrain_selection(newterrain):
         if newterrain in TEXTURES:
             Tile.terrain_selection = newterrain
+
+    @staticmethod
+    def toggle_flag():
+        if Tile.pressed:
+            Tile.pressed = False
+        else:
+            Tile.pressed = True
 
 
 
