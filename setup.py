@@ -1,6 +1,1 @@
-from setuptools import setup
-
-setup(name='gym_driver',
-		version='0.0.1',
-		install_requires=['gym']
-)
+# We need pillow (imported as PIL) for image processing in Tkinter
