@@ -93,9 +93,9 @@ class MakerPanel(Panel):
             map = self.get_map()
             map.set_num_CPUs(self.get_num_CPUs())
             map.set_tag(self.get_tag())
-            save_dir = "{}/{}{}".format(SAVE_DIR, map.get_tag(), SAVE_EXT)
-            with open(save_dir, "w") as f:
-                dump(map, f)
+            filename = "{}{}{}".format(SAVE_DIR, map.get_tag(), SAVE_EXT)
+            with open(filename, "w") as f:
+                dump(map.__dict__, f)
         self.add_button("Save Map", 0, SAVE_Y, save)
 
 # TODO: when you click on a car, that changes it's starting orientation.

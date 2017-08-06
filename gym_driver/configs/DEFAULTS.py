@@ -8,7 +8,7 @@ PANEL_H = WINDOW_H
 PANE_W = WINDOW_W - PANEL_W
 PANE_H= WINDOW_H
 SAVE_DIR = "../maps/"
-SAVE_EXT = ".json"
+SAVE_EXT = u".ser"
 RESOURCE_DIR = "../resources/"
 
 # Panel

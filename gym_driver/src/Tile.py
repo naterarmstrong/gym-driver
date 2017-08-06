@@ -39,7 +39,7 @@ class Tile:
     def add_listeners(self):
         canvas = self.map.get_canvas()
         canvas.tag_bind(self.id, "<Enter>", self.on_enter)
-        canvas.tag_bind(self.id, "<Button-1>", self.on_leftclick)
+        canvas.tag_bind(self.id, "<ButtonPress-1>", self.on_leftclick)
         canvas.tag_bind(self.id, "<ButtonRelease-1>", self.on_leftrelease)
         canvas.tag_bind(self.id, "<Button-2>", self.on_rightclick)
         canvas.tag_bind(self.id, "<Key>", self.on_keypress)
@@ -48,7 +48,7 @@ class Tile:
         # TODO: requestFocus()
         print Tile.pressed
         if Tile.pressed:
-            self.set_texture(Tile.terrain_selection)
+            self.on_leftclick(event)
 
     def on_leftclick(self, event):
         Tile.pressed = True

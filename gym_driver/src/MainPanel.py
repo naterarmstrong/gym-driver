@@ -51,7 +51,8 @@ class MainPanel(Panel):
 
     def add_edit_map(self):
         def edit_map():
-            self.program.set_maker_menu(self.get_map())
+            filename = "{}{}{}".format(SAVE_DIR, self.get_map().get_tag(), SAVE_EXT)
+            self.program.set_maker_menu(filename)
         self.add_button("Edit Map", 0, EDIT_MAP_Y, edit_map)
         #TODO: in order to not error, this needs to be static. so instead of passing in a Map, just pass in the name of the file it's saved to
 
@@ -111,8 +112,8 @@ class MapList:
     def read_saves():
         saves = []
         for file in listdir(SAVE_DIR):
-            if path.isfile(file) and path.splitext(file) == SAVE_EXT:
-                with open(file, "rb") as f:
+            if path.splitext(file)[1] == SAVE_EXT:
+                with open(SAVE_DIR + str(file), "r") as f:
                     saved_map = load(f)
                     saves.append(saved_map)
         return saves

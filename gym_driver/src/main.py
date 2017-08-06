@@ -1,3 +1,4 @@
+from json import load
 from Tkinter import Tk, Frame, BOTH
 
 from MainMenu import MainMenu
@@ -39,9 +40,15 @@ class Program:
         MainMenu(self)
 
     # Set the frame to the MakerMenu
-    def set_maker_menu(self):
+    def set_maker_menu(self, filename=""):
         self.clear_frame()
-        MakerMenu(self, Map(self))
+        if filename:
+            with open(filename, "r") as f:
+                map = load(f)
+                map.program = self
+        else:
+            map = Map(self)
+        MakerMenu(self, map)
 
 if __name__ == "__main__":
     main()
