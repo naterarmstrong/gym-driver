@@ -1,6 +1,7 @@
 import sys, os
 import random
 import time
+import json
 
 from tkinter import *
 if __name__ == '__main__':
@@ -32,12 +33,15 @@ DEFAULT_START_ANGLE = 0
 BACKGROUND_COLOR = (25, 123, 48)
 PIXELS_PER_TILE = 200
 SCREEN_SIZE = 512
+DOWNSAMPLED_SIZE = 64
 
 # Map class
 class Map:
 
     # Map constructor
-    def __init__(self, width, height, is_tkrendered=False, screen=None, canvas=None):
+    # If map_dict is not none, then it will load everything from map_dict instead
+    def __init__(self, width=6, height=6, is_tkrendered=False, screen=None, canvas=None, map_dict=None):
+        
         self.width = width
         self.height = height
         self.tiles = []
@@ -48,38 +52,73 @@ class Map:
         self.screen = screen
         if self.is_tkrendered:
             self.set_canvas(canvas)
+        else:
+            self.set_canvas(None)
         # End rendering logic
 
         # Used/accessed by tile / car to edit properly
         self.set_currently_editing('path')
 
+        if not map_dict:
+            # Tile Generation Logic
+            for i in range(self.height):
+                row = []
+                for j in range(self.width):
+                    if self.is_tkrendered:
+                        cur_canvas = self.get_canvas()
+                        new_tile = Tile(self, canvas=cur_canvas, location=(j, i))
+                        new_tile.render_to_canvas(j, i)
+                        new_tile.add_listeners()
+                    else:
+                        new_tile = Tile(self, canvas=None, location=(j, i))
+                    row.append(new_tile)
+                self.tiles.append(row)
+            self.set_num_CPUs(DEFAULT_NUM_CPUS)
+            self.set_tag(DEFAULT_TAG)
+            # End Tile Generation Logic
 
-        # Tile Generation Logic
-        for i in range(self.height):
-            row = []
-            for j in range(self.width):
-                if self.is_tkrendered:
-                    cur_canvas = self.get_canvas()
-                    new_tile = Tile(self, canvas=cur_canvas, location=(j, i))
-                    new_tile.render_to_canvas(j, i)
-                    new_tile.add_listeners()
-                else:
-                    new_tile = Tile(self, canvas=None, location=(j, i))
-                row.append(new_tile)
-            self.tiles.append(row)
-        self.set_num_CPUs(DEFAULT_NUM_CPUS)
-        self.set_tag(DEFAULT_TAG)
-        if self.tiles and self.tiles[0]:
-            self.set_start_tile(self.tiles[0][0])
+            self.cars = []
+            self.main_car = None
+
+            self.set_start_angle(DEFAULT_START_ANGLE)
+        # To load from an existing map dict file
         else:
-            self.set_start_tile(None)
-        # End Tile Generation Logic
+            # Tile Generation
+            self.tiles = []
+            self.height = len(map_dict['tiles'])
+            self.width = len(map_dict['tiles'][0])
+            for i in range(self.height):
+                row = []
+                for j in range(self.width):
+                    #TODO: Account for not rendering to Tk
+                    tile_params = map_dict['tiles'][i][j]
+                    # Params are location, texture, path_ind, orientation
+                    location = tile_params[0]
+                    texture = tile_params[1]
+                    path_ind = tile_params[2]
+                    orientation = tile_params[3]
+                    cur_canvas = self.get_canvas()
+                    new_tile = Tile(self, canvas=cur_canvas, location=location, texture=texture, \
+                        path_ind=path_ind, orientation=orientation)
+                    new_tile.render_to_canvas(location[0], location[1])
+                    new_tile.add_listeners()
+                    row.append(new_tile)
+                self.tiles.append(row)
+            # End Tile Generation
 
-        self.cars = []
-        self.main_car = None
+            # Car Generation
+            self.cars = []
+            main_car_params = map_dict['main_car']
+            # Those are x, y, angle, color
+            x = main_car_params[0]
+            y = main_car_params[1]
+            angle = main_car_params[2]
+            color = main_car_params[3]
+            # TODO: Make it learn what type of car the main car is
+            self.main_car = DynamicCar(self, x, y, angle, canvas=self.get_canvas(), color=color)
+            if self.get_canvas():
+                self.main_car.render_to_canvas()
 
-        self.set_start_angle(DEFAULT_START_ANGLE)
-        # TODO: setLayout(null)
 
     # Add listeners to every Tile on the Map
     def add_listeners(self):
@@ -122,15 +161,14 @@ class Map:
 
     # Getter method: Tile [provided (x, y) coordinate]
     def get_tile(self, x, y):
-        print x
-        print type(x)
-        print '---------------'
         x_tile = int(x) // PIXELS_PER_TILE
         y_tile = int(y) // PIXELS_PER_TILE
         return self.tiles[y_tile][x_tile]
 
     # Getter method: friction [provided (x, y) coordinate]
     def get_point_friction(self, x, y):
+        if x // PIXELS_PER_TILE >= self.width or y // PIXELS_PER_TILE >= self.height:
+            return .6
         x_pixel = x % PIXELS_PER_TILE
         y_pixel = y % PIXELS_PER_TILE
         return self.get_tile(x, y).get_point_friction(x_pixel, y_pixel)
@@ -187,17 +225,18 @@ class Map:
             #car.step(car_heuristic_func())
         # Action from controller currently intended to look into the discretized
         acc, steer = action
-        acc = acc*3.0 - 3.0
-        steer = steer*15.0 - 15.0
+        acc = acc*2.0 - 2.0
+        steer = steer*30.0 - 30.0
         self.main_car.step((acc, steer))
         x = self.main_car.x
         y = self.main_car.y
         #angle = np.radians(self.main_car.get_angle())
-        coords = (x + (SCREEN_SIZE / 2), y + (SCREEN_SIZE / 2))
+        coords = (x - (SCREEN_SIZE / 2), y - (SCREEN_SIZE / 2))
         # TODO: convert action to the state space
         self.render_to_pygame(coords)
 
         # TODO: Actually return stuff
+        #observation = self.get_observation(self)
     
     # Renders everything to pygame properly
     def render_to_pygame(self, coords):
@@ -207,7 +246,7 @@ class Map:
                 tile.render_to_pygame(self.screen, coords)
         for car in self.cars:
             car.render_to_pygame(self.screen, coords)
-        main_car.render_to_pygame(self.screen, coords)
+        self.main_car.render_to_pygame(self.screen, coords)
         pg.display.update()
 
 
@@ -247,19 +286,92 @@ class Map:
         else:
             raise Exception("No main car exists")
 
-    # Reset
+
+    # Save map to a JSON filepath
+    def save(self, filepath):
+        map_dict = {}
+        # Saving data about the map itself
+        # Saving Tiles
+        map_dict['tiles'] = []
+        for y in range(self.height):
+            row = []
+            for x in range(self.width):
+                saved_tile = self.tiles[y][x].save()
+                row.append(saved_tile)
+            map_dict['tiles'].append(row)
+        # Saving Cars
+        map_dict['cars'] = []
+        for car in self.cars:
+            saved_car = car.save()
+            map_dict['cars'].append(saved_car)
+        # Saving main car
+        map_dict['main_car'] = self.main_car.save()
+
+        json.dump(map_dict, open(filepath, 'w'), indent=4)
+
+        print "Saved at {}".format(filepath)
+
+    # Saves the state of the cars in the map
+    # Intended for use before running the simulator
+    def set_initial_state(self):
+        self.initial_state = self.save_state()
+
+    # Intended for use by supervisor agent, saves state
+    def save_state(self):
+        saved_state = {}
+        saved_state['cars'] = []
+        for car in self.cars:
+            saved_car = car.save()
+            saved_state['cars'].append(saved_car)
+        saved_state['main_car'] = self.main_car.save()
+        return saved_state
+
+    # Takes in a state (in terms of cars), loads map to that point
+    def load_to_state(self, state):
+        main_car_params = state['main_car']
+        # Those are x, y, angle, color
+        x = main_car_params[0]
+        y = main_car_params[1]
+        angle = main_car_params[2]
+        color = main_car_params[3]
+        self.main_car = PointCar(self, x, y, angle, canvas=self.get_canvas(), color=color)
+        self.cars = []
+        for car_params in state['cars']:
+            x = car_params[0]
+            y = car_params[1]
+            angle = car_params[2]
+            color = car_params[3]
+            car = PointCar(self, x, y, angle, canvas=self.get_canvas(), color=color)
+            self.cars.append(car)
 
     # Render
 
     # TODO: putting cars on map, step, reset, render
     # TODO: in Robert's code, where it has `Canvas()`, just set that equal to the Map's canvas
 
+
+# Loads a map from a JSON file, located at filepath 'filepath'
+def load_map():
+    prompt = 'Input the desired load location: (default: ../maps/test_map.json) Input: '
+    input_str = ''
+    try:
+        if len(input_str) == 0:
+            input_str = '../maps/test_map.json'
+        map_dict = json.load(open(input_str, 'r'))
+        return map_dict
+        print "Loaded"
+    except IOError as e:
+        print e
+
+
 if __name__ == "__main__":
+
+    map_dict = load_map()
 
 
     h = ttk.Scrollbar(root, orient=HORIZONTAL)
     v = ttk.Scrollbar(root, orient=VERTICAL)
-    canvas2 = Canvas(root, scrollregion=(0, 0, 5000, 5000), yscrollcommand=v.set, xscrollcommand=h.set)
+    canvas2 = Canvas(root, scrollregion=(0, 0, 1200, 1200), yscrollcommand=v.set, xscrollcommand=h.set)
     h['command'] = canvas2.xview
     v['command'] = canvas2.yview
     ttk.Sizegrip(root).grid(column=10, row=10, sticky=(S,E))
@@ -286,8 +398,41 @@ if __name__ == "__main__":
         print "editing cars"
         map.set_currently_editing('cars')
 
+    def run_manually(map):
+        map.set_initial_state()
+        pg.init()
+        screen = pg.display.set_mode((512, 512))
+        map.set_screen(screen)
+        controller = Controller()
+        clock = pg.time.Clock()
+        counter = 1
+        # Will run for 10 seconds
+        done = False
+        while not done and counter < 600:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
+                    map.load_to_state(map.initial_state)
+                    return
+            action = controller.process_input(a)
+            a.step(action)
+            pg.display.update()
+            clock.tick(30)
+            print counter
+            counter += 1
+            if counter == 600:
+                pg.quit()
+
+
+
+
+    a = Map(is_tkrendered=True, canvas=canvas2, screen=None, map_dict=map_dict)
+
+
     frame = ttk.Frame(root)
     frame.grid(column=1, row=0, sticky=(N, S, E))
+    editor_label = ttk.Label(frame, text="Editing Panel")
+    editor_label.grid(column=0, row=1)
     cars_button = ttk.Button(frame, text="Add Cars", command = lambda : edit_cars(a))
     cars_button.grid(column=0, row=2)
     terrain_button = ttk.Button(frame, text="Change Terrain", command=lambda : edit_terrain(a))
@@ -306,57 +451,19 @@ if __name__ == "__main__":
     choice_gravel.grid(column=0, row=9)
     choice_ice = ttk.Button(frame, text="ice", command=lambda: Tile.set_terrain_selection('ice'))
     choice_ice.grid(column=0, row=10)
+
+    runner_label = ttk.Label(frame, text="Run Options")
+    runner_label.grid(column=0, row=11)
+    save_button = ttk.Button(frame, text='Save', command = lambda: a.save('../maps/test_map.json'))
+    save_button.grid(column=0, row=12)
+    runner_button = ttk.Button(frame, text='Run Manually', command = lambda: run_manually(a))
+    runner_button.grid(column=0, row=13)
+    supervisor_button = ttk.Button(frame, text='Run Supervisor', command = lambda: run_supervisor(a))
+    supervisor_button.grid(column=0, row=14)
+
     #### END MAKESHIFT SIDEPANEL
 
     canvas2.bind("<Enter>", lambda event: canvas2.focus_set())
 
-
-
-    #images = Tile.terrain_images['road']['straight'][0]
-    #canvas2.create_image(0, 0, image=images)
-
-
-
-    tiles = []
-    a = Map(25, 25, is_tkrendered=True, canvas=canvas2, screen=None)
     a.set_currently_editing('path')
-    main_car = DynamicCar(a, 250, 300, 0, canvas2)
-    a.set_main_car(main_car)
-    main_car.render_to_canvas()
-    
-
-
-    
-
-    for row in a.tiles:
-        for tile in row:
-            if random.random() > .5:
-                tile.cycle_path()
-            if random.random() > .5:
-                tile.cycle_orientation()
-    #a.render_to_pygame((0, 0))
-    #pg.display.update()
-    counter = 0
     root.mainloop()
-
-    pg.init()
-    screen = pg.display.set_mode((512, 512))
-    a.set_screen(screen)
-
-    controller = Controller()
-    clock = pg.time.Clock()
-
-
-
-    while True:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                pg.quit()
-                sys.exit()
-        action = controller.process_input(a)
-        a.step(action)
-        #main_car.render_to_pygame(screen, (500, 500))
-        pg.display.update()
-        clock.tick(30)
-        print counter
-        counter += 1

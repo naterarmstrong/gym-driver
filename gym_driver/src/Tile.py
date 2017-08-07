@@ -80,9 +80,19 @@ class Tile:
         self.set_texture(texture)
         self.set_path_ind(path_ind)
         self.set_orientation(orientation)
+        self.location = location
 
-        print location
         self.coords = (location[0]*PIXELS_PER_TILE, location[1]* PIXELS_PER_TILE)
+
+
+    # Saves the tile into a python list of arguments to recreate the tile
+    def save(self):
+        location = self.location
+        texture = self.get_texture()
+        path_ind = self.path_ind
+        orientation = self.get_orientation()
+        return [location, texture, path_ind, orientation]
+
 
     # Populate the Tile with listeners to allow user interfacing
     def add_listeners(self):
@@ -306,6 +316,8 @@ class Tile:
             Tile.pressed = False
         else:
             Tile.pressed = True
+
+
 
 
 

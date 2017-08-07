@@ -83,7 +83,7 @@ class DynamicCar(Car):
         """
         x, y, dx_body, dy_body, rad_angle, rad_dangle = state
         # Yaw Inertia
-        I_z = 2510.15 * 25.0
+        I_z = 2510.15 * 25.0  * 2
 
         # Limit backwards acceleration
         dx_body = max(dx_body, 0.0)
