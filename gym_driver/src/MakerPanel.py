@@ -89,13 +89,22 @@ class MakerPanel(Panel):
         self.tag = self.add_text_field("Name:", self.get_map().get_tag(), NAME_Y)
 
     def add_save(self):
+        # TODO: Tk requires caching to work, so you can't pickle / JSON anything Tk. Instead you need to pickle the underlying datastructure: ie, the Map just owns a dictionary of tiles, a name, etc, and you can pickle that dictionary
+        # TODO: Tk requires caching to work, so you can't pickle / JSON anything Tk. Instead you need to pickle the underlying datastructure: ie, the Map just owns a dictionary of tiles, a name, etc, and you can pickle that dictionary
+        # TODO: Tk requires caching to work, so you can't pickle / JSON anything Tk. Instead you need to pickle the underlying datastructure: ie, the Map just owns a dictionary of tiles, a name, etc, and you can pickle that dictionary
+        # TODO: Tk requires caching to work, so you can't pickle / JSON anything Tk. Instead you need to pickle the underlying datastructure: ie, the Map just owns a dictionary of tiles, a name, etc, and you can pickle that dictionary
+        # TODO: Tk requires caching to work, so you can't pickle / JSON anything Tk. Instead you need to pickle the underlying datastructure: ie, the Map just owns a dictionary of tiles, a name, etc, and you can pickle that dictionary
         def save():
             map = self.get_map()
             map.set_num_CPUs(self.get_num_CPUs())
             map.set_tag(self.get_tag())
             filename = "{}{}{}".format(SAVE_DIR, map.get_tag(), SAVE_EXT)
             with open(filename, "w") as f:
-                dump(map.__dict__, f)
+                map_dict = {}
+                map_dict['width'] = map.width
+                map_dict['height'] = map.height
+                map_dict['tiles'] = map.tiles
+                dump(map_dict, f)
         self.add_button("Save Map", 0, SAVE_Y, save)
 
 # TODO: when you click on a car, that changes it's starting orientation.
