@@ -59,22 +59,15 @@ class Car:
 
     
     # Renders the car to a pygame screen, if it's in an appropriate distance
-    def save(self):
-        x = self.x
-        y = self.y
-        angle = self.angle
-        color = self.color
-        return [x, y, angle, color]
-
     def render_to_pygame(self, screen, screen_coords):
         image = self.get_image('pg')
         coords = (self.x, self.y)
         if False:
         	pos = (256, 256)
         	screen.blit(image, pos)
-        elif -(SCREEN_SIZE / 2) <= coords[0] - screen_coords[0]<= (SCREEN_SIZE / 2 + 50) and \
-            -(SCREEN_SIZE / 2) <= coords[1] - screen_coords[1] <= (SCREEN_SIZE / 2 + 50):
-            pos = (int(coords[0] - screen_coords[0]), int(coords[1] - screen_coords[1]))
+        elif -(SCREEN_SIZE / 2) <= screen_coords[0] - coords[0] <= (SCREEN_SIZE / 2 + 50) and \
+            -(SCREEN_SIZE / 2) <= screen_coords[1] - coords[1] <= (SCREEN_SIZE / 2 + 50):
+            pos = (int(screen_coords[0] - coords[0]), int(screen_coords[1] - coords[1]))
             print pos
             #rotated_img = pg.transform.rotate(image, -self.get_angle())
             screen.blit(image, pos)
@@ -90,6 +83,7 @@ class Car:
     def render_to_canvas(self):
     	# TODO:: FIX
     	image = self.get_image('tk')
+    	print image
     	id = self.canvas.create_image(self.x, self.y, image=image)
     	self.id = id
     	self._rendered = True
@@ -142,3 +136,23 @@ class Car:
     def set_angle(self, new_angle):
     	new_angle = new_angle % 360
     	self.angle = new_angle
+
+	def calculate_corners(self):
+		"""
+		Calculates corners of rectangle after
+		applying rotations.
+		Should be called during updates.
+
+		Returns:
+			corners: list, contains top right, bottom right, top left, bottom left
+				corners of rectangle.
+		"""
+		angle = np.radians(self.angle)
+		corner_offsets = np.array([self.width / 2.0, self.length / 2.0])
+		centers = np.array([self.x, self.y])
+		signs = np.array([[1, 1], [1, -1], [-1, 1], [-1, -1]])
+		corner_offsets = signs * corner_offsets
+		rotation_mat = np.array([[np.cos(angle), -np.sin(angle)],
+								 [np.sin(angle), np.cos(angle)]])
+		rotated_corners = np.dot(corner_offsets, rotation_mat.T) + centers
+		return rotated_corners
