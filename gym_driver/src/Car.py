@@ -105,7 +105,6 @@ class Car:
 
     # Gets an image for use in either pygame or tk
     def get_image(self, image_type):
-    	#TODO: Check that angles go in the right direction
     	angle = self.get_angle()
     	if angle % 90 == 0 and image_type == 'tk':
     		image = Car.car_images[self.color][angle][image_type]

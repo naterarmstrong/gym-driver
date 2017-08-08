@@ -10,6 +10,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import pygame as pg
 import numpy as np
+import cv2
 
 
 from Tile import Tile
@@ -37,7 +38,8 @@ DOWNSAMPLED_SIZE = 64
 # Action space is discrete, acceleration, steering
 # each of acc and steering is min, max, num of choices
 ACTION_SPACE = ['discrete', [-2.0, 2.0, 3], [-30.0, 30.0, 5]]
-STATE_SPACE = ['images']
+STATE_SPACE = 'images'
+DOWNSAMPLED_SIZE = 64
 
 # Map class
 class Map:
@@ -257,8 +259,7 @@ class Map:
     # Steps the map forward by 1 timestep
     def step(self, action):
         for car in self.cars:
-            pass
-            # car.step(car_heuristic_func())
+            car.step(self.car_heuristic_func(car))
         action = self.convert_to_action_space(action)
         self.main_car.step(action)
         x = self.main_car.x
@@ -267,13 +268,42 @@ class Map:
         self.render_to_pygame(coords)
 
         # TODO: Actually return stuff
-        #observation = self.get_observation(self)
+        observation = self.get_observation()
+        print observation
+
+    # Steps ahead the simulation 
 
     def lookahead(self, action):
         for car in self.cars:
-            pass
+            car.step(self.car_heuristic_func(car))
+        action = self.convert_to_action_space(action)
+        self.main_car.step(action)
 
-        acc, steer = action
+
+    # Gets an observation from the current state (the screen must already be updated)
+    def get_observation(self):
+        print STATE_SPACE
+        if STATE_SPACE == 'images':
+            image = pg.surfarray.array2d(self.screen).astype(np.uint8)
+            downsampled_img = self.downsample(image)
+        else:
+            raise NotImplementedError
+
+    # Downsamples an image using OpenCV's implementation
+    # The image array is an np.uint8
+    def downsample(self, image_array):
+        width, height = image_array.shape
+        if DOWNSAMPLED_SIZE is not None:
+            while width > DOWNSAMPLED_SIZE and height > DOWNSAMPLED_SIZE:
+                image_array = cv2.pyrDown(image_array, dstsize = (width / 2, height / 2))
+                width, height = image_array.shape
+        return image_array
+
+
+    # Gives an action to move the cars heuristically
+    # TODO: Do
+    def car_heuristic_func(car):
+        pass
     
     # Renders everything to pygame properly
     def render_to_pygame(self, coords):
