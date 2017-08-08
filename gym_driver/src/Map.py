@@ -34,6 +34,10 @@ BACKGROUND_COLOR = (25, 123, 48)
 PIXELS_PER_TILE = 200
 SCREEN_SIZE = 512
 DOWNSAMPLED_SIZE = 64
+# Action space is discrete, acceleration, steering
+# each of acc and steering is min, max, num of choices
+ACTION_SPACE = ['discrete', [-2.0, 2.0, 3], [-30.0, 30.0, 5]]
+STATE_SPACE = ['images']
 
 # Map class
 class Map:
@@ -58,6 +62,10 @@ class Map:
 
         # Used/accessed by tile / car to edit properly
         self.set_currently_editing('path')
+
+        # Creating Action Space
+        self.create_action_space()
+
 
         if not map_dict:
             # Tile Generation Logic
@@ -218,25 +226,54 @@ class Map:
     def set_start_angle(self, start_angle):
         self.start_angle = start_angle
 
+    # Initializes an action space to get actions
+    def create_action_space(self):
+        action_space_type, acc_space_params, steer_space_params = ACTION_SPACE
+        self.action_space_type = action_space_type
+        if action_space_type == 'discrete':
+            # Acceleration and Steer Space
+            self.acc_space = np.linspace(*acc_space_params)
+            self.steer_space = np.linspace(*steer_space_params)
+        elif action_space_type == 'continuous':
+            pass # TODO: FIX
+        else:
+            raise NotImplementedError
+
+    # Converts an action into the action space
+    # Prints out 'outside of range' if the action is outside the range of the action space
+    def convert_to_action_space(self, action):
+        if self.action_space_type == 'discrete':
+            try:
+                acc = self.acc_space[action[0]]
+                steer = self.steer_space[action[1]]
+                return (acc, steer)
+            except IndexError as e:
+                print 'Action outside of range: {}'.format(action)
+        elif self.action_space_type == 'continuous':
+            pass
+        else:
+            raise Exception("Unimplemented action space type: {}".format(self.action_space_type))
+
     # Steps the map forward by 1 timestep
     def step(self, action):
         for car in self.cars:
             pass
-            #car.step(car_heuristic_func())
-        # Action from controller currently intended to look into the discretized
-        acc, steer = action
-        acc = acc*2.0 - 2.0
-        steer = steer*30.0 - 30.0
-        self.main_car.step((acc, steer))
+            # car.step(car_heuristic_func())
+        action = self.convert_to_action_space(action)
+        self.main_car.step(action)
         x = self.main_car.x
         y = self.main_car.y
-        #angle = np.radians(self.main_car.get_angle())
         coords = (x - (SCREEN_SIZE / 2), y - (SCREEN_SIZE / 2))
-        # TODO: convert action to the state space
         self.render_to_pygame(coords)
 
         # TODO: Actually return stuff
         #observation = self.get_observation(self)
+
+    def lookahead(self, action):
+        for car in self.cars:
+            pass
+
+        acc, steer = action
     
     # Renders everything to pygame properly
     def render_to_pygame(self, coords):
@@ -311,6 +348,7 @@ class Map:
 
         print "Saved at {}".format(filepath)
 
+
     # Saves the state of the cars in the map
     # Intended for use before running the simulator
     def set_initial_state(self):
@@ -334,7 +372,7 @@ class Map:
         y = main_car_params[1]
         angle = main_car_params[2]
         color = main_car_params[3]
-        self.main_car = PointCar(self, x, y, angle, canvas=self.get_canvas(), color=color)
+        self.main_car = DynamicCar(self, x, y, angle, canvas=self.get_canvas(), color=color)
         self.cars = []
         for car_params in state['cars']:
             x = car_params[0]

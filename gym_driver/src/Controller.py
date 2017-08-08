@@ -46,7 +46,7 @@ class Controller:
             action: tuple, steer / acceleration action.
         """
         action_dict = {'steer': 0.0, 'acc': 0.0}
-        steer, acc = 1, 1
+        steer, acc = 2, 1
         pygame.event.pump()
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
@@ -56,7 +56,7 @@ class Controller:
         if keys[pygame.K_LEFT]:
             steer = 0
         elif keys[pygame.K_RIGHT]:
-            steer = 2
+            steer = 4
         action = (acc, steer)
         return action
 

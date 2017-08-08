@@ -80,9 +80,9 @@ class Tile:
         self.set_texture(texture)
         self.set_path_ind(path_ind)
         self.set_orientation(orientation)
-        self.location = location
+        self.location = location # Location in tiles
 
-        self.coords = (location[0]*PIXELS_PER_TILE, location[1]* PIXELS_PER_TILE)
+        self.coords = (location[0]*PIXELS_PER_TILE, location[1]* PIXELS_PER_TILE) # Location in pixels
 
 
     # Saves the tile into a python list of arguments to recreate the tile
