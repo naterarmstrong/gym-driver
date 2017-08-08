@@ -57,6 +57,10 @@ class Car:
         self.acc = 0 # acceleration
         self.canvas = canvas
 
+        # Hardcoded
+        self.width = 50
+        self.length = 25
+
 
     def save(self):
         x = self.x

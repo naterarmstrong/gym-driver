@@ -181,6 +181,14 @@ class Map:
         y_pixel = y % PIXELS_PER_TILE
         return self.get_tile(x, y).get_point_friction(x_pixel, y_pixel)
 
+    # Gets a point texture
+    def get_point_texture(self, x, y):
+        if x // PIXELS_PER_TILE >= self.width or y // PIXELS_PER_TILE >= self.height:
+            return 'grass'
+        x_pixel = x % PIXELS_PER_TILE
+        y_pixel = y % PIXELS_PER_TILE
+        return self.get_tile(x, y).get_point_texture(x_pixel, y_pixel)
+
     # Getter method: canvas
     def get_canvas(self):
         return self.canvas
@@ -269,11 +277,15 @@ class Map:
         # TODO: Actually return stuff
         #observation = self.get_observation(self)
 
+    # Steps forward the map without any rendering
+    # Currently returns nothing
     def lookahead(self, action):
         for car in self.cars:
             pass
+        action = self.convert_to_action_space(action)
+        self.main_car.step(action)
 
-        acc, steer = action
+
     
     # Renders everything to pygame properly
     def render_to_pygame(self, coords):
@@ -385,8 +397,8 @@ class Map:
 
     def cost_func(self):
         car = self.main_car
-        car_tile = self.tiles[car.y][car.x]
-        off_track = car_tile.get_point_texture(car.x, car.y) == "grass"
+        car_tiles = [self.get_tile(x, y) for x,y in car.corners]
+        off_track = any([self.get_point_texture(x, y) == 'grass' for x, y in car.corners])
         off_track_cost = 100 if off_track else 0
         time_cost = 1
         this_algorithm_becoming_skynet_cost = 42
@@ -477,13 +489,8 @@ if __name__ == "__main__":
                     pg.quit()
                     map.load_to_state(map.initial_state)
                     return
-            if counter == 25:
-                state = map.save_state()
-
-            if counter % 50 == 0:
-                map.load_to_state(state)
             action = controller.process_input(a)
-            a.step(action)
+            map.step(action)
             pg.display.update()
             clock.tick(30)
             print counter

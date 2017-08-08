@@ -27,6 +27,7 @@ class DynamicCar(Car):
         self.dangle = self.a_f = self.dx_body = self.dy_body = 0.0
         #self.count = 0
         self.friction = 0.9
+        self.corners = self.calculate_corners()
 
     def save(self):
         # Returns a list of x, y, angle, dangle, a_f, dx_body, dy_body
@@ -70,7 +71,7 @@ class DynamicCar(Car):
 
         self.dangle = dampen_val(self.dangle, lim=0.1, coef=0.95)
 
-        #self.corners = self.calculate_corners()
+        self.corners = self.calculate_corners()
 
     def integrator(self, state, t, mu, delta_f, a_f):
         """
@@ -148,6 +149,27 @@ class DynamicCar(Car):
 
         output = [dx, dy, ddx_body, ddy_body, dangle, ddangle]
         return output
+
+
+    def calculate_corners(self):
+        """
+        Calculates corners of rectangle after
+        applying rotations.
+        Should be called during updates.
+
+        Returns:
+            corners: list, contains top right, bottom right, top left, bottom left
+                corners of rectangle.
+        """
+        angle = np.radians(self.angle)
+        corner_offsets = np.array([self.width / 2.0, self.length / 2.0])
+        centers = np.array([self.x, self.y])
+        signs = np.array([[1, 1], [1, -1], [-1, 1], [-1, -1]])
+        corner_offsets = signs * corner_offsets
+        rotation_mat = np.array([[np.cos(angle), -np.sin(angle)],
+                                 [np.sin(angle), np.cos(angle)]])
+        rotated_corners = np.dot(corner_offsets, rotation_mat.T) + centers
+        return rotated_corners
 
     # Sequoia's code below. Broken somehow, not sure how
     # Modify attributes to reflect one game step
