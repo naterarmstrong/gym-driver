@@ -28,6 +28,14 @@ class DynamicCar(Car):
         #self.count = 0
         self.friction = 0.9
 
+    def save(self):
+        # Returns a list of x, y, angle, dangle, a_f, dx_body, dy_body
+        # TODO: make first element of the list 'dynamic' and have the load function read it to construct
+        return [self.x, self.y, self.dx_body, self.dy_body, self.angle, self.dangle]
+
+    def load_to_state(self, state):
+        self.x, self.y, self.dx_body, self.dy_body, self.angle, self.dangle = state
+
     def step(self, action):
         """
         Updates the car for one timestep.

@@ -57,6 +57,14 @@ class Car:
         self.acc = 0 # acceleration
         self.canvas = canvas
 
+
+    def save(self):
+        x = self.x
+        y = self.y
+        angle = self.angle
+        color = self.color
+        return [x, y, angle, color]
+
     
     # Renders the car to a pygame screen, if it's in an appropriate distance
     def render_to_pygame(self, screen, screen_coords):
@@ -65,9 +73,9 @@ class Car:
         if False:
         	pos = (256, 256)
         	screen.blit(image, pos)
-        elif -(SCREEN_SIZE / 2) <= screen_coords[0] - coords[0] <= (SCREEN_SIZE / 2 + 50) and \
-            -(SCREEN_SIZE / 2) <= screen_coords[1] - coords[1] <= (SCREEN_SIZE / 2 + 50):
-            pos = (int(screen_coords[0] - coords[0]), int(screen_coords[1] - coords[1]))
+        elif -(SCREEN_SIZE / 2) - 10 <= coords[0] - screen_coords[0] <= (SCREEN_SIZE / 2 + 50) and \
+            -(SCREEN_SIZE / 2) - 10 <= coords[1] - screen_coords[1] <= (SCREEN_SIZE / 2 + 50):
+            pos = (int(coords[0] - screen_coords[0]), int(coords[1] - screen_coords[1]))
             print pos
             #rotated_img = pg.transform.rotate(image, -self.get_angle())
             screen.blit(image, pos)
